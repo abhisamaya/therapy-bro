@@ -1,5 +1,7 @@
 # 🧠 Therapy Bro
 
+**Therapy Bro** is your personal AI therapist — a conversational agent designed to help you navigate problems, emotions, and everyday situations using intelligent, empathetic dialogue powered by OpenAI. It provides supportive, judgment-free conversations to promote mental clarity and emotional well-being.
+
 **Therapy Bro** is a web application that combines a FastAPI backend and a modern frontend (npm) to provide AI-driven therapeutic chat experiences using OpenAI's API.
 
 ---
