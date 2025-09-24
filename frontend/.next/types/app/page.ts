@@ -1,4 +1,4 @@
-// File: /Users/oasis/pytorch_ml_dl/textraja/frontend/app/page.tsx
+// File: /home/gsparsh/therapy-bro/frontend/app/page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
