@@ -4,6 +4,7 @@ import { listChats, startSession, getHistory, streamMessage } from '@/lib/api'
 import ChatInput from '@/components/ChatInput'
 import ChatMessage from '@/components/ChatMessage'
 import { useRouter } from 'next/navigation'
+import { LISTENER_META } from '@/lib/listeners'
 
 type Msg = { role: 'user'|'assistant'|'system'; content: string }
 type Conv = { session_id: string; category: string; updated_at: string; notes?: string }
@@ -26,7 +27,10 @@ export default function ChatPage() {
   const [expiredModalOpen, setExpiredModalOpen] = useState(false)
 
   // categories shown in left UI and modal
-  const categories = ['Career Councelling','Mental Wellbeing','Relationship Management','Sexual Wellness']
+  const categories = ['Yama', 'Siddhartha', 'Shankara', 'Kama', 'Narada']
+
+  // hover state for tooltip
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
 
   // -------------------------
   // helpers
@@ -34,6 +38,17 @@ export default function ChatPage() {
   const appendSystem = useCallback((text: string) => {
     setMessages(prev => [...prev, { role: 'system', content: text }])
   }, [])
+
+  // get category name for active session id
+  const getActiveCategory = (): string | null => {
+    if (!active) return null
+    const conv = convs.find(c => c.session_id === active)
+    return conv?.category ?? null
+  }
+
+  // helper to get welcome for active category
+  const activeCategory = getActiveCategory()
+  const activeWelcome = activeCategory ? (LISTENER_META[activeCategory]?.welcome ?? LISTENER_META.general.welcome) : LISTENER_META.general.welcome
 
   // load conversations and initial session
   useEffect(() => {
@@ -48,6 +63,8 @@ export default function ChatPage() {
           const s = await startSession('general'); setActive(s.session_id); await load(s.session_id); setConvs(await listChats())
           // start timer automatically for new session
           startTimerWithCurrentDuration()
+          // append generic system welcome
+          appendSystem(LISTENER_META.general.welcome)
         }
       } catch {
         router.push('/login')
@@ -60,6 +77,13 @@ export default function ChatPage() {
     const h = await getHistory(id)
     // keep system messages out of the main stream (you may want them preserved elsewhere)
     setMessages(h.messages.filter((m: Msg) => m.role !== 'system'))
+    // If this session has no user/assistant messages yet, append the listener-specific system welcome
+    const conv = convs.find(c => c.session_id === id)
+    const cat = conv?.category ?? null
+    if ((h.messages.filter((m: Msg) => m.role !== 'system').length === 0) && cat) {
+      const meta = LISTENER_META[cat] ?? LISTENER_META.general
+      appendSystem(meta.welcome)
+    }
   }
 
   // select an existing conversation and auto-start timer (continue)
@@ -76,6 +100,9 @@ export default function ChatPage() {
     setActive(s.session_id)
     await load(s.session_id)
     setConvs(await listChats())
+    // append listener-specific system welcome for the newly created chat
+    const meta = LISTENER_META[cat] ?? LISTENER_META.general
+    appendSystem(meta.welcome)
     // auto-start timer for newly created session
     startTimerWithCurrentDuration()
   }
@@ -189,16 +216,37 @@ export default function ChatPage() {
   const left = (
     <div className="w-64 shrink-0 space-y-2">
       <div className="rounded-2xl bg-card p-3">
-        <div className="mb-2 text-sm opacity-70">New chat</div>
+        <div className="mb-2 text-sm opacity-70">Pick Listener</div>
+
         <div className="grid grid-cols-2 gap-2">
           {categories.map(cat => (
-            <button key={cat} onClick={()=>newCategory(cat)} className="rounded-xl bg-black/20 px-3 py-2 text-xs hover:bg-black/30">{cat}</button>
+            <button
+              key={cat}
+              onClick={()=>newCategory(cat)}
+              title={LISTENER_META[cat]?.description}
+              onMouseEnter={() => setHoveredCategory(cat)}
+              onMouseLeave={() => setHoveredCategory(null)}
+              className="rounded-xl bg-black/20 px-3 py-2 text-xs hover:bg-black/30"
+            >
+              {cat}
+            </button>
           ))}
+        </div>
+
+        {/* inline tooltip area */}
+        <div className="mt-3 min-h-[2rem]">
+          {hoveredCategory ? (
+            <div className="rounded-md bg-black/10 px-3 py-2 text-xs">
+              {LISTENER_META[hoveredCategory]?.description}
+            </div>
+          ) : (
+            <div className="text-xs opacity-60">Hover a listener to see a short description</div>
+          )}
         </div>
       </div>
 
       <div className="rounded-2xl bg-card p-3">
-        <div className="mb-2 text-sm opacity-70">Your conversations</div>
+        <div className="mb-2 text-sm opacity-70">Your Conversations</div>
         <div className="space-y-1">
           {convs.map(c => (
             <button key={c.session_id} onClick={()=>select(c.session_id)} className={`block w-full rounded-xl px-3 py-2 text-left text-sm ${active===c.session_id?'bg-black/30':'bg-black/10 hover:bg-black/20'}`}>
@@ -214,7 +262,11 @@ export default function ChatPage() {
   const main = (
     <div className="flex-1">
       <div className="mb-3 rounded-2xl bg-card p-3 text-sm flex items-center justify-between gap-4">
-        <div>Hi! I’m your assistant. Ask anything.</div>
+        <div>
+          {/* show the active listener's assistant welcome if a category exists, otherwise generic */}
+          <div className="font-medium">{activeCategory ?? "Assistant"}</div>
+          <div className="text-sm opacity-80">{activeWelcome}</div>
+        </div>
 
         {/* Timer UI: only remaining time now */}
         <div className="flex items-center gap-2">
@@ -288,6 +340,7 @@ export default function ChatPage() {
                 {categories.map(cat => (
                   <button
                     key={cat}
+                    title={LISTENER_META[cat]?.description}
                     onClick={() => startNewChatFromModal(cat, totalSeconds)}
                     className="rounded-lg border border-gray-300 px-3 py-2 text-gray-600 text-sm hover:bg-gray-100"
                   >
