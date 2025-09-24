@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json, os, uuid
+from contextlib import asynccontextmanager
 from typing import List
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,7 +31,15 @@ from .schemas import (
 #
 load_dotenv()
 
-app = FastAPI(title="Auth Chat API", version="1.0.0")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # --- startup ---
+    init_db()
+    yield
+    # --- shutdown ---
+    # place shutdown/cleanup logic here if/when needed
+
+app = FastAPI(title="Auth Chat API", version="1.0.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[os.getenv("FRONTEND_ORIGIN", "http://localhost:3000"), "*"],
@@ -38,10 +47,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-def _startup():
-    init_db()
 
 @app.get("/health")
 def health():
