@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth Test</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; }
+        #g_id_onload { margin: 20px 0; }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Google OAuth Test</h1>
+        
+        <div class="info">
+            <strong>Setup Instructions:</strong>
+            <ol>
+                <li>Replace <code>YOUR_GOOGLE_CLIENT_ID</code> below with your actual Google Client ID</li>
+                <li>Make sure your FastAPI server is running on http://localhost:8000</li>
+                <li>Add <code>http://localhost:8080</code> (or wherever you're serving this file) to your Google OAuth authorized origins</li>
+            </ol>
+        </div>
+
+        <h2>Step 1: Google Sign-In</h2>
+        <p>Click the button below to sign in with Google:***************</p>
+        
+        <!-- Google Sign-In Button -->
+        <div id="g_id_onload"
+             data-client_id="91594839033-tsceqr2lslc9lkicdf6adtg4mf2rac22.apps.googleusercontent.com"
+             data-context="signin"
+             data-ux_mode="popup"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        
+        <div id="g_id_signin"
+             data-type="standard"
+             data-shape="rectangular"
+             data-theme="outline"
+             data-text="signin_with"
+             data-size="large"
+             data-logo_alignment="left">
+        </div>
+        <!-- Sign In Button -->
+        <div id="signin_button" data-text="signin_with"></div>
+
+        <!-- Sign Up Button -->  
+        <div id="signup_button" data-text="signup_with"></div>
+
+
+        <h2>Step 2: Test Results</h2>
+        <div id="results"></div>
+    </div>
+
+    <!-- Google Sign-In Configuration -->
+<div id="g_id_onload"
+     data-client_id="91594839033-tsceqr2lslc9lkicdf6adtg4mf2rac22.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     data-callback="handleCredentialResponse"
+     data-auto_prompt="false">
+</div>
+
+<!-- Sign-In Button -->
+<div class="g_id_signin"
+     data-type="standard"
+     data-shape="rectangular"
+     data-theme="outline"
+     data-text="sign_in_with"
+     data-size="large"
+     data-logo_alignment="left">
+</div>
+
+<!-- Include Google Identity Services Library -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<!-- Your callback function -->
+<script>
+  function handleCredentialResponse(response) {
+    console.log("Encoded JWT ID token: " + response.credential);
+    // You can decode or send this token to your server
+  }
+</script>
+
+
+    <script>
+        // Replace with your actual Google Client ID
+        const GOOGLE_CLIENT_ID = '91594839033-tsceqr2lslc9lkicdf6adtg4mf2rac22.apps.googleusercontent.com';
+        const FASTAPI_URL = 'http://localhost:8000';
+
+        function handleCredentialResponse(response) {
+            const results = document.getElementById('results');
+            
+            // Clear previous results
+            results.innerHTML = '<p>Processing Google sign-in...</p>';
+            
+            // Show the received ID token (first part only for security)
+            const tokenPreview = response.credential.substring(0, 50) + '...';
+            results.innerHTML += `<div class="result success">
+                <strong>✅ Google ID Token Received:</strong><br>
+                ${tokenPreview}<br>
+                <small>Token length: ${response.credential.length} characters</small>
+            </div>`;
+            
+            // Test your FastAPI endpoint
+            testFastAPIEndpoint(response.credential);
+        }
+
+        async function testFastAPIEndpoint(idToken) {
+            const results = document.getElementById('results');
+            
+            try {
+                // Test the /auth/google endpoint
+                results.innerHTML += '<div class="result">📡 Testing /auth/google endpoint...</div>';
+                
+                const response = await fetch(`${FASTAPI_URL}/auth/google`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id_token: idToken
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    results.innerHTML += `<div class="result success">
+                        <strong>✅ /auth/google SUCCESS:</strong><br>
+                        Status: ${response.status}<br>
+                        Access Token: ${data.access_token.substring(0, 50)}...<br>
+                        Token Type: ${data.token_type}
+                    </div>`;
+                    
+                    // Test the /auth/me endpoint with the received token
+                    testMeEndpoint(data.access_token);
+                } else {
+                    results.innerHTML += `<div class="result error">
+                        <strong>❌ /auth/google FAILED:</strong><br>
+                        Status: ${response.status}<br>
+                        Error: ${JSON.stringify(data, null, 2)}
+                    </div>`;
+                }
+                
+            } catch (error) {
+                results.innerHTML += `<div class="result error">
+                    <strong>❌ Network Error:</strong><br>
+                    ${error.message}<br>
+                    <small>Make sure your FastAPI server is running on ${FASTAPI_URL}</small>
+                </div>`;
+            }
+        }
+
+        async function testMeEndpoint(accessToken) {
+            const results = document.getElementById('results');
+            
+            try {
+                results.innerHTML += '<div class="result">👤 Testing /auth/me endpoint...</div>';
+                
+                const response = await fetch(`${FASTAPI_URL}/auth/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    results.innerHTML += `<div class="result success">
+                        <strong>✅ /auth/me SUCCESS:</strong><br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>`;
+                } else {
+                    results.innerHTML += `<div class="result error">
+                        <strong>❌ /auth/me FAILED:</strong><br>
+                        Status: ${response.status}<br>
+                        Error: ${JSON.stringify(data, null, 2)}
+                    </div>`;
+                }
+                
+            } catch (error) {
+                results.innerHTML += `<div class="result error">
+                    <strong>❌ /auth/me Network Error:</strong><br>
+                    ${error.message}
+                </div>`;
+            }
+        }
+
+        // Handle errors
+        window.addEventListener('error', function(e) {
+            const results = document.getElementById('results');
+            results.innerHTML += `<div class="result error">
+                <strong>❌ JavaScript Error:</strong><br>
+                ${e.message}
+            </div>`;
+        });
+    </script>
+</body>
+</html>

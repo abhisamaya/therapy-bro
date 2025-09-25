@@ -13,12 +13,16 @@ from app.schemas import (
     StartSessionIn, StartSessionOut, MessageIn, MessageOut, HistoryOut,
     ConversationItem, NotesIn,
 )
-from app.utils import now_ist, hash_password, verify_password, create_access_token
+from app.utils import now_ist, hash_password, verify_password, create_access_token, JWT_EXPIRE_MIN
 from app.prompts import system_prompt_for
 from app.openai_client import OpenAIStreamer
 from app.auth import get_current_user
 
+from app.google_auth import google_auth_service
+from app.schemas import GoogleAuthIn, UserOut
 
+from fastapi import Cookie, Response
+from typing import Optional
 
 from .db import init_db, get_session
 from .models import User, ChatSession, Message
@@ -81,9 +85,19 @@ def login(payload: LoginIn):
     token = create_access_token(payload.login_id)
     return TokenOut(access_token=token)
 
+# @app.get("/auth/me", response_model=MeOut)
+# def me(user: User = Depends(get_current_user)):
+#     return MeOut(login_id=user.login_id, name=user.name)
+
 @app.get("/auth/me", response_model=MeOut)
 def me(user: User = Depends(get_current_user)):
-    return MeOut(login_id=user.login_id, name=user.name)
+    return MeOut(
+        login_id=user.login_id,
+        name=user.name,
+        email=user.email,
+        avatar_url=user.avatar_url,
+        auth_provider=user.auth_provider
+    )
 
 # ---------- Chat ----------
 @app.get("/api/chats", response_model=List[ConversationItem])
@@ -201,3 +215,62 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
             yield (json.dumps({"type":"done"}) + "\n").encode("utf-8")
 
     return StreamingResponse(ndjson_stream(), media_type="application/x-ndjson")
+
+
+# Add this new Google auth endpoint
+@app.post("/auth/google", response_model=TokenOut)
+def google_auth(payload: GoogleAuthIn, response: Response):
+    # Verify Google token
+    google_user_info = google_auth_service.verify_google_token(payload.id_token)
+    if not google_user_info:
+        raise HTTPException(status_code=400, detail="Invalid Google token")
+    
+    if not google_user_info['email_verified']:
+        raise HTTPException(status_code=400, detail="Google email not verified")
+    
+    with get_session() as db:
+        # Check if user exists by Google ID
+        user = db.query(User).filter(User.google_id == google_user_info['google_id']).first()
+        
+        if not user:
+            # Check if user exists by email (for account linking)
+            user = db.query(User).filter(User.email == google_user_info['email']).first()
+            
+            if user:
+                # Link Google account to existing user
+                user.google_id = google_user_info['google_id']
+                user.auth_provider = "google"
+                user.avatar_url = google_user_info['avatar_url']
+                if not user.name:
+                    user.name = google_user_info['name']
+            else:
+                # Create new user
+                user = User(
+                    login_id=google_user_info['email'],  # Use email as login_id
+                    google_id=google_user_info['google_id'],
+                    email=google_user_info['email'],
+                    name=google_user_info['name'],
+                    avatar_url=google_user_info['avatar_url'],
+                    auth_provider="google",
+                    created_at=now_ist(),
+                )
+                db.add(user)
+            
+            db.commit()
+        
+        # Create token using login_id (which is email for Google users)
+        token = create_access_token(user.login_id)
+        response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=True,  # Use True in production with HTTPS
+            samesite="lax",
+            max_age=JWT_EXPIRE_MIN * 60  # Convert minutes to seconds
+        )
+        return TokenOut(access_token=token)
+
+@app.post("/auth/logout")
+def logout(response: Response):
+    response.delete_cookie("access_token")
+    return {"message": "Logged out successfully"}

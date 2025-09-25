@@ -3,14 +3,21 @@ from sqlmodel import SQLModel, Field
 from typing import Optional
 from datetime import datetime
 
+
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     login_id: str = Field(index=True, unique=True)
-    password_hash: str
+    password_hash: Optional[str] = Field(default=None) 
     name: Optional[str] = None
     phone: Optional[str] = None
     age: Optional[int] = None
     created_at: datetime
+
+    #  Google OAuth fields
+    google_id: Optional[str] = Field(default=None, index=True)
+    email: Optional[str] = Field(default=None, index=True)
+    avatar_url: Optional[str] = None
+    auth_provider: str = Field(default="local")  # "local" or "google"
 
 class ChatSession(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

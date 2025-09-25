@@ -77,3 +77,24 @@ export async function streamMessage(sessionId: string, text: string, opts?: { on
     }
   }
 }
+
+// Add to your existing lib/api.ts
+export async function googleAuth(idToken: string) {
+  const response = await fetch('/api/auth/google', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id_token: idToken }),
+  })
+  
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.error || 'Google authentication failed')
+  }
+  
+  const data = await response.json()
+  
+  // Store the token
+  localStorage.setItem('access_token', data.access_token)
+  
+  return data
+}
