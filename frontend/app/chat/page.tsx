@@ -36,6 +36,9 @@ export default function ChatPage() {
   const [remaining, setRemaining] = useState<number>(300);
   const [running, setRunning] = useState<boolean>(false);
   const timerRef = useRef<number | null>(null);
+  
+  // Add ref to track timer state more reliably
+  const isTimerRunning = useRef<boolean>(false);
 
   // Expiry modal
   const [expiredModalOpen, setExpiredModalOpen] = useState(false);
@@ -93,7 +96,7 @@ export default function ChatPage() {
         const newSessionParam = searchParams.get('new');
         const currentSearchParams = `${sessionParam || ''}-${newSessionParam || ''}`;
         
-        console.log('Effect running with:', { 
+        console.log('Chat page effect running with:', { 
           sessionParam, 
           newSessionParam, 
           currentSearchParams, 
@@ -116,26 +119,37 @@ export default function ChatPage() {
         
         // Handle specific session from URL
         if (sessionParam) {
+          console.log('Processing sessionParam:', sessionParam);
           const sessionExists = list.find((c: Conv) => c.session_id === sessionParam);
           if (sessionExists) {
+            console.log('Session exists, selecting it');
             await select(sessionParam);
+            // Restore timer state after selecting session
+            restoreTimerState();
             isProcessing.current = false;
             return;
+          } else {
+            console.log('Session not found in list');
           }
         }
         
         // Handle new session request from URL
         if (newSessionParam) {
+          console.log('Processing newSessionParam:', newSessionParam);
           const today = new Date().toISOString().split('T')[0];
           const todaySession = list.find((c: Conv) => c.updated_at.startsWith(today));
           
           if (todaySession) {
             // If there's already a session for today, continue it
+            console.log('Found today session, selecting it instead of creating new');
             await select(todaySession.session_id);
+            // Restore timer state after selecting session
+            restoreTimerState();
             isProcessing.current = false;
             return;
           } else {
             // Create a new session
+            console.log('No today session, creating new one');
             await newCategory(newSessionParam);
             isProcessing.current = false;
             return;
@@ -149,8 +163,16 @@ export default function ChatPage() {
           
           if (todaySession) {
             await select(todaySession.session_id);
+            // Only start timer if no timer is running
+            if (!running) {
+              startTimerWithCurrentDuration();
+            }
           } else {
             await select(list[0].session_id);
+            // Only start timer if no timer is running
+            if (!running) {
+              startTimerWithCurrentDuration();
+            }
           }
         } else {
           // create a default session and start it
@@ -158,6 +180,7 @@ export default function ChatPage() {
           setActive(s.session_id);
           await load(s.session_id);
           setConvs(await listChats());
+          // Always start timer for the very first session
           startTimerWithCurrentDuration();
           appendSystem(LISTENER_META.TherapyBro.welcome);
         }
@@ -187,17 +210,41 @@ export default function ChatPage() {
     }
   };
 
+  // Helper function to check if timer is actually running
+  const isTimerActuallyRunning = () => {
+    return timerRef.current !== null && running;
+  };
+
   // select an existing conversation and auto-start timer (continue)
   const select = async (id: string) => {
+    console.log('select called with:', {
+      id,
+      running,
+      timerRef: timerRef.current,
+      active,
+      remaining
+    });
+    
     setActive(id);
     await load(id);
-    // auto-start timer for continuing the session
-    startTimerWithCurrentDuration();
+    
+    // NEVER start a timer in select - only switch sessions
+    console.log('Switching to session, timer continues if running');
+    if (running) {
+      appendSystem("Switched to previous chat. Timer continues.");
+    }
   };
 
   // create new category/session and auto-start timer
   const newCategory = async (cat: string) => {
-    console.log('Creating new category:', cat);
+    console.log('newCategory called with:', {
+      cat,
+      running,
+      timerRef: timerRef.current,
+      active,
+      remaining
+    });
+    
     const s = await startSession(cat);
     setActive(s.session_id);
     await load(s.session_id);
@@ -209,8 +256,12 @@ export default function ChatPage() {
     // append listener-specific system welcome for the newly created chat
     const meta = LISTENER_META[cat] ?? LISTENER_META.TherapyBro;
     appendSystem(meta.welcome);
-    // auto-start timer for newly created session
-    startTimerWithCurrentDuration();
+    
+    // NEVER start a timer in newCategory - only switch sessions
+    console.log('Switching to new session, timer continues if running');
+    if (running) {
+      appendSystem("Switched to new chat. Timer continues.");
+    }
   };
 
   // keep remaining in sync whenever duration changes and timer not running
@@ -232,13 +283,31 @@ export default function ChatPage() {
 
   // start timer using currently selected totalSeconds (used on select/new)
   const startTimerWithCurrentDuration = () => {
+    console.log('startTimerWithCurrentDuration called, current timer state:', {
+      running,
+      isTimerRunning: isTimerRunning.current,
+      timerRef: timerRef.current,
+      remaining
+    });
+    
     // ensure we use the chosen duration
     setRemaining(totalSeconds);
     // clear any old timer
     if (timerRef.current) {
+      console.log('Clearing existing timer');
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+    
+    // Save timer state to localStorage
+    const timerState = {
+      remaining: totalSeconds,
+      running: true,
+      startTime: Date.now(),
+      totalSeconds: totalSeconds
+    };
+    localStorage.setItem('therapyTimer', JSON.stringify(timerState));
+    
     // start ticking
     timerRef.current = window.setInterval(() => {
       setRemaining((prev) => {
@@ -249,6 +318,8 @@ export default function ChatPage() {
             timerRef.current = null;
           }
           setRunning(false);
+          isTimerRunning.current = false;
+          localStorage.removeItem('therapyTimer');
           setExpiredModalOpen(true); // show modal to ask continue or start new
           appendSystem("Time's up — session ended.");
           return 0;
@@ -257,8 +328,77 @@ export default function ChatPage() {
       });
     }, 1000);
     setRunning(true);
+    isTimerRunning.current = true;
+    console.log('Timer started successfully');
     appendSystem("Timer started.");
   };
+
+  // Restore timer state from localStorage
+  const restoreTimerState = () => {
+    const savedTimer = localStorage.getItem('therapyTimer');
+    if (savedTimer) {
+      try {
+        const timerState = JSON.parse(savedTimer);
+        const now = Date.now();
+        const elapsed = Math.floor((now - timerState.startTime) / 1000);
+        const newRemaining = Math.max(0, timerState.remaining - elapsed);
+        
+        if (newRemaining > 0) {
+          console.log('Restoring timer state:', { timerState, elapsed, newRemaining });
+          setRemaining(newRemaining);
+          setRunning(true);
+          isTimerRunning.current = true;
+          
+          // Start the timer with the remaining time
+          timerRef.current = window.setInterval(() => {
+            setRemaining((prev) => {
+              if (prev <= 1) {
+                // stop timer
+                if (timerRef.current) {
+                  clearInterval(timerRef.current);
+                  timerRef.current = null;
+                }
+                setRunning(false);
+                isTimerRunning.current = false;
+                localStorage.removeItem('therapyTimer');
+                setExpiredModalOpen(true);
+                appendSystem("Time's up — session ended.");
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+          
+          appendSystem("Timer restored and continuing.");
+        } else {
+          // Timer expired while away
+          localStorage.removeItem('therapyTimer');
+          setExpiredModalOpen(true);
+          appendSystem("Session expired while away.");
+        }
+      } catch (error) {
+        console.error('Error restoring timer state:', error);
+        localStorage.removeItem('therapyTimer');
+      }
+    }
+  };
+
+  // Update timer state in localStorage every second
+  useEffect(() => {
+    if (running && timerRef.current) {
+      const interval = setInterval(() => {
+        const timerState = {
+          remaining: remaining,
+          running: true,
+          startTime: Date.now() - (totalSeconds - remaining) * 1000,
+          totalSeconds: totalSeconds
+        };
+        localStorage.setItem('therapyTimer', JSON.stringify(timerState));
+      }, 1000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [running, remaining, totalSeconds]);
 
   // manual "continue" from modal: restart same chat using a chosen duration
   const continueSameChat = (secs: number) => {
@@ -278,6 +418,7 @@ export default function ChatPage() {
             timerRef.current = null;
           }
           setRunning(false);
+          isTimerRunning.current = false;
           setExpiredModalOpen(true);
           appendSystem("Time's up — session ended.");
           return 0;
@@ -286,6 +427,7 @@ export default function ChatPage() {
       });
     }, 1000);
     setRunning(true);
+    isTimerRunning.current = true;
     appendSystem("Session continued.");
   };
 
@@ -631,9 +773,7 @@ export default function ChatPage() {
               <select
                 defaultValue={String(totalSeconds)}
                 onChange={(e) => setTotalSeconds(Number(e.target.value))}
-                className="w-full rounded-md border border-border bg-background text-foreground
-             px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring
-             disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full rounded-md border border-border bg-bg text-text px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value={300}>5 minutes</option>
                 <option value={600}>10 minutes</option>
@@ -651,7 +791,7 @@ export default function ChatPage() {
 
               <button
                 onClick={() => setExpiredModalOpen(false)}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-gray-600 text-sm hover:bg-gray-100"
+                className="rounded-lg border border-border bg-bg text-text px-4 py-2 text-sm hover:bg-card-hover"
               >
                 Close
               </button>

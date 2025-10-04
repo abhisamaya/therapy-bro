@@ -99,6 +99,26 @@ export default function CalendarPage() {
     setDeleteConfirm({ show: false, sessionId: null });
   };
 
+  const handleStartNewChat = () => {
+    // Check if there's already a session for today
+    const today = new Date().toISOString().split('T')[0];
+    const todaySession = convs.find(conv => conv.updated_at.startsWith(today));
+    
+    console.log('handleStartNewChat called:', {
+      today,
+      todaySession,
+      allConvs: convs
+    });
+    
+    if (todaySession) {
+      // If there's already a session for today, continue it
+      router.push(`/chat?session=${todaySession.session_id}`);
+    } else {
+      // If no session for today, create a new one
+      router.push('/chat?new=TherapyBro');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center">
@@ -128,7 +148,7 @@ export default function CalendarPage() {
             
             <div className="flex items-center gap-3">
               <button
-                onClick={() => router.push('/chat?new=TherapyBro')}
+                onClick={handleStartNewChat}
                 className="flex items-center gap-2 px-4 py-2 glass-card rounded-xl hover:bg-card-hover transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
