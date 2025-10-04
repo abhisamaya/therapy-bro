@@ -58,6 +58,35 @@ export async function setNotes(sessionId: string, notes: string) {
   if (!res.ok) throw new Error('notes failed')
 }
 
+export async function deleteSession(sessionId: string) {
+  console.log('deleteSession called with:', sessionId);
+  console.log('API base URL:', API);
+  
+  const headers = authHeaders();
+  console.log('Auth headers:', headers);
+  
+  const url = `${API}/api/sessions/${sessionId}`;
+  console.log('Full URL:', url);
+  
+  const res = await fetch(url, {
+    method: 'DELETE', 
+    headers: { ...headers }
+  });
+  
+  console.log('Response status:', res.status);
+  console.log('Response ok:', res.ok);
+  
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('Error response:', errorText);
+    throw new Error(`delete failed: ${res.status} ${errorText}`);
+  }
+  
+  const result = await res.json();
+  console.log('Delete response:', result);
+  return result;
+}
+
 export async function streamMessage(sessionId: string, text: string, opts?: { onToken?: (t: string) => void }) {
   const res = await fetch(`${API}/api/sessions/${sessionId}/messages`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders() },

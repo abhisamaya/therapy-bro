@@ -15,7 +15,7 @@ export default function LoginPage() {
     try {
       if (mode === 'login') await login(loginId, password)
       else await register(loginId, password, 'Demo User')
-      router.push('/chat')
+      router.push('/calendar') // Changed from '/chat' to '/calendar'
     } catch (e:any) { setError(String(e.message||e)) }
   }
 

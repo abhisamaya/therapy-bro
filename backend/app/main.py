@@ -148,8 +148,24 @@ def put_notes(session_id: str, payload: NotesIn, user: User = Depends(get_curren
         chat = db.query(ChatSession).filter(ChatSession.session_id == session_id, ChatSession.user_id == user.id).first()
         if not chat:
             raise HTTPException(status_code=404, detail="Session not found")
+        
         chat.notes = payload.notes
         chat.updated_at = now_ist()
+        db.commit()
+        return {"ok": True}
+
+@app.delete("/api/sessions/{session_id}")
+def delete_session(session_id: str, user: User = Depends(get_current_user)):
+    with get_session() as db:
+        chat = db.query(ChatSession).filter(ChatSession.session_id == session_id, ChatSession.user_id == user.id).first()
+        if not chat:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        # Delete all messages for this session
+        db.query(Message).filter(Message.session_id == session_id).delete()
+        
+        # Delete the chat session
+        db.delete(chat)
         db.commit()
         return {"ok": True}
 
