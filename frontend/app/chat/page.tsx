@@ -392,17 +392,15 @@ export default function ChatPage() {
   // -------------------------
   const left = (
     <div
-      className={[
-        // base spacing/width
-        "w-full md:w-auto p-4 md:p-0",
-        // mobile: off-canvas drawer
-        sidebarOpen
-          ? "fixed inset-y-0 left-0 z-30 w-72 bg-gradient-main backdrop-blur-xl"
-          : "hidden",
-        // desktop: normal static column
-        "md:block md:relative md:z-auto md:bg-transparent md:backdrop-blur-0",
-      ].join(" ")}
-    >
+    className={[
+      // base spacing/width
+      "w-full md:w-72 p-4 md:p-0",
+      // mobile: off-canvas drawer
+      sidebarOpen ? "fixed inset-y-0 left-0 z-30 w-72 bg-gradient-main backdrop-blur-xl" : "hidden",
+      // desktop: sticky column (stays visually pinned as you scroll)
+      "md:block md:relative md:z-auto md:bg-transparent md:backdrop-blur-0 md:sticky md:top-6 md:self-start",
+    ].join(" ")}
+  >
       <div className="md:hidden flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-text">Therapy Bro</h2>
         <button
@@ -422,7 +420,7 @@ export default function ChatPage() {
             className="w-full flex items-center gap-3 px-3 py-3 rounded-xl glass-card hover:bg-card-hover transition-colors text-text-muted hover:text-text"
           >
             <Calendar className="w-4 h-4" />
-            <span className="text-sm font-medium">View Calendar</span>
+            <span className="text-sm font-medium">View Progress</span>
           </button>
         </div>
 
@@ -510,7 +508,7 @@ export default function ChatPage() {
   );
 
   const main = (
-    <div className="min-w-0 space-y-4 md:space-y-6">
+    <div className="min-w-0 h-full flex flex-col space-y-4 md:space-y-6 overflow-hidden">
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between mb-2 glass-card rounded-2xl p-3">
         <button onClick={() => setSidebarOpen(true)} className="p-2 hover:bg-card-hover rounded-xl transition-colors">
@@ -565,22 +563,24 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="space-y-4 md:space-y-5 pb-32 min-h-[calc(100vh-260px)]">
-        {messages.filter((m) => m.role !== "system").length === 0 ? (
-          <div className="flex items-center justify-center h-40 text-center">
-          </div>
-        ) : (
-          messages
-            .filter((m) => m.role !== "system")
-            .map((m, i) => <ChatMessage key={i} role={m.role as "user" | "assistant"} content={m.content} />)
-        )}
-        <div ref={endRef} />
+      {/* Messages (only this scrolls) */}
+      <div className="flex-1 overflow-y-auto space-y-4 md:space-y-5 pb-32">
+        <div className="max-w-3xl mx-auto w-full px-4 md:px-0 space-y-4 md:space-y-5">
+          {messages.filter((m) => m.role !== "system").length === 0 ? (
+            <div className="flex items-center justify-center h-40 text-center">
+            </div>
+          ) : (
+            messages
+              .filter((m) => m.role !== "system")
+              .map((m, i) => <ChatMessage key={i} role={m.role as "user" | "assistant"} content={m.content} />)
+          )}
+          <div ref={endRef} />
+        </div>
       </div>
 
       {/* Fixed Input */}
-      <div className="sticky bottom-0 z-10 border-t border-border bg-bg/95 supports-[backdrop-filter]:bg-bg/60 backdrop-blur">
-        <div className="mx-auto w-full px-4 md:px-6 py-4 md:pr-8">
+      <div className="sticky bottom-0 z-10 supports-[backdrop-filter]:bg-transparent">
+        <div className="mx-auto w-full px-0 md:px-0 py-4">
           <ChatInput
             disabled={pending || remaining <= 0 || !running}
             placeholder={!running ? "Start or continue a chat to send messages" : remaining <= 0 ? "Session ended. Continue or start a new chat." : "Share what's on your mind..."}
@@ -592,7 +592,7 @@ export default function ChatPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark">
+    <div className="h-screen overflow-hidden bg-background-light dark:bg-background-dark">
       {/* Backdrop for mobile drawer */}
       {sidebarOpen && (
         <div
@@ -602,8 +602,8 @@ export default function ChatPage() {
       )}
 
       {/* Page container */}
-      <div className="mx-auto max-w-[1600px] px-6 xl:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-[24rem_1fr] gap-6 xl:gap-8">
+      <div className="mx-auto h-full max-w-[min(100vw-3rem,1800px)] px-4 md:px-6 xl:px-8 py-4 md:py-6">
+        <div className="grid h-full grid-cols-1 md:grid-cols-[24rem_1fr] gap-6 xl:gap-8">
           {left}
           {main}
         </div>
