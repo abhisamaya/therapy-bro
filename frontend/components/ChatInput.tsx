@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
+import { Mic, Send } from 'lucide-react'
 
 export default function ChatInput({
   onSend,
@@ -26,23 +27,16 @@ export default function ChatInput({
         e.preventDefault()
         submit()
       }}
-      className="flex items-end gap-2 rounded-2xl bg-card p-3 shadow"
+      className="flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-2"
     >
-      <textarea
+      <input
         value={v}
         onChange={(e) => setV(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        rows={1}
-        className="min-h-[44px] max-h-40 w-full resize-y rounded-xl bg-transparent p-2 outline-none placeholder:opacity-60"
+        className="flex-1 bg-transparent px-2 py-2 text-slate-900 dark:text-slate-50 placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none"
         onKeyDown={(e) => {
-          // Enter to send; Shift+Enter = newline; ignore while using IME
-          if (
-            e.key === 'Enter' &&
-            !e.shiftKey &&
-            !(e as any).isComposing &&
-            !composingRef.current
-          ) {
+          if (e.key === 'Enter' && !e.shiftKey && !(e as any).isComposing && !composingRef.current) {
             e.preventDefault()
             submit()
           }
@@ -52,11 +46,20 @@ export default function ChatInput({
         aria-label="Message"
       />
       <button
+        type="button"
+        disabled={disabled}
+        className="flex items-center justify-center w-9 h-9 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+        aria-label="Voice input"
+      >
+        <Mic className="w-4 h-4" />
+      </button>
+      <button
         type="submit"
         disabled={disabled || !v.trim()}
-        className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+        className="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors disabled:opacity-50"
+        aria-label="Send message"
       >
-        Send
+        <Send className="w-4 h-4" />
       </button>
     </form>
   )

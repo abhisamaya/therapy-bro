@@ -5,7 +5,7 @@ export type ListenerMeta = {
 
 export const LISTENER_META: Record<string, ListenerMeta> = {
   TherapyBro: {
-    welcome: "Yo! I’m TherapyBro. Want to just vent a bit?",
+    welcome: "Listening that doesn’t interrupt. Insight that doesn’t intrude.",
     description: "General helper."
   }
 }

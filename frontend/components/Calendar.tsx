@@ -18,6 +18,14 @@ type CalendarProps = {
 export default function Calendar({ chats, onDeleteChat, onDateClick }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
+  // Format a Date object as local YYYY-MM-DD (no timezone shifts like toISOString)
+  const formatLocalDate = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -30,8 +38,11 @@ export default function Calendar({ chats, onDeleteChat, onDateClick }: CalendarP
   };
 
   const getChatsForDate = (date: Date) => {
-    const dateStr = date.toISOString().split('T')[0];
-    return chats.filter(chat => chat.updated_at.startsWith(dateStr));
+    const target = formatLocalDate(date);
+    return chats.filter(chat => {
+      const chatLocal = formatLocalDate(new Date(chat.updated_at));
+      return chatLocal === target;
+    });
   };
 
   const hasCompletedSession = (date: Date) => {

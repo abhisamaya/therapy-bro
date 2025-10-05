@@ -535,11 +535,13 @@ export default function ChatPage() {
       <div className="hidden md:block glass-card rounded-2xl p-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-accent rounded-full flex items-center justify-center">
-              <Brain className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 bg-contain bg-center bg-no-repeat rounded-full"
+            style={{ backgroundImage: 'url("/assets/icons/therapybro_logo.jpg")' }}
+            >
+
             </div>
             <div>
-              <div className="font-semibold text-lg text-text">{activeCategory ?? "Assistant"}</div>
+              <div className="font-semibold text-lg text-text">{activeCategory ?? "TherapyBro"}</div>
               <div className="text-sm text-text-muted">{activeWelcome}</div>
             </div>
           </div>
@@ -564,16 +566,9 @@ export default function ChatPage() {
       </div>
 
       {/* Messages */}
-      <div className="space-y-4 md:space-y-5 pb-28 min-h-[50vh]">
+      <div className="space-y-4 md:space-y-5 pb-32 min-h-[calc(100vh-260px)]">
         {messages.filter((m) => m.role !== "system").length === 0 ? (
           <div className="flex items-center justify-center h-40 text-center">
-            <div className="glass-card rounded-2xl p-8 max-w-md">
-              <Brain className="w-12 h-12 mx-auto mb-4 text-text-dim" />
-              <p className="text-text-muted mb-2">No messages yet</p>
-              <p className="text-sm text-text-dim">
-                {activeCategory ? `Start chatting with ${activeCategory}` : "Pick a listener to begin"}
-              </p>
-            </div>
           </div>
         ) : (
           messages
@@ -597,7 +592,7 @@ export default function ChatPage() {
   );
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark">
       {/* Backdrop for mobile drawer */}
       {sidebarOpen && (
         <div
@@ -607,8 +602,8 @@ export default function ChatPage() {
       )}
 
       {/* Page container */}
-      <div className="mx-auto max-w-6xl px-4 py-4 md:py-6">
-        <div className="grid grid-cols-1 md:grid-cols-[22rem_1fr] gap-4 md:gap-6">
+      <div className="mx-auto max-w-[1600px] px-6 xl:px-8 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-[24rem_1fr] gap-6 xl:gap-8">
           {left}
           {main}
         </div>
@@ -631,7 +626,7 @@ export default function ChatPage() {
               <select
                 defaultValue={String(totalSeconds)}
                 onChange={(e) => setTotalSeconds(Number(e.target.value))}
-                className="w-full rounded-md border border-border bg-background text-foreground
+                className="w-full rounded-md border border-border bg-bg text-foreground
              px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring
              disabled:opacity-50 disabled:cursor-not-allowed"
               >

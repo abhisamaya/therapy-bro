@@ -48,10 +48,18 @@ export default function CalendarPage() {
 
   const handleDateClick = (date: Date) => {
     // Find chats for the selected date
-    const dateStr = date.toISOString().split('T')[0];
-    const chatsForDate = convs.filter(conv => 
-      conv.updated_at.startsWith(dateStr)
-    );
+    const formatLocalDate = (d: Date) => {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const target = formatLocalDate(date);
+    const chatsForDate = convs.filter(conv => {
+      const chatLocal = formatLocalDate(new Date(conv.updated_at));
+      return chatLocal === target;
+    });
     
     if (chatsForDate.length > 0) {
       // Navigate to chat page with the most recent chat for that date
