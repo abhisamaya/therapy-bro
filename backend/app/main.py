@@ -16,6 +16,7 @@ from app.schemas import (
 from app.utils import now_ist, hash_password, verify_password, create_access_token
 from app.prompts import system_prompt_for
 from app.openai_client import OpenAIStreamer
+from app.anthropic_client import AnthropicStreamer
 from app.auth import get_current_user
 
 
@@ -193,7 +194,12 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
       )
       wire = [{"role": m.role, "content": m.content} for m in msgs]
 
-    streamer = OpenAIStreamer()
+    provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
+    if provider == "anthropic":
+        streamer = AnthropicStreamer()
+    else:
+        streamer = OpenAIStreamer()
+    print(f"Using LLM provider: {provider}, model: {getattr(streamer, 'model', 'unknown')}")
 
     def ndjson_stream():
         assembled: List[str] = []
@@ -216,4 +222,11 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
                 db2.commit()
             yield (json.dumps({"type":"done"}) + "\n").encode("utf-8")
 
-    return StreamingResponse(ndjson_stream(), media_type="application/x-ndjson")
+    return StreamingResponse(
+        ndjson_stream(),
+        media_type="application/x-ndjson",
+        headers={
+            "X-LLM-Provider": provider,
+            "X-LLM-Model": getattr(streamer, "model", "unknown"),
+        },
+    )
