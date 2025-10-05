@@ -6,3 +6,11 @@ node_modules/
 frontend/.next
 
 TherapyBro_Design_1.0.3/
+frontend/.next
+node_modules/
+frontend/.next/
+
+.next/
+.DS_Store
+.env
+backend/app/chat.db
