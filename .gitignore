@@ -4,13 +4,10 @@ backend/app/.env
 frontend/node_modules/@next/swc-darwin-arm64/next-swc.darwin-arm64.node
 node_modules/
 frontend/.next
-
-TherapyBro_Design_1.0.3/
-frontend/.next
 node_modules/
 frontend/.next/
+TherapyBro_Design_1.0.3/
 
 .next/
 .DS_Store
 .env
-backend/app/chat.db
