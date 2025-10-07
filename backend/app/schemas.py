@@ -49,3 +49,22 @@ class ConversationItem(BaseModel):
 
 class NotesIn(BaseModel):
     notes: str
+
+# AUTH - Google OAuth
+class GoogleAuthIn(BaseModel):
+    id_token: str
+
+class UserOut(BaseModel):
+    login_id: str
+    name: Optional[str]
+    email: Optional[str]
+    avatar_url: Optional[str]
+    auth_provider: str
+
+# Update MeOut to include more fields
+class MeOut(BaseModel):
+    login_id: str
+    name: Optional[str]
+    email: Optional[str]
+    avatar_url: Optional[str]
+    auth_provider: str
