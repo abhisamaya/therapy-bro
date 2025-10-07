@@ -6,7 +6,7 @@ from jose import jwt, JWTError
 from typing import Optional
 import os
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 JWT_SECRET = os.getenv("JWT_SECRET", "dev-secret-change")
 JWT_ALG = os.getenv("JWT_ALG", "HS256")

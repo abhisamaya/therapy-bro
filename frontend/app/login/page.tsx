@@ -25,14 +25,23 @@ export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [error, setError] = useState('')
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleGoogleSignIn = useCallback(async (response: { credential: string }) => {
     setIsGoogleLoading(true)
     setError('')
 
+    console.log('🔵 [LOGIN] Starting Google Sign-In...')
+    console.log('📍 [LOGIN] Current URL:', window.location.href)
+    console.log('🌐 [LOGIN] API Base URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
+
     try {
-      const result = await fetch('/api/auth/google', {
+      const fetchUrl = '/api/auth/google'
+      console.log(`🌐 [LOGIN] Fetching: ${fetchUrl}`)
+      console.log('📦 [LOGIN] Sending credential token length:', response.credential.length)
+
+      const result = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,20 +51,50 @@ export default function LoginPage() {
         }),
       })
 
+      console.log('📡 [LOGIN] Response status:', result.status, result.statusText)
+      console.log('📋 [LOGIN] Response headers:', Object.fromEntries(result.headers.entries()))
+
       const data = await result.json()
+      console.log('📦 [LOGIN] Response data keys:', Object.keys(data))
 
       if (result.ok) {
+        console.log('✅ [LOGIN] Authentication successful!')
+        console.log('💾 [LOGIN] Storing token in localStorage...')
         localStorage.setItem('token', data.access_token)
-        console.log('Redirecting to /chat...') 
-        router.push('/chat')
+        console.log('✅ [LOGIN] Token stored')
+        console.log('🚀 [LOGIN] Redirecting to /chat...')
+
+        // Small delay to ensure localStorage is synced on mobile browsers
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        // Use window.location for more reliable navigation on mobile
+        window.location.href = '/chat'
       } else {
-        setError(data.detail || 'Google sign-in failed')
+        const errorMsg = data.detail || 'Google sign-in failed'
+        console.error('❌ [LOGIN] Authentication failed:', errorMsg)
+        console.error('📦 [LOGIN] Full error response:', data)
+        setError(`Error: ${errorMsg}`)
       }
-    } catch (err) {
-      console.error('Google sign-in error:', err)
-      setError('Network error during Google sign-in')
+    } catch (err: any) {
+      console.error('❌ [LOGIN] CRITICAL ERROR:', err)
+      console.error('❌ [LOGIN] Error name:', err.name)
+      console.error('❌ [LOGIN] Error message:', err.message)
+      console.error('❌ [LOGIN] Error stack:', err.stack)
+      console.error('❌ [LOGIN] Full error object:', err)
+
+      // More detailed error message
+      let errorMsg = 'Network error during Google sign-in'
+      if (err.message) {
+        errorMsg += `: ${err.message}`
+      }
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        errorMsg = `Failed to fetch /api/auth/google - Network error. Check if server is running and accessible.`
+      }
+
+      setError(`Error: ${errorMsg}`)
     } finally {
       setIsGoogleLoading(false)
+      console.log('🏁 [LOGIN] Sign-in attempt completed')
     }
   }, [router])
 
@@ -67,6 +106,9 @@ export default function LoginPage() {
       callback: handleGoogleSignIn,
       auto_select: false,
       cancel_on_tap_outside: true,
+      // Mobile-friendly settings
+      ux_mode: 'popup',  // Use popup mode for better mobile support
+      context: 'signin',
     })
 
     const googleButtonElement = document.getElementById('google-signin-button')
@@ -78,6 +120,8 @@ export default function LoginPage() {
         text: 'signin_with',
         size: 'large',
         width: '100%',
+        // Mobile optimization
+        locale: 'en',
       })
     }
   }, [handleGoogleSignIn])
@@ -101,17 +145,49 @@ export default function LoginPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setIsLoading(true)
+
     try {
+      console.log('Login attempt started...', { mode, loginId })
+
       if (mode === 'login') {
         await login(loginId, password)
       } else {
         await register(loginId, password, 'Demo User')
       }
- 
-      router.push('/chat')
+
+      console.log('Auth API call completed')
+
+      // Ensure token is persisted before navigation (critical for mobile)
+      const token = localStorage.getItem('token')
+      console.log('Token retrieved from localStorage:', token ? 'EXISTS' : 'NULL')
+
+      if (!token) {
+        throw new Error('Token not stored properly after login')
+      }
+
+      // Verify token is valid by testing an API call
+      try {
+        await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include'
+        })
+        console.log('Token verification successful')
+      } catch (verifyErr) {
+        console.error('Token verification failed:', verifyErr)
+        throw new Error('Authentication token invalid')
+      }
+
+      // Small delay to ensure localStorage is synced on mobile browsers
+      await new Promise(resolve => setTimeout(resolve, 150))
+
+      console.log('Redirecting to /chat...')
+      // Use window.location for more reliable navigation on mobile
+      window.location.href = '/chat'
     } catch (err: any) {
       console.error('Auth error:', err)
       setError(err.message || 'Authentication failed')
+      setIsLoading(false)
     }
   }
 
@@ -178,14 +254,16 @@ export default function LoginPage() {
           <div className="flex items-center justify-between pt-2">
             <button
               type="submit"
-              className="rounded-xl bg-accent px-6 py-2 text-white hover:bg-accent/90 transition-colors"
+              disabled={isLoading}
+              className="rounded-xl bg-accent px-6 py-2 text-white hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {mode === 'login' ? 'Login' : 'Register'}
+              {isLoading ? 'Loading...' : mode === 'login' ? 'Login' : 'Register'}
             </button>
 
             <button
               type="button"
-              className="text-sm opacity-75 hover:opacity-100 transition-opacity"
+              disabled={isLoading}
+              className="text-sm opacity-75 hover:opacity-100 transition-opacity disabled:opacity-50"
               onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
             >
               {mode === 'login' ? 'Need an account? Register' : 'Have an account? Login'}

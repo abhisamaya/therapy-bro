@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json, os, uuid
+import json, os, uuid, logging
 from contextlib import asynccontextmanager
 from typing import List
 from fastapi import FastAPI, HTTPException, Depends
@@ -35,6 +35,28 @@ from .schemas import (
 #
 load_dotenv()
 
+# Configure logging to file
+login_logger = logging.getLogger('login_debug')
+login_logger.setLevel(logging.DEBUG)
+
+# Create file handler for login debug logs
+log_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '..', 'login_debug.log')
+file_handler = logging.FileHandler(log_file, mode='a')
+file_handler.setLevel(logging.DEBUG)
+
+# Create formatter
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+file_handler.setFormatter(formatter)
+
+# Add handler to logger
+login_logger.addHandler(file_handler)
+
+# Also log to console
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+console_handler.setFormatter(formatter)
+login_logger.addHandler(console_handler)
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # --- startup ---
@@ -44,9 +66,16 @@ async def lifespan(app: FastAPI):
     # place shutdown/cleanup logic here if/when needed
 
 app = FastAPI(title="Auth Chat API", version="1.0.0", lifespan=lifespan)
+
+# Get allowed origins - when using credentials, cannot use "*"
+allowed_origins = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000").split(",")
+# Add common development origins
+if "http://localhost:3000" not in allowed_origins:
+    allowed_origins.append("http://localhost:3000")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_ORIGIN", "http://localhost:3000"), "*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -55,6 +84,13 @@ app.add_middleware(
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+# Handle OPTIONS requests for CORS preflight
+from fastapi import Response as FastAPIResponse
+
+@app.options("/{full_path:path}")
+async def options_handler(full_path: str):
+    return FastAPIResponse(status_code=200)
 
 # ---------- Auth ----------
 @app.post("/auth/register", response_model=TokenOut)
@@ -220,30 +256,61 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
 # Add this new Google auth endpoint
 @app.post("/auth/google", response_model=TokenOut)
 def google_auth(payload: GoogleAuthIn, response: Response):
+    login_logger.info("="*60)
+    login_logger.info("=== FASTAPI BACKEND: /auth/google ===")
+    login_logger.info("="*60)
+    login_logger.info(f"🔵 Timestamp: {now_ist()}")
+    login_logger.info(f"📦 Received id_token length: {len(payload.id_token)}")
+    login_logger.debug(f"📦 ID Token preview: {payload.id_token[:50]}...")
+
     # Verify Google token
+    login_logger.info("🔍 Verifying Google token with Google API...")
     google_user_info = google_auth_service.verify_google_token(payload.id_token)
+
     if not google_user_info:
+        login_logger.error("❌ Google token verification FAILED")
         raise HTTPException(status_code=400, detail="Invalid Google token")
-    
+
+    login_logger.info("✅ Google token verified successfully!")
+    login_logger.info(f"📋 Google user info received: {google_user_info}")
+
     if not google_user_info['email_verified']:
+        login_logger.error("❌ Email not verified by Google")
         raise HTTPException(status_code=400, detail="Google email not verified")
-    
+
+    login_logger.info("✅ Email is verified")
+
     with get_session() as db:
+        login_logger.info("--- DATABASE OPERATIONS ---")
+
         # Check if user exists by Google ID
+        login_logger.info(f"🔍 Checking if user exists by Google ID: {google_user_info['google_id']}")
         user = db.query(User).filter(User.google_id == google_user_info['google_id']).first()
-        
-        if not user:
+
+        if user:
+            login_logger.info(f"✅ Found existing user by Google ID: {user.login_id}")
+        else:
+            login_logger.info("⚠️ No user found with this Google ID")
+
             # Check if user exists by email (for account linking)
+            login_logger.info(f"🔍 Checking if user exists by email: {google_user_info['email']}")
             user = db.query(User).filter(User.email == google_user_info['email']).first()
-            
+
             if user:
+                login_logger.info(f"✅ Found existing user by email: {user.login_id}")
+                login_logger.info("🔗 Linking Google account to existing user...")
+
                 # Link Google account to existing user
                 user.google_id = google_user_info['google_id']
                 user.auth_provider = "google"
                 user.avatar_url = google_user_info['avatar_url']
                 if not user.name:
                     user.name = google_user_info['name']
+
+                login_logger.info(f"✅ Updated user: login_id={user.login_id}, google_id={user.google_id}, name={user.name}")
             else:
+                login_logger.info("⚠️ No existing user found, creating new user...")
+
                 # Create new user
                 user = User(
                     login_id=google_user_info['email'],  # Use email as login_id
@@ -255,19 +322,53 @@ def google_auth(payload: GoogleAuthIn, response: Response):
                     created_at=now_ist(),
                 )
                 db.add(user)
-            
+                login_logger.info(f"✅ Created new user object: login_id={user.login_id}, google_id={user.google_id}, name={user.name}")
+
+            login_logger.info("💾 Committing changes to database...")
             db.commit()
-        
+            login_logger.info("✅ Database commit successful")
+
+            # Refresh to get the ID
+            db.refresh(user)
+            login_logger.info(f"✅ User ID after commit: {user.id}")
+
+        login_logger.info("--- TOKEN GENERATION ---")
         # Create token using login_id (which is email for Google users)
+        login_logger.info(f"🔑 Creating access token for login_id: {user.login_id}")
         token = create_access_token(user.login_id)
+        login_logger.info(f"✅ Token created (length: {len(token)})")
+        login_logger.debug(f"🔑 Token preview: {token[:30]}...")
+
+        login_logger.info("--- COOKIE SETUP ---")
+        login_logger.info(f"🍪 Setting HTTP-only cookie with max_age={JWT_EXPIRE_MIN * 60} seconds")
+
+        # Determine if we're in production (HTTPS) or development (HTTP)
+        is_production = os.getenv("FRONTEND_ORIGIN", "").startswith("https://")
+
         response.set_cookie(
             key="access_token",
             value=token,
             httponly=True,
-            secure=True,  # Use True in production with HTTPS
+            secure=is_production,  # True for HTTPS (production), False for HTTP (development)
             samesite="lax",
             max_age=JWT_EXPIRE_MIN * 60  # Convert minutes to seconds
         )
+        login_logger.info(f"✅ Cookie set successfully (secure={is_production})")
+
+        login_logger.info("--- FINAL USER STATE IN DB ---")
+        final_user = db.query(User).filter(User.id == user.id).first()
+        login_logger.info(f"User ID: {final_user.id}")
+        login_logger.info(f"Login ID: {final_user.login_id}")
+        login_logger.info(f"Name: {final_user.name}")
+        login_logger.info(f"Email: {final_user.email}")
+        login_logger.info(f"Google ID: {final_user.google_id}")
+        login_logger.info(f"Avatar URL: {final_user.avatar_url}")
+        login_logger.info(f"Auth Provider: {final_user.auth_provider}")
+        login_logger.info(f"Created At: {final_user.created_at}")
+
+        login_logger.info("✅ GOOGLE AUTH COMPLETED SUCCESSFULLY")
+        login_logger.info("="*60)
+
         return TokenOut(access_token=token)
 
 @app.post("/auth/logout")

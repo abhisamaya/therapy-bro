@@ -14,6 +14,7 @@ export default function ChatPage() {
   const [active, setActive] = useState<string | null>(null)
   const [messages, setMessages] = useState<Msg[]>([])
   const [pending, setPending] = useState(false)
+  const [initStatus, setInitStatus] = useState<string>('Initializing...')
   const endRef = useRef<HTMLDivElement|null>(null)
   const router = useRouter()
 
@@ -50,28 +51,130 @@ export default function ChatPage() {
   const activeCategory = getActiveCategory()
   const activeWelcome = activeCategory ? (LISTENER_META[activeCategory]?.welcome ?? LISTENER_META.general.welcome) : LISTENER_META.general.welcome
 
+  // Helper to log to backend
+  const logToBackend = useCallback((message: string) => {
+    fetch('/api/log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `[CHAT PAGE] ${message}` })
+    }).catch(err => console.error('Failed to send log to backend:', err))
+  }, [])
+
   // load conversations and initial session
   useEffect(() => {
     (async () => {
       try {
-        const token = localStorage.getItem('token'); if (!token) { router.push('/login'); return }
-        const list = await listChats(); setConvs(list)
+        setInitStatus('🚀 Chat page mounted')
+        logToBackend('═══════════════════════════════════════════════════════════')
+        logToBackend('🚀 CHAT PAGE INITIALIZATION STARTED')
+        logToBackend('═══════════════════════════════════════════════════════════')
+        console.log('🚀 Chat page initializing...')
+        logToBackend(`🌐 Current URL: ${window.location.href}`)
+        logToBackend(`🌐 Referrer: ${document.referrer}`)
+        console.log('🌐 Current URL:', window.location.href)
+        console.log('🌐 Referrer:', document.referrer)
+
+        // Wait a bit for localStorage to be available (mobile fix)
+        // Increased delay for better cross-page localStorage sync
+        setInitStatus('⏳ Waiting for localStorage...')
+        logToBackend('⏳ Step 1: Waiting 300ms for localStorage to be available')
+        await new Promise(resolve => setTimeout(resolve, 300))
+        logToBackend('✅ Step 1a: Wait completed')
+
+        console.log('🔍 First token check...')
+        logToBackend('🔍 Step 2: First token check - Calling localStorage.getItem("token")')
+        let token = localStorage.getItem('token')
+        console.log('🔑 First token check:', token ? `EXISTS (${token.length} chars)` : 'NULL')
+        logToBackend(`🔑 Step 2a: First token check result: ${token ? `EXISTS (${token.length} chars)` : 'NULL'}`)
+        if (token) {
+          logToBackend(`🔑 Step 2b: Token preview: ${token.substring(0, 30)}...`)
+        }
+
+        // If no token, wait a bit more and retry (race condition fix)
+        if (!token) {
+          console.log('⏳ No token found, waiting 200ms more and retrying...')
+          setInitStatus('⏳ Retrying token check...')
+          logToBackend('⚠️ Step 2c: No token found on first check')
+          logToBackend('⏳ Step 3: Waiting 200ms more and retrying')
+          await new Promise(resolve => setTimeout(resolve, 200))
+          logToBackend('✅ Step 3a: Wait completed')
+          logToBackend('🔍 Step 3b: Second token check - Calling localStorage.getItem("token")')
+          token = localStorage.getItem('token')
+          console.log('🔑 Second token check:', token ? `EXISTS (${token.length} chars)` : 'NULL')
+          logToBackend(`🔑 Step 3c: Second token check result: ${token ? `EXISTS (${token.length} chars)` : 'NULL'}`)
+          if (token) {
+            logToBackend(`🔑 Step 3d: Token preview: ${token.substring(0, 30)}...`)
+          }
+        }
+
+        setInitStatus(`🔑 Token check: ${token ? 'EXISTS' : 'NULL'}`)
+        console.log('🔑 Final token status:', token ? 'Token EXISTS' : 'Token NULL')
+        logToBackend(`🔑 Step 4: Final token status: ${token ? 'EXISTS' : 'NULL'}`)
+
+        if (!token) {
+          console.error('❌ No token found, redirecting to login')
+          setInitStatus('❌ No token - Redirecting to login...')
+          logToBackend('❌ Step 4a: CRITICAL - No token found after all retries')
+          logToBackend('❌ Step 4b: User will be redirected to /login2 in 1 second')
+          logToBackend('❌ Step 4c: This suggests token was not properly saved during login')
+          setTimeout(() => {
+            logToBackend('🔄 Redirecting to /login2 now...')
+            window.location.href = '/login2'
+          }, 1000)
+          return
+        }
+
+        logToBackend('✅ Step 5: Token found successfully! Proceeding with chat initialization')
+
+        setInitStatus('📡 Fetching chat list...')
+        console.log('📡 Fetching chat list...')
+        logToBackend('📡 Step 6: Calling listChats() API')
+        const list = await listChats()
+        console.log(`✅ Chat list fetched: ${list.length} conversations`)
+        logToBackend(`✅ Step 6a: Chat list fetched successfully: ${list.length} conversations`)
+        setInitStatus(`✅ Found ${list.length} conversations`)
+        setConvs(list)
+
         if (list.length) {
+          setInitStatus('🔄 Loading latest conversation...')
           await select(list[0].session_id) // will auto-start timer for "continue"
         } else {
-          // create a default session and start it
-          const s = await startSession('general'); setActive(s.session_id); await load(s.session_id); setConvs(await listChats())
+          setInitStatus('🆕 Creating new session...')
+          console.log('🆕 Creating new session...')
+          const s = await startSession('general')
+          setActive(s.session_id)
+          await load(s.session_id)
+          setConvs(await listChats())
           // start timer automatically for new session
           startTimerWithCurrentDuration()
           // append generic system welcome
           appendSystem(LISTENER_META.general.welcome)
         }
-      } catch {
-        router.push('/login')
+        setInitStatus('✅ Chat ready!')
+        console.log('✅ Chat initialization complete')
+      } catch (err: any) {
+        console.error('❌ Chat initialization error:', err)
+        console.error('Error details:', err.message || JSON.stringify(err, null, 2))
+        logToBackend('═══════════════════════════════════════════════════════════')
+        logToBackend('❌ CHAT PAGE ERROR - INITIALIZATION FAILED')
+        logToBackend('═══════════════════════════════════════════════════════════')
+        logToBackend(`❌ Error name: ${err.name}`)
+        logToBackend(`❌ Error message: ${err.message || 'Unknown error'}`)
+        logToBackend(`❌ Error stack: ${err.stack || 'No stack trace'}`)
+        logToBackend(`❌ Full error object: ${JSON.stringify(err, Object.getOwnPropertyNames(err))}`)
+        logToBackend('❌ Action: Removing token and redirecting to login2')
+        setInitStatus(`❌ Error: ${err.message || 'Unknown error'}`)
+        // Clear potentially corrupted token
+        localStorage.removeItem('token')
+        logToBackend('❌ Token removed from localStorage')
+        logToBackend('❌ Will redirect to /login2 in 2 seconds')
+        setTimeout(() => {
+          logToBackend('🔄 Redirecting to /login2 now...')
+          window.location.href = '/login2'
+        }, 2000)
       }
     })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [logToBackend])
 
   const load = async (id: string) => {
     const h = await getHistory(id)
@@ -261,6 +364,13 @@ export default function ChatPage() {
 
   const main = (
     <div className="flex-1">
+      {/* Show init status if not ready */}
+      {initStatus !== '✅ Chat ready!' && (
+        <div className="mb-3 rounded-2xl bg-blue-50 border border-blue-200 p-3 text-sm">
+          <div className="font-medium text-blue-800">{initStatus}</div>
+        </div>
+      )}
+
       <div className="mb-3 rounded-2xl bg-card p-3 text-sm flex items-center justify-between gap-4">
         <div>
           {/* show the active listener's assistant welcome if a category exists, otherwise generic */}
