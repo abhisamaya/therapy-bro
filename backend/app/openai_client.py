@@ -12,7 +12,7 @@ class OpenAIStreamer:
         if not api_key:
             raise RuntimeError("OPENAI_API_KEY is not set")
         self.client = OpenAI(api_key=api_key)
-        self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        self.model = model or os.getenv("OPENAI_MODEL", "gpt-5-nano")
 
     def stream_chat(self, messages: List[Dict[str, str]], **kwargs) -> Iterable[str]:
         response = self.client.chat.completions.create(

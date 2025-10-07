@@ -148,47 +148,10 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      console.log('Login attempt started...', { mode, loginId })
-
-      if (mode === 'login') {
-        await login(loginId, password)
-      } else {
-        await register(loginId, password, 'Demo User')
-      }
-
-      console.log('Auth API call completed')
-
-      // Ensure token is persisted before navigation (critical for mobile)
-      const token = localStorage.getItem('token')
-      console.log('Token retrieved from localStorage:', token ? 'EXISTS' : 'NULL')
-
-      if (!token) {
-        throw new Error('Token not stored properly after login')
-      }
-
-      // Verify token is valid by testing an API call
-      try {
-        await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/auth/me', {
-          headers: { 'Authorization': `Bearer ${token}` },
-          credentials: 'include'
-        })
-        console.log('Token verification successful')
-      } catch (verifyErr) {
-        console.error('Token verification failed:', verifyErr)
-        throw new Error('Authentication token invalid')
-      }
-
-      // Small delay to ensure localStorage is synced on mobile browsers
-      await new Promise(resolve => setTimeout(resolve, 150))
-
-      console.log('Redirecting to /chat...')
-      // Use window.location for more reliable navigation on mobile
-      window.location.href = '/chat'
-    } catch (err: any) {
-      console.error('Auth error:', err)
-      setError(err.message || 'Authentication failed')
-      setIsLoading(false)
-    }
+      if (mode === 'login') await login(loginId, password)
+      else await register(loginId, password, 'Demo User')
+      router.push('/calendar') // Changed from '/chat' to '/calendar'
+    } catch (e:any) { setError(String(e.message||e)) }
   }
 
   return (
