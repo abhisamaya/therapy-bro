@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { listChats, startSession, getHistory, streamMessage } from "@/lib/api";
+import { listChats, startSession, getHistory, streamMessage, deleteSession } from "@/lib/api";
 import ChatInput from "@/components/ChatInput";
 import ChatMessage from "@/components/ChatMessage";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LISTENER_META } from "@/lib/listeners";
-import { Menu, X, Clock, MessageCircle, Brain } from "lucide-react";
+import { Menu, X, Clock, MessageCircle, Brain, Calendar, Trash2 } from "lucide-react";
 
 type Msg = { role: "user" | "assistant" | "system"; content: string };
 type Conv = {
@@ -22,6 +22,14 @@ export default function ChatPage() {
   const [pending, setPending] = useState(false);
   const endRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Add ref to track if we've already processed search params
+  const processedSearchParams = useRef<string>('');
+  const isProcessing = useRef<boolean>(false);
+
+  // Add flag to prevent duplicate session creation
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // ----- Timer state -----
   const [totalSeconds, setTotalSeconds] = useState<number>(300); // default 5 min
@@ -44,6 +52,12 @@ export default function ChatPage() {
   // collapsible conversations container in full-size mode
   const [convsOpen, setConvsOpen] = useState<boolean>(true);
 
+  // Add state for confirmation modal
+  const [deleteConfirm, setDeleteConfirm] = useState<{show: boolean, sessionId: string | null}>({
+    show: false,
+    sessionId: null
+  });
+
   // -------------------------
   // helpers
   // -------------------------
@@ -64,7 +78,7 @@ export default function ChatPage() {
     ? (LISTENER_META[activeCategory]?.welcome ?? LISTENER_META.TherapyBro.welcome)
     : LISTENER_META.TherapyBro.welcome;
 
-  // load conversations and initial session
+  // Single effect to handle everything
   useEffect(() => {
     (async () => {
       try {
@@ -73,27 +87,89 @@ export default function ChatPage() {
           router.push("/login");
           return;
         }
+
+        // Get current search params
+        const sessionParam = searchParams.get('session');
+        const newSessionParam = searchParams.get('new');
+        const currentSearchParams = `${sessionParam || ''}-${newSessionParam || ''}`;
+        
+        console.log('Effect running with:', { 
+          sessionParam, 
+          newSessionParam, 
+          currentSearchParams, 
+          processedSearchParams: processedSearchParams.current, 
+          convsLength: convs.length,
+          isProcessing: isProcessing.current
+        });
+        
+        // Skip if we're already processing or have already processed these search params
+        if (isProcessing.current || processedSearchParams.current === currentSearchParams) {
+          console.log('Skipping duplicate processing');
+          return;
+        }
+        
+        isProcessing.current = true;
+        processedSearchParams.current = currentSearchParams;
+
         const list = await listChats();
         setConvs(list);
+        
+        // Handle specific session from URL
+        if (sessionParam) {
+          const sessionExists = list.find((c: Conv) => c.session_id === sessionParam);
+          if (sessionExists) {
+            await select(sessionParam);
+            isProcessing.current = false;
+            return;
+          }
+        }
+        
+        // Handle new session request from URL
+        if (newSessionParam) {
+          const today = new Date().toISOString().split('T')[0];
+          const todaySession = list.find((c: Conv) => c.updated_at.startsWith(today));
+          
+          if (todaySession) {
+            // If there's already a session for today, continue it
+            await select(todaySession.session_id);
+            isProcessing.current = false;
+            return;
+          } else {
+            // Create a new session
+            await newCategory(newSessionParam);
+            isProcessing.current = false;
+            return;
+          }
+        }
+        
+        // Default behavior when no specific params
         if (list.length) {
-          await select(list[0].session_id); // will auto-start timer for "continue"
+          const today = new Date().toISOString().split('T')[0];
+          const todaySession = list.find((c: Conv) => c.updated_at.startsWith(today));
+          
+          if (todaySession) {
+            await select(todaySession.session_id);
+          } else {
+            await select(list[0].session_id);
+          }
         } else {
           // create a default session and start it
-          const s = await startSession("general");
+          const s = await startSession("TherapyBro");
           setActive(s.session_id);
           await load(s.session_id);
           setConvs(await listChats());
-          // start timer automatically for new session
           startTimerWithCurrentDuration();
-          // append generic system welcome
-          appendSystem(LISTENER_META.general.welcome);
+          appendSystem(LISTENER_META.TherapyBro.welcome);
         }
+        
+        isProcessing.current = false;
       } catch {
+        isProcessing.current = false;
         router.push("/login");
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
   const load = async (id: string) => {
     const h = await getHistory(id);
@@ -106,7 +182,7 @@ export default function ChatPage() {
       h.messages.filter((m: Msg) => m.role !== "system").length === 0 &&
       cat
     ) {
-      const meta = LISTENER_META[cat] ?? LISTENER_META.general;
+      const meta = LISTENER_META[cat] ?? LISTENER_META.TherapyBro;
       appendSystem(meta.welcome);
     }
   };
@@ -121,12 +197,17 @@ export default function ChatPage() {
 
   // create new category/session and auto-start timer
   const newCategory = async (cat: string) => {
+    console.log('Creating new category:', cat);
     const s = await startSession(cat);
     setActive(s.session_id);
     await load(s.session_id);
-    setConvs(await listChats());
+    
+    // Update conversations list after creating new session
+    const updatedList = await listChats();
+    setConvs(updatedList);
+    
     // append listener-specific system welcome for the newly created chat
-    const meta = LISTENER_META[cat] ?? LISTENER_META.general;
+    const meta = LISTENER_META[cat] ?? LISTENER_META.TherapyBro;
     appendSystem(meta.welcome);
     // auto-start timer for newly created session
     startTimerWithCurrentDuration();
@@ -258,22 +339,68 @@ export default function ChatPage() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const deleteChat = async (sessionId: string) => {
+    console.log('Attempting to delete session:', sessionId);
+    
+    // Show confirmation modal instead of browser confirm
+    setDeleteConfirm({ show: true, sessionId });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm.sessionId) return;
+    
+    const sessionId = deleteConfirm.sessionId;
+    setDeleteConfirm({ show: false, sessionId: null });
+    
+    try {
+      console.log('Calling deleteSession API...');
+      const result = await deleteSession(sessionId);
+      console.log('Delete API result:', result);
+      
+      console.log('Delete successful, refreshing conversations...');
+      
+      // Refresh the conversations list
+      const list = await listChats();
+      console.log('Updated conversations:', list);
+      setConvs(list);
+      
+      // If we deleted the active session, clear it
+      if (active === sessionId) {
+        setActive(null);
+        setMessages([]);
+        setRunning(false);
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+      }
+      
+      console.log('Delete completed successfully');
+    } catch (error) {
+      console.error('Failed to delete chat:', error);
+      console.error('Error details:', error);
+      alert(`Failed to delete chat: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirm({ show: false, sessionId: null });
+  };
+
   // -------------------------
   // UI pieces
   // -------------------------
   const left = (
     <div
-      className={[
-        // base spacing/width
-        "w-full md:w-auto p-4 md:p-0",
-        // mobile: off-canvas drawer
-        sidebarOpen
-          ? "fixed inset-y-0 left-0 z-30 w-72 bg-gradient-main backdrop-blur-xl"
-          : "hidden",
-        // desktop: normal static column
-        "md:block md:relative md:z-auto md:bg-transparent md:backdrop-blur-0",
-      ].join(" ")}
-    >
+    className={[
+      // base spacing/width
+      "w-full md:w-72 p-4 md:p-0",
+      // mobile: off-canvas drawer
+      sidebarOpen ? "fixed inset-y-0 left-0 z-30 w-72 bg-gradient-main backdrop-blur-xl" : "hidden",
+      // desktop: sticky column (stays visually pinned as you scroll)
+      "md:block md:relative md:z-auto md:bg-transparent md:backdrop-blur-0 md:sticky md:top-6 md:self-start",
+    ].join(" ")}
+  >
       <div className="md:hidden flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-text">Therapy Bro</h2>
         <button
@@ -285,6 +412,17 @@ export default function ChatPage() {
       </div>
 
       <div className="space-y-4 md:space-y-6">
+
+        {/* Calendar Button */}
+        <div className="glass-card rounded-2xl p-4">
+          <button
+            onClick={() => router.push('/calendar')}
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl glass-card hover:bg-card-hover transition-colors text-text-muted hover:text-text"
+          >
+            <Calendar className="w-4 h-4" />
+            <span className="text-sm font-medium">View Progress</span>
+          </button>
+        </div>
 
         {/* Conversations */}
         <div className="glass-card rounded-2xl p-4 min-h-0">
@@ -320,27 +458,47 @@ export default function ChatPage() {
               </div>
             ) : (
               convs.map((c) => (
-                <button
+                <div
                   key={c.session_id}
-                  onClick={() => {
-                    select(c.session_id);
-                    setSidebarOpen(false);
-                  }}
-                  className={`block w-full rounded-xl px-3 py-3 text-left text-sm transition-all duration-200 ${
+                  className={`block w-full rounded-xl px-3 py-3 text-left text-sm transition-all duration-200 relative ${
                     active === c.session_id
                       ? "bg-gradient-accent text-white shadow-md"
                       : "glass-card hover:bg-card-hover text-text-muted hover:text-text"
                   }`}
                 >
-                  <div className="font-medium">{c.category}</div>
-                  <div className="text-xs opacity-80 mt-1 truncate">
-                    {new Date(c.updated_at).toLocaleDateString()} at{" "}
-                    {new Date(c.updated_at).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </div>
-                </button>
+                  <button
+                    onClick={() => {
+                      select(c.session_id);
+                      setSidebarOpen(false);
+                    }}
+                    className="w-full text-left"
+                  >
+                    <div className="font-medium">{c.category}</div>
+                    <div className="text-xs opacity-80 mt-1 truncate">
+                      {new Date(c.updated_at).toLocaleDateString()} at{" "}
+                      {new Date(c.updated_at).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                  </button>
+                  
+                  {/* Delete button - show for all chats */}
+                  {(() => {
+                    return (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteChat(c.session_id);
+                        }}
+                        className="absolute top-2 right-2 p-1 rounded-lg hover:bg-red-500/20 transition-colors"
+                        title="Delete chat"
+                      >
+                        <Trash2 className="w-3 h-3 text-red-500" />
+                      </button>
+                    );
+                  })()}
+                </div>
               ))
             )}
           </div>
@@ -350,7 +508,7 @@ export default function ChatPage() {
   );
 
   const main = (
-    <div className="min-w-0 space-y-4 md:space-y-6">
+    <div className="min-w-0 h-full flex flex-col space-y-4 md:space-y-6 overflow-hidden">
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between mb-2 glass-card rounded-2xl p-3">
         <button onClick={() => setSidebarOpen(true)} className="p-2 hover:bg-card-hover rounded-xl transition-colors">
@@ -375,11 +533,13 @@ export default function ChatPage() {
       <div className="hidden md:block glass-card rounded-2xl p-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-accent rounded-full flex items-center justify-center">
-              <Brain className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 bg-contain bg-center bg-no-repeat rounded-full"
+            style={{ backgroundImage: 'url("/assets/icons/therapybro_logo.jpg")' }}
+            >
+
             </div>
             <div>
-              <div className="font-semibold text-lg text-text">{activeCategory ?? "Assistant"}</div>
+              <div className="font-semibold text-lg text-text">{activeCategory ?? "TherapyBro"}</div>
               <div className="text-sm text-text-muted">{activeWelcome}</div>
             </div>
           </div>
@@ -403,29 +563,24 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="space-y-4 md:space-y-5 pb-28 min-h-[50vh]">
-        {messages.filter((m) => m.role !== "system").length === 0 ? (
-          <div className="flex items-center justify-center h-40 text-center">
-            <div className="glass-card rounded-2xl p-8 max-w-md">
-              <Brain className="w-12 h-12 mx-auto mb-4 text-text-dim" />
-              <p className="text-text-muted mb-2">No messages yet</p>
-              <p className="text-sm text-text-dim">
-                {activeCategory ? `Start chatting with ${activeCategory}` : "Pick a listener to begin"}
-              </p>
+      {/* Messages (only this scrolls) */}
+      <div className="flex-1 overflow-y-auto space-y-4 md:space-y-5 pb-32">
+        <div className="max-w-3xl mx-auto w-full px-4 md:px-0 space-y-4 md:space-y-5">
+          {messages.filter((m) => m.role !== "system").length === 0 ? (
+            <div className="flex items-center justify-center h-40 text-center">
             </div>
-          </div>
-        ) : (
-          messages
-            .filter((m) => m.role !== "system")
-            .map((m, i) => <ChatMessage key={i} role={m.role as "user" | "assistant"} content={m.content} />)
-        )}
-        <div ref={endRef} />
+          ) : (
+            messages
+              .filter((m) => m.role !== "system")
+              .map((m, i) => <ChatMessage key={i} role={m.role as "user" | "assistant"} content={m.content} />)
+          )}
+          <div ref={endRef} />
+        </div>
       </div>
 
       {/* Fixed Input */}
-      <div className="sticky bottom-0 z-10 border-t border-border bg-bg/95 supports-[backdrop-filter]:bg-bg/60 backdrop-blur">
-        <div className="mx-auto w-full px-4 md:px-6 py-4 md:pr-8">
+      <div className="sticky bottom-0 z-10 supports-[backdrop-filter]:bg-transparent">
+        <div className="mx-auto w-full px-0 md:px-0 py-4">
           <ChatInput
             disabled={pending || remaining <= 0 || !running}
             placeholder={!running ? "Start or continue a chat to send messages" : remaining <= 0 ? "Session ended. Continue or start a new chat." : "Share what's on your mind..."}
@@ -437,7 +592,7 @@ export default function ChatPage() {
   );
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className="h-screen overflow-hidden bg-background-light dark:bg-background-dark">
       {/* Backdrop for mobile drawer */}
       {sidebarOpen && (
         <div
@@ -447,8 +602,8 @@ export default function ChatPage() {
       )}
 
       {/* Page container */}
-      <div className="mx-auto max-w-6xl px-4 py-4 md:py-6">
-        <div className="grid grid-cols-1 md:grid-cols-[22rem_1fr] gap-4 md:gap-6">
+      <div className="mx-auto h-full max-w-[min(100vw-3rem,1800px)] px-4 md:px-6 xl:px-8 py-4 md:py-6">
+        <div className="grid h-full grid-cols-1 md:grid-cols-[24rem_1fr] gap-6 xl:gap-8">
           {left}
           {main}
         </div>
@@ -471,7 +626,9 @@ export default function ChatPage() {
               <select
                 defaultValue={String(totalSeconds)}
                 onChange={(e) => setTotalSeconds(Number(e.target.value))}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-border bg-bg text-foreground
+             px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring
+             disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value={300}>5 minutes</option>
                 <option value={600}>10 minutes</option>
@@ -484,27 +641,44 @@ export default function ChatPage() {
                 onClick={() => continueSameChat(totalSeconds)}
                 className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700"
               >
-                Continue same chat
+                Continue chat
               </button>
-
-              <div className="grid grid-cols-2 gap-2">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    title={LISTENER_META[cat]?.description}
-                    onClick={() => startNewChatFromModal(cat, totalSeconds)}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-gray-600 text-sm hover:bg-gray-100"
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
 
               <button
                 onClick={() => setExpiredModalOpen(false)}
                 className="rounded-lg border border-gray-300 px-4 py-2 text-gray-600 text-sm hover:bg-gray-100"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm.show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* backdrop */}
+          <div className="absolute inset-0 bg-black/50" />
+
+          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Delete Chat</h3>
+            <p className="text-sm text-gray-700">
+              Are you sure you want to delete this chat? This action cannot be undone.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={confirmDelete}
+                className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700"
+              >
+                Delete
+              </button>
+              <button
+                onClick={cancelDelete}
+                className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-gray-600 text-sm hover:bg-gray-100"
+              >
+                Cancel
               </button>
             </div>
           </div>
