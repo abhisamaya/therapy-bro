@@ -20,8 +20,8 @@ declare global {
 }
 
 export default function LoginPage() {
-  const [loginId, setLoginId] = useState('demo')
-  const [password, setPassword] = useState('demo123')
+  const [loginId, setLoginId] = useState('')
+  const [password, setPassword] = useState('')
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [error, setError] = useState('')
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -62,13 +62,13 @@ export default function LoginPage() {
         console.log('💾 [LOGIN] Storing token in localStorage...')
         localStorage.setItem('token', data.access_token)
         console.log('✅ [LOGIN] Token stored')
-        console.log('🚀 [LOGIN] Redirecting to /chat...')
+        console.log('🚀 [LOGIN] Redirecting to /dashboard...')
 
         // Small delay to ensure localStorage is synced on mobile browsers
         await new Promise(resolve => setTimeout(resolve, 100))
 
         // Use window.location for more reliable navigation on mobile
-        window.location.href = '/chat'
+        window.location.href = '/dashboard'
       } else {
         const errorMsg = data.detail || 'Google sign-in failed'
         console.error('❌ [LOGIN] Authentication failed:', errorMsg)
@@ -150,18 +150,24 @@ export default function LoginPage() {
     try {
       if (mode === 'login') await login(loginId, password)
       else await register(loginId, password, 'Demo User')
-      router.push('/calendar') // Changed from '/chat' to '/calendar'
-    } catch (e:any) { setError(String(e.message||e)) }
+      router.push('/dashboard')
+    } catch (e:any) { setError(String(e.message||e)) } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <div className="mx-auto mt-24 max-w-md">
-      <h1 className="mb-6 text-2xl font-semibold">Welcome</h1>
+    <div className="min-h-screen bg-gradient-main flex items-center justify-center px-4">
+      <div className="mx-auto w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-text mb-2">Welcome to Therapy Bro</h1>
+          <p className="text-text-muted">Sign in to start your therapeutic journey</p>
+        </div>
 
-      <div className="space-y-4 rounded-2xl bg-card p-6 shadow">
+        <div className="space-y-4 rounded-2xl bg-white p-8 shadow-glass">
         {/* Google Sign-In Section */}
         <div className="space-y-3">
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-sm text-text-muted font-medium">
             Sign {mode === 'login' ? 'in' : 'up'} with Google
           </div>
 
@@ -181,58 +187,80 @@ export default function LoginPage() {
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-card text-gray-500">Or continue with email</span>
+            <span className="px-2 bg-white text-text-muted">Or continue with email</span>
           </div>
         </div>
 
         {/* Email/Password Form */}
-        <form onSubmit={submit} className="space-y-3">
-          <input
-            name="loginId"
-            className="w-full rounded-xl bg-black/20 p-3"
-            value={loginId}
-            onChange={e => setLoginId(e.target.value)}
-            placeholder="Email or Login ID"
-            required
-          />
-          <input
-            name="password"
-            className="w-full rounded-xl bg-black/20 p-3"
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-          />
+        <form onSubmit={submit} className="space-y-4">
+          <div>
+            <label htmlFor="loginId" className="block text-sm font-medium text-text mb-2">
+              Email or Login ID
+            </label>
+            <input
+              id="loginId"
+              name="loginId"
+              className="w-full rounded-xl bg-bg-muted border border-border p-3 text-text focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+              value={loginId}
+              onChange={e => setLoginId(e.target.value)}
+              placeholder="Enter your email or login ID"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-text mb-2">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              className="w-full rounded-xl bg-bg-muted border border-border p-3 text-text focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
 
           {error && (
-            <div className="text-sm text-red-400 bg-red-50 p-2 rounded-lg">
+            <div className="text-sm text-danger bg-red-50 p-3 rounded-xl border border-red-200">
               {error}
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-2">
+          <div className="space-y-4 pt-2">
             <button
               type="submit"
               disabled={isLoading}
-              className="rounded-xl bg-accent px-6 py-2 text-white hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-xl bg-gradient-accent px-6 py-3 text-white font-medium hover:opacity-90 transition-all shadow-glow disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Loading...' : mode === 'login' ? 'Login' : 'Register'}
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Loading...
+                </span>
+              ) : (
+                mode === 'login' ? 'Sign In' : 'Create Account'
+              )}
             </button>
 
-            <button
-              type="button"
-              disabled={isLoading}
-              className="text-sm opacity-75 hover:opacity-100 transition-opacity disabled:opacity-50"
-              onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-            >
-              {mode === 'login' ? 'Need an account? Register' : 'Have an account? Login'}
-            </button>
+            <div className="text-center">
+              <button
+                type="button"
+                disabled={isLoading}
+                className="text-sm text-accent hover:text-accent-light transition-colors disabled:opacity-50 font-medium"
+                onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+              >
+                {mode === 'login' ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
+              </button>
+            </div>
           </div>
         </form>
+        </div>
       </div>
     </div>
   )

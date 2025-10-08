@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { listChats, startSession, getHistory, streamMessage, deleteSession } from "@/lib/api";
 import ChatInput from "@/components/ChatInput";
 import ChatMessage from "@/components/ChatMessage";
+import TopNav from "@/components/TopNav";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LISTENER_META } from "@/lib/listeners";
 import { Menu, X, Clock, MessageCircle, Brain, Calendar, Trash2 } from "lucide-react";
@@ -509,7 +510,7 @@ export default function ChatPage() {
 
   const main = (
     <div className="min-w-0 h-full flex flex-col space-y-4 md:space-y-6 overflow-hidden">
-      {/* Mobile Header */}
+      {/* Mobile Session Header */}
       <div className="md:hidden flex items-center justify-between mb-2 glass-card rounded-2xl p-3">
         <button onClick={() => setSidebarOpen(true)} className="p-2 hover:bg-card-hover rounded-xl transition-colors">
           <Menu className="w-5 h-5" />
@@ -529,7 +530,7 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Desktop Header */}
+      {/* Desktop Session Header */}
       <div className="hidden md:block glass-card rounded-2xl p-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -592,7 +593,9 @@ export default function ChatPage() {
   );
 
   return (
-    <div className="h-screen overflow-hidden bg-background-light dark:bg-background-dark">
+    <div className="h-screen overflow-hidden bg-bg flex flex-col">
+      <TopNav />
+
       {/* Backdrop for mobile drawer */}
       {sidebarOpen && (
         <div
@@ -602,7 +605,7 @@ export default function ChatPage() {
       )}
 
       {/* Page container */}
-      <div className="mx-auto h-full max-w-[min(100vw-3rem,1800px)] px-4 md:px-6 xl:px-8 py-4 md:py-6">
+      <div className="mx-auto h-full max-w-7xl w-full px-4 md:px-6 xl:px-8 py-4 md:py-6 flex-1 overflow-hidden">
         <div className="grid h-full grid-cols-1 md:grid-cols-[24rem_1fr] gap-6 xl:gap-8">
           {left}
           {main}
