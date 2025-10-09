@@ -65,12 +65,17 @@ export default function TopNav() {
                 <span className="font-medium">Chat</span>
               </Link>
 
-              <button
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-text-muted hover:bg-accent/10 hover:text-accent transition-all"
+              <Link
+                href="/calendar"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                  isActive('/calendar')
+                    ? 'bg-gradient-accent text-white shadow-glow'
+                    : 'text-text-muted hover:bg-accent/10 hover:text-accent'
+                }`}
               >
                 <Calendar size={20} />
                 <span className="font-medium">Sessions</span>
-              </button>
+              </Link>
 
               <button
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-text-muted hover:bg-accent/10 hover:text-accent transition-all"
@@ -79,12 +84,17 @@ export default function TopNav() {
                 <span className="font-medium">Resources</span>
               </button>
 
-              <button
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-text-muted hover:bg-accent/10 hover:text-accent transition-all"
+              <Link
+                href="/account"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                  isActive('/account')
+                    ? 'bg-gradient-accent text-white shadow-glow'
+                    : 'text-text-muted hover:bg-accent/10 hover:text-accent'
+                }`}
               >
                 <User size={20} />
                 <span className="font-medium">Account</span>
-              </button>
+              </Link>
             </div>
 
             {/* Right side - Logout button */}
@@ -138,12 +148,18 @@ export default function TopNav() {
                 <span className="font-medium">Chat</span>
               </Link>
 
-              <button
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-text-muted hover:bg-accent/10 hover:text-accent transition-all"
+              <Link
+                href="/calendar"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive('/calendar')
+                    ? 'bg-gradient-accent text-white shadow-glow'
+                    : 'text-text-muted hover:bg-accent/10 hover:text-accent'
+                }`}
               >
                 <Calendar size={20} />
                 <span className="font-medium">Sessions</span>
-              </button>
+              </Link>
 
               <button
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-text-muted hover:bg-accent/10 hover:text-accent transition-all"
@@ -152,12 +168,18 @@ export default function TopNav() {
                 <span className="font-medium">Resources</span>
               </button>
 
-              <button
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-text-muted hover:bg-accent/10 hover:text-accent transition-all"
+              <Link
+                href="/account"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  isActive('/account')
+                    ? 'bg-gradient-accent text-white shadow-glow'
+                    : 'text-text-muted hover:bg-accent/10 hover:text-accent'
+                }`}
               >
                 <User size={20} />
                 <span className="font-medium">Account</span>
-              </button>
+              </Link>
 
               <button
                 onClick={handleLogout}

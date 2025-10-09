@@ -1,0 +1,432 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { me, updateProfile, getWallet } from '@/lib/api'
+import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X } from 'lucide-react'
+import TopNav from '@/components/TopNav'
+
+type UserData = {
+  login_id: string
+  name?: string
+  email?: string
+  phone?: string
+  age?: number
+  avatar_url?: string
+  auth_provider: string
+}
+
+type WalletData = {
+  balance: string
+  reserved: string
+  currency: string
+}
+
+type SidebarTab = 'profile' | 'billing'
+
+export default function AccountPage() {
+  const router = useRouter()
+  const [user, setUser] = useState<UserData | null>(null)
+  const [wallet, setWallet] = useState<WalletData | null>(null)
+  const [activeTab, setActiveTab] = useState<SidebarTab>('profile')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+
+  // Form states for profile
+  const [editMode, setEditMode] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    age: ''
+  })
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/login')
+      return
+    }
+
+    Promise.all([
+      me().catch(() => null),
+      getWallet().catch(() => null)
+    ]).then(([userData, walletData]) => {
+      if (userData) {
+        setUser(userData)
+        setFormData({
+          name: userData.name || '',
+          phone: userData.phone || '',
+          age: userData.age?.toString() || ''
+        })
+      }
+      if (walletData) {
+        setWallet(walletData)
+      }
+      setLoading(false)
+    })
+  }, [router])
+
+  const handleSaveProfile = async () => {
+    console.log('===== SAVE PROFILE CLICKED =====')
+    console.log('1. Form Data:', formData)
+    console.log('2. User Data:', user)
+    console.log('3. Token in localStorage:', localStorage.getItem('token') ? 'EXISTS' : 'MISSING')
+
+    setSaving(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      const updateData: any = {}
+      // Only include fields that have values
+      if (formData.name && formData.name.trim() !== '') {
+        updateData.name = formData.name.trim()
+      }
+      if (formData.phone && formData.phone.trim() !== '') {
+        updateData.phone = formData.phone.trim()
+      }
+      if (formData.age && formData.age !== '') {
+        updateData.age = parseInt(formData.age)
+      }
+
+      console.log('4. Data to send:', updateData)
+      console.log('5. Calling updateProfile API...')
+
+      const result = await updateProfile(updateData)
+      console.log('6. Update result:', result)
+
+      console.log('7. Refreshing user data...')
+      // Refresh user data
+      const userData = await me()
+      console.log('8. Fresh user data:', userData)
+
+      setUser(userData)
+      setFormData({
+        name: userData.name || '',
+        phone: userData.phone || '',
+        age: userData.age?.toString() || ''
+      })
+      setSuccess('Profile updated successfully!')
+      setEditMode(false)
+
+      console.log('9. Profile update completed successfully!')
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(''), 3000)
+    } catch (err) {
+      console.error('===== ERROR OCCURRED =====')
+      console.error('Error type:', typeof err)
+      console.error('Error object:', err)
+      console.error('Error message:', err instanceof Error ? err.message : 'Unknown')
+      console.error('Error stack:', err instanceof Error ? err.stack : 'No stack')
+
+      setError(`Failed to update profile: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    } finally {
+      setSaving(false)
+      console.log('===== SAVE PROFILE FINISHED =====')
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setFormData({
+      name: user?.name || '',
+      phone: user?.phone || '',
+      age: user?.age?.toString() || ''
+    })
+    setEditMode(false)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-main flex items-center justify-center">
+        <div className="text-text-muted">Loading...</div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-main flex flex-col">
+      {/* Top Navigation */}
+      <TopNav />
+
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-text mb-2">Account Settings</h1>
+          <p className="text-text-muted">Manage your profile and billing preferences</p>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex gap-4 mb-8">
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+              activeTab === 'profile'
+                ? 'bg-gradient-accent text-white shadow-glow'
+                : 'glass-card text-text-muted hover:bg-card-hover'
+            }`}
+          >
+            <User className="w-5 h-5" />
+            <span>Profile</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('billing')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+              activeTab === 'billing'
+                ? 'bg-gradient-accent text-white shadow-glow'
+                : 'glass-card text-text-muted hover:bg-card-hover'
+            }`}
+          >
+            <Wallet className="w-5 h-5" />
+            <span>Billing</span>
+          </button>
+        </div>
+
+        {/* Content Area */}
+        {activeTab === 'profile' && (
+          <div className="space-y-6">
+            {/* Profile Header Card */}
+            <div className="glass-card rounded-2xl p-8">
+              <div className="flex items-start justify-between mb-8">
+                <div className="flex items-center gap-6">
+                  {user?.avatar_url ? (
+                    <img
+                      src={user.avatar_url}
+                      alt="Profile"
+                      className="w-24 h-24 rounded-full border-4 border-accent shadow-lg"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-gradient-accent flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                      {user?.name?.[0]?.toUpperCase() || user?.login_id?.[0]?.toUpperCase() || 'U'}
+                    </div>
+                  )}
+                  <div>
+                    <h2 className="text-2xl font-bold text-text mb-1">
+                      {user?.name || 'User'}
+                    </h2>
+                    <p className="text-text-muted flex items-center gap-2 mb-2">
+                      <Mail className="w-4 h-4" />
+                      {user?.login_id}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-accent" />
+                      <span className="text-sm text-text-muted">
+                        {user?.auth_provider === 'google' ? 'Google Account' : 'Local Account'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {!editMode && (
+                  <button
+                    onClick={() => setEditMode(true)}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-accent text-white rounded-xl hover:shadow-glow transition-all font-medium"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Edit Profile
+                  </button>
+                )}
+              </div>
+
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-2">
+                  <X className="w-5 h-5 flex-shrink-0" />
+                  {error}
+                </div>
+              )}
+
+              {success && (
+                <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-2">
+                  <Check className="w-5 h-5 flex-shrink-0" />
+                  {success}
+                </div>
+              )}
+
+              {/* Profile Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Name */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
+                    <User className="w-4 h-4" />
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    disabled={!editMode}
+                    className={`w-full px-4 py-3 border border-border rounded-xl transition-all text-text ${
+                      editMode ? 'bg-white focus:ring-2 focus:ring-accent focus:border-accent' : 'bg-bg-muted cursor-not-allowed'
+                    }`}
+                    placeholder="Enter your full name"
+                  />
+                </div>
+
+                {/* Email (Read-only) */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
+                    <Mail className="w-4 h-4" />
+                    Email Address
+                  </label>
+                  <input
+                    type="text"
+                    value={user?.login_id || ''}
+                    disabled
+                    className="w-full px-4 py-3 border border-border rounded-xl bg-bg-muted text-text-muted cursor-not-allowed"
+                  />
+                </div>
+
+                {/* Phone */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
+                    <Phone className="w-4 h-4" />
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    disabled={!editMode}
+                    className={`w-full px-4 py-3 border border-border rounded-xl transition-all text-text ${
+                      editMode ? 'bg-white focus:ring-2 focus:ring-accent focus:border-accent' : 'bg-bg-muted cursor-not-allowed'
+                    }`}
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+
+                {/* Age */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
+                    <CalendarIcon className="w-4 h-4" />
+                    Age
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.age}
+                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                    disabled={!editMode}
+                    className={`w-full px-4 py-3 border border-border rounded-xl transition-all text-text ${
+                      editMode ? 'bg-white focus:ring-2 focus:ring-accent focus:border-accent' : 'bg-bg-muted cursor-not-allowed'
+                    }`}
+                    placeholder="Enter your age"
+                  />
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              {editMode && (
+                <div className="flex gap-4 mt-8 pt-6 border-t border-border">
+                  <button
+                    onClick={handleSaveProfile}
+                    disabled={saving}
+                    className="flex items-center gap-2 px-6 py-3 bg-gradient-accent text-white rounded-xl hover:shadow-glow transition-all font-medium disabled:opacity-50"
+                  >
+                    <Check className="w-5 h-5" />
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    disabled={saving}
+                    className="flex items-center gap-2 px-6 py-3 border-2 border-border text-text-muted rounded-xl hover:bg-card-hover transition-all font-medium"
+                  >
+                    <X className="w-5 h-5" />
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'billing' && (
+          <div className="space-y-6">
+            {/* Wallet Balance Card */}
+            <div className="glass-card rounded-2xl overflow-hidden">
+              <div className="bg-gradient-accent p-8 text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/80 text-sm font-medium mb-2">Wallet Balance</p>
+                    <p className="text-5xl font-bold mb-4">
+                      ₹{wallet?.balance ? parseFloat(wallet.balance).toFixed(2) : '0.00'}
+                    </p>
+                    {wallet && parseFloat(wallet.reserved) > 0 && (
+                      <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg">
+                        <span className="text-xs font-medium">Reserved:</span>
+                        <span className="text-sm font-bold">₹{parseFloat(wallet.reserved).toFixed(2)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <Wallet className="w-20 h-20 text-white/20" />
+                </div>
+              </div>
+
+              <div className="p-8">
+                <button
+                  onClick={() => alert('Payment integration coming soon!')}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-accent text-white rounded-xl hover:shadow-glow transition-all font-medium text-lg"
+                >
+                  <CreditCard className="w-6 h-6" />
+                  Add Money to Wallet
+                </button>
+              </div>
+            </div>
+
+            {/* How it Works Card */}
+            <div className="glass-card rounded-2xl p-8">
+              <h3 className="text-xl font-semibold text-text mb-4">How it works</h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-accent font-bold text-sm">1</span>
+                  </div>
+                  <div>
+                    <p className="text-text font-medium">Free 5 Minutes</p>
+                    <p className="text-text-muted text-sm">Start every chat session with 5 minutes completely free</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-accent font-bold text-sm">2</span>
+                  </div>
+                  <div>
+                    <p className="text-text font-medium">₹10 to Continue</p>
+                    <p className="text-text-muted text-sm">After 5 minutes, ₹10 will be deducted to continue chatting</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-accent font-bold text-sm">3</span>
+                  </div>
+                  <div>
+                    <p className="text-text font-medium">Top Up Anytime</p>
+                    <p className="text-text-muted text-sm">Keep your wallet topped up for uninterrupted therapy sessions</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Low Balance Warning */}
+            {wallet && parseFloat(wallet.balance) < 10 && (
+              <div className="glass-card rounded-2xl p-6 border-2 border-warning/30 bg-warning/5">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center flex-shrink-0">
+                    <Wallet className="w-5 h-5 text-warning" />
+                  </div>
+                  <div>
+                    <h4 className="text-text font-semibold mb-1">Low Balance Alert</h4>
+                    <p className="text-text-muted text-sm">
+                      Your wallet balance is low. Please recharge to continue chatting after the free 5 minutes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

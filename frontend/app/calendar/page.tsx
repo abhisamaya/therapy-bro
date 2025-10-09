@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { listChats, deleteSession } from '@/lib/api'
 import Calendar from '@/components/Calendar'
+import TopNav from '@/components/TopNav'
 import { MessageCircle, Calendar as CalendarIcon, LogOut } from 'lucide-react'
 
 type Conv = {
@@ -120,7 +121,10 @@ export default function CalendarPage() {
 
   return (
     <div className="min-h-screen bg-bg">
-      {/* Header */}
+      {/* Navigation */}
+      <TopNav />
+
+      {/* Header
       <div className="border-b border-border bg-bg/95 backdrop-blur">
         <div className="mx-auto max-w-6xl px-4 py-4">
           <div className="flex items-center justify-between">
@@ -133,7 +137,7 @@ export default function CalendarPage() {
                 <p className="text-sm text-text-muted">View your therapy sessions chronologically</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <button
                 onClick={() => router.push('/chat?new=TherapyBro')}
@@ -142,7 +146,7 @@ export default function CalendarPage() {
                 <MessageCircle className="w-4 h-4" />
                 <span className="text-sm">Start New Chat</span>
               </button>
-              
+
               <button
                 onClick={logout}
                 className="flex items-center gap-2 px-4 py-2 glass-card rounded-xl hover:bg-card-hover transition-colors text-text-muted"
@@ -153,7 +157,7 @@ export default function CalendarPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Calendar */}
       <div className="mx-auto max-w-6xl px-4 py-6">

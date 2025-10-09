@@ -7,11 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from app.db import init_db, get_session
-from app.models import User, ChatSession, Message
+from app.models import User, ChatSession, Message, Wallet, WalletTransaction
 from app.schemas import (
     RegisterIn, LoginIn, TokenOut, MeOut,
     StartSessionIn, StartSessionOut, MessageIn, MessageOut, HistoryOut,
-    ConversationItem, NotesIn,
+    ConversationItem, NotesIn, UpdateProfileIn, WalletOut, CreateWalletOut,
 )
 from app.utils import now_ist, hash_password, verify_password, create_access_token, JWT_EXPIRE_MIN
 from app.prompts import system_prompt_for
@@ -25,15 +25,6 @@ from app.schemas import GoogleAuthIn, UserOut
 from fastapi import Cookie, Response
 from typing import Optional
 
-from .db import init_db, get_session
-from .models import User, ChatSession, Message
-from .schemas import (
-    RegisterIn, LoginIn, TokenOut, MeOut,
-    StartSessionIn, StartSessionOut, MessageIn, MessageOut, HistoryOut,
-    ConversationItem, NotesIn,
-)
-#from utils import now_ist, hash_password, verify_password, create_access_token
-#
 load_dotenv()
 
 # Configure logging to file
@@ -70,9 +61,26 @@ app = FastAPI(title="Auth Chat API", version="1.0.0", lifespan=lifespan)
 
 # Get allowed origins - when using credentials, cannot use "*"
 allowed_origins = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000").split(",")
+
 # Add common development origins
 if "http://localhost:3000" not in allowed_origins:
     allowed_origins.append("http://localhost:3000")
+
+# Add both www and non-www versions for production
+production_origins_to_add = []
+for origin in list(allowed_origins):
+    if origin.startswith("https://"):
+        # If it has www, add non-www version
+        if "://www." in origin:
+            production_origins_to_add.append(origin.replace("://www.", "://"))
+        # If it doesn't have www, add www version
+        else:
+            domain = origin.replace("https://", "")
+            production_origins_to_add.append(f"https://www.{domain}")
+
+allowed_origins.extend(production_origins_to_add)
+
+print(f"Allowed CORS origins: {allowed_origins}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -80,6 +88,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 @app.get("/health")
@@ -133,8 +142,55 @@ def me(user: User = Depends(get_current_user)):
         name=user.name,
         email=user.email,
         avatar_url=user.avatar_url,
-        auth_provider=user.auth_provider
+        auth_provider=user.auth_provider,
+        phone=user.phone,
+        age=user.age
     )
+
+@app.put("/auth/profile")
+def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_user)):
+    print(f"Profile update request for user: {user.login_id}")
+    print(f"Payload: name={payload.name}, phone={payload.phone}, age={payload.age}")
+
+    try:
+        with get_session() as db:
+            db_user = db.query(User).filter(User.id == user.id).first()
+            if not db_user:
+                print(f"User not found with ID: {user.id}")
+                raise HTTPException(status_code=404, detail="User not found")
+
+            print(f"Found user: {db_user.login_id}")
+
+            # Update only provided fields (email/login_id cannot be changed)
+            if payload.name is not None and payload.name != "":
+                print(f"Updating name: {db_user.name} -> {payload.name}")
+                db_user.name = payload.name
+            if payload.phone is not None and payload.phone != "":
+                print(f"Updating phone: {db_user.phone} -> {payload.phone}")
+                db_user.phone = payload.phone
+            if payload.age is not None:
+                print(f"Updating age: {db_user.age} -> {payload.age}")
+                db_user.age = payload.age
+
+            db.commit()
+            db.refresh(db_user)
+
+            print(f"Profile updated successfully for user: {db_user.login_id}")
+
+            return {
+                "ok": True,
+                "user": {
+                    "login_id": db_user.login_id,
+                    "name": db_user.name,
+                    "phone": db_user.phone,
+                    "age": db_user.age
+                }
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error updating profile: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update profile: {str(e)}")
 
 # ---------- Chat ----------
 @app.get("/api/chats", response_model=List[ConversationItem])
@@ -397,3 +453,62 @@ def google_auth(payload: GoogleAuthIn, response: Response):
 def logout(response: Response):
     response.delete_cookie("access_token")
     return {"message": "Logged out successfully"}
+
+# ---------- Wallet ----------
+from decimal import Decimal
+
+@app.get("/api/wallet", response_model=WalletOut)
+def get_wallet(user: User = Depends(get_current_user)):
+    """Get or create user's wallet and return balance"""
+    with get_session() as db:
+        wallet = db.query(Wallet).filter(Wallet.user_id == user.id).first()
+
+        # Create wallet if it doesn't exist
+        if not wallet:
+            wallet = Wallet(
+                user_id=user.id,
+                balance=Decimal("0.0000"),
+                reserved=Decimal("0.0000"),
+                currency="INR",
+                updated_at=now_ist()
+            )
+            db.add(wallet)
+            db.commit()
+            db.refresh(wallet)
+
+        return WalletOut(
+            balance=str(wallet.balance),
+            reserved=str(wallet.reserved),
+            currency=wallet.currency
+        )
+
+@app.post("/api/wallet/create", response_model=CreateWalletOut)
+def create_wallet(user: User = Depends(get_current_user)):
+    """Explicitly create a wallet for the user"""
+    with get_session() as db:
+        # Check if wallet already exists
+        existing = db.query(Wallet).filter(Wallet.user_id == user.id).first()
+        if existing:
+            return CreateWalletOut(
+                wallet_id=existing.id,
+                balance=str(existing.balance),
+                currency=existing.currency
+            )
+
+        # Create new wallet
+        wallet = Wallet(
+            user_id=user.id,
+            balance=Decimal("0.0000"),
+            reserved=Decimal("0.0000"),
+            currency="INR",
+            updated_at=now_ist()
+        )
+        db.add(wallet)
+        db.commit()
+        db.refresh(wallet)
+
+        return CreateWalletOut(
+            wallet_id=wallet.id,
+            balance=str(wallet.balance),
+            currency=wallet.currency
+        )

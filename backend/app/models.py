@@ -1,37 +1,125 @@
 from __future__ import annotations
-from sqlmodel import SQLModel, Field
-from typing import Optional
+from typing import Optional, Dict, Any
 from datetime import datetime
+from decimal import Decimal
 
+from sqlmodel import SQLModel, Field, Column
+from sqlalchemy import Numeric, String, JSON
+
+# ---------- existing models (small updates) ----------
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     login_id: str = Field(index=True, unique=True)
-    password_hash: Optional[str] = Field(default=None) 
+    password_hash: Optional[str] = Field(default=None)
     name: Optional[str] = None
     phone: Optional[str] = None
     age: Optional[int] = None
-    created_at: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    #  Google OAuth fields
+    # Google OAuth
     google_id: Optional[str] = Field(default=None, index=True)
     email: Optional[str] = Field(default=None, index=True)
     avatar_url: Optional[str] = None
-    auth_provider: str = Field(default="local")  # "local" or "google"
+    auth_provider: str = Field(default="local")
+
 
 class ChatSession(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     session_id: str = Field(index=True, unique=True)
     user_id: int = Field(index=True)
+    peer_id: Optional[int] = Field(default=None)  # who they chat with
     category: str
     notes: Optional[str] = None
-    complete_chat: str  # JSON string of messages
-    created_at: datetime
-    updated_at: datetime
+    complete_chat: str  # JSON string of messages (or use JSON column later)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    status: str = Field(default="active")  # active | paused_waiting_payment | ended
+    minutes_used: Decimal = Field(
+        sa_column=Column(Numeric(10, 4), default=0), default=Decimal("0")
+    )
+
 
 class Message(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     session_id: str = Field(index=True)
     role: str  # system | user | assistant
     content: str
-    created_at: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+# ---------- new wallet/payment models ----------
+
+class Wallet(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(index=True, unique=True)
+    # Use high precision numeric
+    balance: Decimal = Field(
+        sa_column=Column(Numeric(18, 4), nullable=False, default=0),
+        default=Decimal("0.0000"),
+    )
+    reserved: Decimal = Field(
+        sa_column=Column(Numeric(18, 4), nullable=False, default=0),
+        default=Decimal("0.0000"),
+    )
+    currency: str = Field(
+        default="INR", sa_column=Column(String(length=3), nullable=False)
+    )
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class WalletTransaction(SQLModel, table=True):
+    """
+    Immutable ledger of every change. amount: positive for credits, negative for debits.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    wallet_id: int = Field(index=True)
+    user_id: int = Field(index=True)
+    type: str = Field(
+        default="unknown"
+    )  # 'topup', 'reserved', 'release', 'charge', 'refund', 'fee', 'adjustment'
+    amount: Decimal = Field(sa_column=Column(Numeric(18, 4), nullable=False))
+    balance_after: Decimal = Field(sa_column=Column(Numeric(18, 4), nullable=False))
+    reference_id: Optional[str] = None  # session_id / payment_id / provider id
+    meta: Optional[Dict[str, Any]] = Field(
+        sa_column=Column(JSON), default=None
+    )
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class SessionCharge(SQLModel, table=True):
+    """
+    Track reserved/charged blocks for a chat session.
+    reserved_amount = amount reserved at continue_request time
+    minutes_requested = minutes the user requested to continue for (could be fractional)
+    minutes_consumed = minutes actually used so far
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    session_id: str = Field(index=True)
+    wallet_id: int = Field(index=True)
+    reserved_amount: Decimal = Field(sa_column=Column(Numeric(18, 4), nullable=False))
+    charged_amount: Decimal = Field(sa_column=Column(Numeric(18, 4), nullable=False), default=Decimal("0.0000"))
+    unit_price: Decimal = Field(sa_column=Column(Numeric(18, 8), nullable=False))  # price per minute
+    minutes_requested: Decimal = Field(sa_column=Column(Numeric(10, 4), nullable=False))
+    minutes_consumed: Decimal = Field(sa_column=Column(Numeric(10, 4), nullable=False), default=Decimal("0.0000"))
+    request_id: Optional[str] = Field(default=None)  # idempotency key from client
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class Payment(SQLModel, table=True):
+    """
+    External provider payment intent/record. Updated by webhook handlers.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(index=True)
+    wallet_id: Optional[int] = Field(default=None, index=True)
+    provider: Optional[str] = None  # e.g., 'razorpay', 'stripe'
+    provider_payment_id: Optional[str] = Field(default=None, index=True)
+    amount: Decimal = Field(sa_column=Column(Numeric(18, 4), nullable=False))
+    currency: str = Field(sa_column=Column(String(length=3), nullable=False), default="INR")
+    status: str = Field(default="created")  # created | pending | succeeded | failed | refunded
+    idempotency_key: Optional[str] = None
+    meta: Optional[Dict[str, Any]] = Field(sa_column=Column(JSON), default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)

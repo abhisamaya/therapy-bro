@@ -153,3 +153,56 @@ export async function googleAuth(idToken: string) {
 
   return data
 }
+
+// Profile update
+export async function updateProfile(data: { name?: string; phone?: string; age?: number }) {
+  console.log('===== API: updateProfile =====')
+  console.log('API Base URL:', API)
+  console.log('Full URL:', `${API}/auth/profile`)
+  console.log('Data to send:', data)
+
+  const headers = { 'Content-Type': 'application/json', ...authHeaders() }
+  console.log('Headers:', headers)
+  console.log('Body:', JSON.stringify(data))
+
+  try {
+    console.log('Sending PUT request...')
+    const res = await fetch(`${API}/auth/profile`, {
+      method: 'PUT',
+      headers: headers,
+      credentials: 'include',
+      body: JSON.stringify(data)
+    })
+
+    console.log('Response received!')
+    console.log('Response status:', res.status)
+    console.log('Response ok:', res.ok)
+    console.log('Response headers:', Object.fromEntries(res.headers.entries()))
+
+    if (!res.ok) {
+      const errorText = await res.text()
+      console.error('Error response text:', errorText)
+      throw new Error(`Profile update failed (${res.status}): ${errorText}`)
+    }
+
+    const jsonData = await res.json()
+    console.log('Response data:', jsonData)
+    return jsonData
+  } catch (err) {
+    console.error('===== API ERROR =====')
+    console.error('Error caught in updateProfile:', err)
+    console.error('Error name:', (err as any)?.name)
+    console.error('Error message:', (err as any)?.message)
+    throw err
+  }
+}
+
+// Wallet
+export async function getWallet() {
+  const res = await fetch(`${API}/api/wallet`, {
+    headers: { ...authHeaders() },
+    credentials: 'include'
+  })
+  if (!res.ok) throw new Error('Failed to fetch wallet')
+  return res.json()
+}

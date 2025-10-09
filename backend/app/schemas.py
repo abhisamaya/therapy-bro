@@ -68,3 +68,22 @@ class MeOut(BaseModel):
     email: Optional[str]
     avatar_url: Optional[str]
     auth_provider: str
+    phone: Optional[str] = None
+    age: Optional[int] = None
+
+# Profile Update
+class UpdateProfileIn(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    age: Optional[int] = None
+
+# Wallet
+class WalletOut(BaseModel):
+    balance: str  # String representation of Decimal
+    reserved: str
+    currency: str
+
+class CreateWalletOut(BaseModel):
+    wallet_id: int
+    balance: str
+    currency: str
