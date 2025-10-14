@@ -4,10 +4,13 @@ import Link from 'next/link'
 import TopNav from '@/components/TopNav'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getWallet } from '@/lib/api'
 
 export default function DashboardPage() {
   const router = useRouter()
   const [userName, setUserName] = useState<string>('Bro')
+  const [walletBalance, setWalletBalance] = useState<string>('0')
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -19,6 +22,21 @@ export default function DashboardPage() {
     // Get user name from localStorage
     const storedName = localStorage.getItem('userName') || 'Bro'
     setUserName(storedName)
+
+    // Fetch wallet balance
+    const fetchWalletBalance = async () => {
+      try {
+        const wallet = await getWallet()
+        setWalletBalance(wallet.balance)
+      } catch (error) {
+        console.error('Failed to fetch wallet balance:', error)
+        setWalletBalance('0')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchWalletBalance()
   }, [router])
 
   return (
@@ -65,7 +83,7 @@ export default function DashboardPage() {
               <div className="flex items-end gap-3 justify-between">
                 <p className="text-white/80 text-base">Chat with a trained peer who gets it</p>
                 <Link
-                  href="/chat"
+                  href="/peers"
                   className="flex min-w-[84px] max-w-[480px] items-center justify-center overflow-hidden rounded-xl h-10 px-5 bg-white text-teal-500 text-sm font-medium leading-normal hover:bg-gray-50 transition-colors"
                 >
                   <span className="truncate">Find a Bro</span>
@@ -80,9 +98,15 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between gap-4 rounded-xl bg-bg-muted p-4">
             <div className="flex flex-col gap-2">
               <p className="text-text-muted text-sm">Wallet Balance</p>
-              <p className="text-text text-2xl font-bold">₹180</p>
+              <p className="text-text text-2xl font-bold">
+                {loading ? '...' : `₹${parseFloat(walletBalance).toFixed(2)}`}
+              </p>
+
             </div>
-            <button className="flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-amber-400 text-white gap-2 text-sm font-medium hover:bg-amber-500 transition-colors">
+            <button
+              onClick={() => alert('Payment integration coming soon!')}
+              className="flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-amber-400 text-white gap-2 text-sm font-medium hover:bg-amber-500 transition-colors"
+            >
               <span className="truncate">Add Money</span>
               <span className="material-symbols-outlined">add_circle</span>
             </button>
