@@ -32,3 +32,26 @@ class Message(BaseModel):
     class Config:
         json_encoders = {ObjectId: str}
         populate_by_name = True
+
+# Listener Authentication Models
+class ListenerRegister(BaseModel):
+    login_id: str
+    password: str
+    name: str
+    phone: Optional[str] = None
+    age: Optional[int] = None
+
+class ListenerLogin(BaseModel):
+    login_id: str
+    password: str
+
+class ListenerOut(BaseModel):
+    login_id: str
+    name: str
+    phone: Optional[str] = None
+    age: Optional[int] = None
+    created_at: datetime
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
