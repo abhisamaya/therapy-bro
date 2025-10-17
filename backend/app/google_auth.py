@@ -1,9 +1,14 @@
 from __future__ import annotations
 import os
+import logging
+import traceback
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from typing import Optional, Dict, Any
 from fastapi import HTTPException
+
+# Create logger for Google auth
+logger = logging.getLogger('google_auth')
 
 class GoogleAuthService:
     def __init__(self):
@@ -13,28 +18,28 @@ class GoogleAuthService:
     
     def verify_google_token(self, token: str) -> Optional[Dict[str, Any]]:
         """Verify Google ID token and return user info"""
-        print("\n--- GOOGLE TOKEN VERIFICATION SERVICE ---")
-        print(f"🔍 Client ID configured: {self.client_id[:20]}...{self.client_id[-10:]}")
-        print(f"📦 Token length: {len(token)}")
-        print(f"📦 Token preview: {token[:50]}...")
+        logger.info("--- GOOGLE TOKEN VERIFICATION SERVICE ---")
+        logger.debug(f"Client ID configured: {self.client_id[:20]}...{self.client_id[-10:]}")
+        logger.debug(f"Token length: {len(token)}")
+        logger.debug(f"Token preview: {token[:50]}...")
 
         try:
-            print("🌐 Calling Google API to verify token...")
+            logger.info("Calling Google API to verify token...")
             # Verify the token with Google
             idinfo = id_token.verify_oauth2_token(
                 token, requests.Request(), self.client_id
             )
 
-            print("✅ Google API returned token info successfully")
-            print(f"📋 Full idinfo from Google: {idinfo}")
+            logger.info("Google API returned token info successfully")
+            logger.debug(f"Full idinfo from Google: {idinfo}")
 
             # Verify the issuer
-            print(f"🔍 Verifying issuer: {idinfo.get('iss')}")
+            logger.debug(f"Verifying issuer: {idinfo.get('iss')}")
             if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-                print(f"❌ Invalid issuer: {idinfo['iss']}")
+                logger.error(f"Invalid issuer: {idinfo['iss']}")
                 raise ValueError('Wrong issuer.')
 
-            print("✅ Issuer verified")
+            logger.info("Issuer verified")
 
             user_info = {
                 'google_id': idinfo['sub'],
@@ -44,27 +49,25 @@ class GoogleAuthService:
                 'email_verified': idinfo.get('email_verified', False)
             }
 
-            print("✅ User info extracted:")
-            print(f"   Google ID: {user_info['google_id']}")
-            print(f"   Email: {user_info['email']}")
-            print(f"   Name: {user_info['name']}")
-            print(f"   Avatar URL: {user_info['avatar_url']}")
-            print(f"   Email Verified: {user_info['email_verified']}")
-            print("--- END GOOGLE TOKEN VERIFICATION ---\n")
+            logger.info("User info extracted:")
+            logger.debug(f"   Google ID: {user_info['google_id']}")
+            logger.debug(f"   Email: {user_info['email']}")
+            logger.debug(f"   Name: {user_info['name']}")
+            logger.debug(f"   Avatar URL: {user_info['avatar_url']}")
+            logger.debug(f"   Email Verified: {user_info['email_verified']}")
+            logger.info("--- END GOOGLE TOKEN VERIFICATION ---")
 
             return user_info
 
         except ValueError as e:
-            print(f"❌ Token verification failed (ValueError): {e}")
-            print(f"   Error type: {type(e).__name__}")
-            import traceback
-            print(f"   Stack trace:\n{traceback.format_exc()}")
+            logger.error(f"Token verification failed (ValueError): {e}")
+            logger.error(f"   Error type: {type(e).__name__}")
+            logger.error(f"   Stack trace:\n{traceback.format_exc()}")
             return None
         except Exception as e:
-            print(f"❌ Unexpected error during token verification: {e}")
-            print(f"   Error type: {type(e).__name__}")
-            import traceback
-            print(f"   Stack trace:\n{traceback.format_exc()}")
+            logger.error(f"Unexpected error during token verification: {e}")
+            logger.error(f"   Error type: {type(e).__name__}")
+            logger.error(f"   Stack trace:\n{traceback.format_exc()}")
             return None
 
 google_auth_service = GoogleAuthService()

@@ -160,3 +160,13 @@
     at async Server.requestListener (/home/gsparsh/therapy-bro/frontend/node_modules/next/dist/server/lib/start-server.js:141:13)
 2025-10-17T16:05:46.204Z - Error detail: Unexpected token 'I', "Internal S"... is not valid JSON
 2025-10-17T16:05:46.204Z - Backend URL: http://127.0.0.1:8000/auth/google
+2025-10-17T19:09:06.574Z - 
+=== NEXT.JS API ROUTE: /api/auth/google ===
+2025-10-17T19:09:06.575Z - 🔵 Timestamp: 2025-10-17T19:09:06.575Z
+2025-10-17T19:09:06.575Z - 📍 FastAPI URL: http://127.0.0.1:8000
+2025-10-17T19:09:06.577Z - 📦 Received body from frontend: has_id_token=true, length=1192
+2025-10-17T19:09:06.577Z - 🌐 Forwarding request to FastAPI backend: http://127.0.0.1:8000/auth/google
+2025-10-17T19:09:06.702Z - 📡 FastAPI Response Status: 400 Bad Request
+2025-10-17T19:09:06.702Z - 📋 FastAPI Response Headers: {"content-length":"33","content-type":"application/json","date":"Fri, 17 Oct 2025 19:09:06 GMT","server":"uvicorn"}
+2025-10-17T19:09:06.703Z - 📦 FastAPI Response Data: has_access_token=false, token_length=undefined
+2025-10-17T19:09:06.704Z - ❌ FastAPI returned error: {"detail":"Invalid Google token"}

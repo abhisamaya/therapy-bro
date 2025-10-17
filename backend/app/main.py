@@ -1,8 +1,8 @@
 from __future__ import annotations
-import json, os, uuid, logging
+import json, os, uuid, logging, time
 from contextlib import asynccontextmanager
 from typing import List
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
@@ -29,35 +29,35 @@ from sqlalchemy import select, delete
 
 load_dotenv()
 
-# Configure logging to file
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+# Create specific loggers
+logger = logging.getLogger(__name__)
 login_logger = logging.getLogger('login_debug')
-login_logger.setLevel(logging.DEBUG)
-
-# Create file handler for login debug logs
-log_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '..', 'login_debug.log')
-file_handler = logging.FileHandler(log_file, mode='a')
-file_handler.setLevel(logging.DEBUG)
-
-# Create formatter
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-file_handler.setFormatter(formatter)
-
-# Add handler to logger
-login_logger.addHandler(file_handler)
-
-# Also log to console
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.DEBUG)
-console_handler.setFormatter(formatter)
-login_logger.addHandler(console_handler)
+google_logger = logging.getLogger('google_auth')
+auth_logger = logging.getLogger('auth')
+db_logger = logging.getLogger('database')
+session_logger = logging.getLogger('session')
+llm_logger = logging.getLogger('llm')
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # --- startup ---
+    logger.info("Starting TherapyBro application")
     init_db()
+    logger.info("Database initialized successfully")
     yield
     # --- shutdown ---
-    # place shutdown/cleanup logic here if/when needed
+    logger.info("Shutting down TherapyBro application")
 
 app = FastAPI(title="Auth Chat API", version="1.0.0", lifespan=lifespan)
 
@@ -82,7 +82,7 @@ for origin in list(allowed_origins):
 
 allowed_origins.extend(production_origins_to_add)
 
-print(f"Allowed CORS origins: {allowed_origins}")
+logger.info(f"Allowed CORS origins: {allowed_origins}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -92,6 +92,26 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+# Add request/response logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    
+    # Log incoming request
+    logger.info(f"Request: {request.method} {request.url}")
+    logger.debug(f"Request headers: {dict(request.headers)}")
+    
+    # Process request
+    response = await call_next(request)
+    
+    # Calculate processing time
+    process_time = time.time() - start_time
+    
+    # Log response
+    logger.info(f"Response: {response.status_code} - {request.method} {request.url} - {process_time:.3f}s")
+    
+    return response
 
 @app.get("/health")
 def health():
@@ -107,10 +127,15 @@ async def options_handler(full_path: str):
 # ---------- Auth ----------
 @app.post("/auth/register", response_model=TokenOut)
 def register(payload: RegisterIn):
+    logger.info(f"Registration attempt for login_id: {payload.login_id}")
+    
     from .db import get_session
     with get_session() as db:
         if db.exec(select(User).where(User.login_id == payload.login_id)).scalar_one_or_none():
+            logger.warning(f"Registration failed - login_id already exists: {payload.login_id}")
             raise HTTPException(status_code=400, detail="login_id already exists")
+        
+        logger.info(f"Creating new user: {payload.login_id}")
         user = User(
             login_id=payload.login_id,
             password_hash=hash_password(payload.password),
@@ -122,8 +147,10 @@ def register(payload: RegisterIn):
         db.add(user)
         db.commit()
         db.refresh(user)
+        logger.info(f"User created successfully: {user.login_id} (ID: {user.id})")
 
         # Create wallet with initial balance of 200 for new user
+        logger.info(f"Creating wallet for new user: {user.login_id}")
         initial_balance = Decimal("200.0000")
         wallet = Wallet(
             user_id=user.id,
@@ -148,17 +175,24 @@ def register(payload: RegisterIn):
         )
         db.add(transaction)
         db.commit()
+        logger.info(f"Wallet created with initial balance of 200 for user: {user.login_id}")
 
     token = create_access_token(payload.login_id)
+    logger.info(f"Registration completed successfully for: {payload.login_id}")
     return TokenOut(access_token=token)
 
 @app.post("/auth/login", response_model=TokenOut)
 def login(payload: LoginIn):
+    logger.info(f"Login attempt for login_id: {payload.login_id}")
+    
     with get_session() as db:
         user = db.exec(select(User).where(User.login_id == payload.login_id)).scalar_one_or_none()
         if not user or not verify_password(payload.password, user.password_hash):
+            logger.warning(f"Login failed - invalid credentials for: {payload.login_id}")
             raise HTTPException(status_code=401, detail="Invalid credentials")
+    
     token = create_access_token(payload.login_id)
+    logger.info(f"Login successful for: {payload.login_id}")
     return TokenOut(access_token=token)
 
 @app.get("/auth/me", response_model=UserOut)
@@ -175,33 +209,33 @@ def me(user: User = Depends(get_current_user)):
 
 @app.put("/auth/profile")
 def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_user)):
-    print(f"Profile update request for user: {user.login_id}")
-    print(f"Payload: name={payload.name}, phone={payload.phone}, age={payload.age}")
+    logger.info(f"Profile update request for user: {user.login_id}")
+    logger.debug(f"Payload: name={payload.name}, phone={payload.phone}, age={payload.age}")
 
     try:
         with get_session() as db:
             db_user = db.exec(select(User).where(User.id == user.id)).scalar_one_or_none()
             if not db_user:
-                print(f"User not found with ID: {user.id}")
+                logger.warning(f"User not found with ID: {user.id}")
                 raise HTTPException(status_code=404, detail="User not found")
 
-            print(f"Found user: {db_user.login_id}")
+            logger.debug(f"Found user: {db_user.login_id}")
 
             # Update only provided fields (email/login_id cannot be changed)
             if payload.name is not None and payload.name != "":
-                print(f"Updating name: {db_user.name} -> {payload.name}")
+                logger.debug(f"Updating name: {db_user.name} -> {payload.name}")
                 db_user.name = payload.name
             if payload.phone is not None and payload.phone != "":
-                print(f"Updating phone: {db_user.phone} -> {payload.phone}")
+                logger.debug(f"Updating phone: {db_user.phone} -> {payload.phone}")
                 db_user.phone = payload.phone
             if payload.age is not None:
-                print(f"Updating age: {db_user.age} -> {payload.age}")
+                logger.debug(f"Updating age: {db_user.age} -> {payload.age}")
                 db_user.age = payload.age
 
             db.commit()
             db.refresh(db_user)
 
-            print(f"Profile updated successfully for user: {db_user.login_id}")
+            logger.info(f"Profile updated successfully for user: {db_user.login_id}")
 
             return {
                 "ok": True,
@@ -215,7 +249,7 @@ def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_us
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Error updating profile: {str(e)}")
+        logger.error(f"Error updating profile: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to update profile: {str(e)}")
 
 # ---------- Chat ----------
@@ -237,31 +271,46 @@ def list_chats(user: User = Depends(get_current_user)):
 
 @app.post("/api/sessions", response_model=StartSessionOut)
 def start_session(payload: StartSessionIn, user: User = Depends(get_current_user)):
+    session_logger.info(f"Starting new session for user: {user.login_id}, category: {payload.category}")
+    
     session_id = uuid.uuid4().hex
     system_prompt = system_prompt_for(payload.category)
-    with get_session() as db:
-        chat = ChatSession(
-            session_id=session_id,
-            user_id=user.id,
-            category=payload.category,
-            notes=None,
-            created_at=now_ist(),
-            updated_at=now_ist(),
-        )
-        db.add(chat)
-        db.add(Message(session_id=session_id, role="system", content=system_prompt, created_at=now_ist()))
-        db.commit()
-    return {"session_id": session_id}
+    
+    try:
+        with get_session() as db:
+            chat = ChatSession(
+                session_id=session_id,
+                user_id=user.id,
+                category=payload.category,
+                notes=None,
+                created_at=now_ist(),
+                updated_at=now_ist(),
+            )
+            db.add(chat)
+            db.add(Message(session_id=session_id, role="system", content=system_prompt, created_at=now_ist()))
+            db.commit()
+        
+        session_logger.info(f"Session created successfully: {session_id} for user: {user.login_id}")
+        return {"session_id": session_id}
+    except Exception as e:
+        session_logger.error(f"Failed to create session for user {user.login_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to create session")
 
 @app.get("/api/sessions/{session_id}", response_model=HistoryOut)
 def get_history(session_id: str, user: User = Depends(get_current_user)):
+    session_logger.info(f"Retrieving history for session: {session_id}, user: {user.login_id}")
+    
     with get_session() as db:
         chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
         if not chat:
+            session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
             raise HTTPException(status_code=404, detail="Session not found")
+        
         msgs = (
             db.exec(select(Message).where(Message.session_id == session_id).order_by(Message.created_at.asc())).scalars().all()
         )
+        session_logger.info(f"Retrieved {len(msgs)} messages for session: {session_id}")
+        
         return {
             "session_id": chat.session_id,
             "category": chat.category,
@@ -297,21 +346,27 @@ def delete_session(session_id: str, user: User = Depends(get_current_user)):
 
 @app.post("/api/sessions/{session_id}/messages")
 def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_current_user)):
+    session_logger.info(f"Processing message for session: {session_id}, user: {user.login_id}")
+    session_logger.debug(f"Message length: {len(payload.content)} characters")
+    
     with get_session() as db:
       chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
       if not chat:
+          session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
           raise HTTPException(status_code=404, detail="Session not found")
+      
       # persist user message
       db.add(Message(session_id=session_id, role="user", content=payload.content, created_at=now_ist()))
-      # update complete_chat JSON snapshot
       chat.updated_at = now_ist()
       db.commit()
+      session_logger.debug(f"User message persisted for session: {session_id}")
 
       # build history for LLM
       msgs = (
           db.exec(select(Message).where(Message.session_id == session_id).order_by(Message.created_at.asc())).scalars().all()
       )
       wire = [{"role": m.role, "content": m.content} for m in msgs]
+      session_logger.debug(f"Built conversation history with {len(wire)} messages")
 
     provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
     if provider == "anthropic":
@@ -320,21 +375,25 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
         streamer = TogetherStreamer()
     else:
         streamer = OpenAIStreamer()
-    print(f"Using LLM provider: {provider}, model: {getattr(streamer, 'model', 'unknown')}")
+    logger.info(f"Using LLM provider: {provider}, model: {getattr(streamer, 'model', 'unknown')}")
 
     def ndjson_stream():
         assembled: List[str] = []
         try:
+            session_logger.info(f"Starting LLM stream for session: {session_id}")
             for tok in streamer.stream_chat(wire):
                 assembled.append(tok)
                 yield (json.dumps({"type":"delta","content": tok}) + "\n").encode("utf-8")
-        except Exception:
+        except Exception as e:
+            session_logger.error(f"LLM streaming error for session {session_id}: {str(e)}")
             yield (json.dumps({"type":"delta","content": "[Error streaming, please retry]"}) + "\n").encode("utf-8")
         finally:
             full = "".join(assembled)
+            session_logger.info(f"LLM response completed for session {session_id}, length: {len(full)} characters")
             with get_session() as db2:
                 db2.add(Message(session_id=session_id, role="assistant", content=full, created_at=now_ist()))
                 db2.commit()
+                session_logger.debug(f"Assistant message persisted for session: {session_id}")
             yield (json.dumps({"type":"done"}) + "\n").encode("utf-8")
 
     return StreamingResponse(ndjson_stream(), media_type="application/x-ndjson")
