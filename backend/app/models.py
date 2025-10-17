@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 
 from sqlmodel import SQLModel, Field, Column
@@ -15,7 +15,7 @@ class User(SQLModel, table=True):
     name: Optional[str] = None
     phone: Optional[str] = None
     age: Optional[int] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Google OAuth
     google_id: Optional[str] = Field(default=None, index=True)
@@ -31,8 +31,8 @@ class ChatSession(SQLModel, table=True):
     peer_id: Optional[int] = Field(default=None)  # who they chat with
     category: str
     notes: Optional[str] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     minutes_used: Decimal = Field(
         sa_column=Column(Numeric(10, 4), default=0), default=Decimal("0")
     )
@@ -43,7 +43,7 @@ class Message(SQLModel, table=True):
     session_id: str = Field(index=True)
     role: str  # system | user | assistant
     content: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # ---------- new wallet/payment models ----------
@@ -63,7 +63,7 @@ class Wallet(SQLModel, table=True):
     currency: str = Field(
         default="INR", sa_column=Column(String(length=3), nullable=False)
     )
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class WalletTransaction(SQLModel, table=True):
@@ -82,7 +82,7 @@ class WalletTransaction(SQLModel, table=True):
     meta: Optional[Dict[str, Any]] = Field(
         sa_column=Column(JSON), default=None
     )
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class SessionCharge(SQLModel, table=True):
@@ -101,8 +101,8 @@ class SessionCharge(SQLModel, table=True):
     minutes_requested: Decimal = Field(sa_column=Column(Numeric(10, 4), nullable=False))
     minutes_consumed: Decimal = Field(sa_column=Column(Numeric(10, 4), nullable=False), default=Decimal("0.0000"))
     request_id: Optional[str] = Field(default=None)  # idempotency key from client
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class Payment(SQLModel, table=True):
@@ -119,5 +119,5 @@ class Payment(SQLModel, table=True):
     status: str = Field(default="created")  # created | pending | succeeded | failed | refunded
     idempotency_key: Optional[str] = None
     meta: Optional[Dict[str, Any]] = Field(sa_column=Column(JSON), default=None)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
