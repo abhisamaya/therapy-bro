@@ -149,33 +149,12 @@ def register(payload: RegisterIn):
         db.refresh(user)
         logger.info(f"User created successfully: {user.login_id} (ID: {user.id})")
 
-        # Create wallet with initial balance of 200 for new user
+        # Create wallet with initial balance using wallet service
         logger.info(f"Creating wallet for new user: {user.login_id}")
-        initial_balance = Decimal("200.0000")
-        wallet = Wallet(
-            user_id=user.id,
-            balance=initial_balance,
-            reserved=Decimal("0.0000"),
-            currency="INR",
-            updated_at=now_ist()
-        )
-        db.add(wallet)
-        db.flush()  # Get wallet.id before creating transaction
-
-        # Create initial transaction record
-        transaction = WalletTransaction(
-            wallet_id=wallet.id,
-            user_id=user.id,
-            type="topup",
-            amount=initial_balance,
-            balance_after=initial_balance,
-            reference_id="initial_signup_bonus",
-            meta={"reason": "New user signup bonus"},
-            created_at=now_ist()
-        )
-        db.add(transaction)
-        db.commit()
-        logger.info(f"Wallet created with initial balance of 200 for user: {user.login_id}")
+        from app.services.wallet_service import WalletService
+        wallet_service = WalletService(db)
+        wallet = wallet_service.create_wallet_with_bonus(user.id)
+        logger.info(f"Wallet created with initial balance of {wallet.balance} for user: {user.login_id}")
 
     token = create_access_token(payload.login_id)
     logger.info(f"Registration completed successfully for: {payload.login_id}")
@@ -478,35 +457,14 @@ def google_auth(payload: GoogleAuthIn, response: Response):
             db.refresh(user)
             login_logger.info(f"✅ User ID after commit: {user.id}")
 
-            # Create wallet with initial balance for new Google users
+            # Create wallet with initial balance for new Google users using wallet service
             existing_wallet = db.exec(select(Wallet).where(Wallet.user_id == user.id)).scalar_one_or_none()
             if not existing_wallet:
                 login_logger.info("💰 Creating wallet with initial balance for new user...")
-                initial_balance = Decimal("200.0000")
-                wallet = Wallet(
-                    user_id=user.id,
-                    balance=initial_balance,
-                    reserved=Decimal("0.0000"),
-                    currency="INR",
-                    updated_at=now_ist()
-                )
-                db.add(wallet)
-                db.flush()  # Get wallet.id before creating transaction
-
-                # Create initial transaction record
-                transaction = WalletTransaction(
-                    wallet_id=wallet.id,
-                    user_id=user.id,
-                    type="topup",
-                    amount=initial_balance,
-                    balance_after=initial_balance,
-                    reference_id="initial_signup_bonus",
-                    meta={"reason": "New user signup bonus"},
-                    created_at=now_ist()
-                )
-                db.add(transaction)
-                db.commit()
-                login_logger.info("✅ Wallet created with initial balance of 200")
+                from app.services.wallet_service import WalletService
+                wallet_service = WalletService(db)
+                wallet = wallet_service.create_wallet_with_bonus(user.id)
+                login_logger.info(f"✅ Wallet created with initial balance of {wallet.balance}")
 
         login_logger.info("--- TOKEN GENERATION ---")
         # Create token using login_id (which is email for Google users)
@@ -559,49 +517,21 @@ from decimal import Decimal
 def get_wallet(user: User = Depends(get_current_user)):
     """Get or create user's wallet and return balance"""
     with get_session() as db:
-        wallet = db.exec(select(Wallet).where(Wallet.user_id == user.id)).scalar_one_or_none()
+        from app.services.wallet_service import WalletService
+        wallet_service = WalletService(db)
+        wallet_out = wallet_service.get_wallet_balance(user.id)
+        return wallet_out
 
-        # Create wallet if it doesn't exist with initial balance of 200
-        if not wallet:
-            initial_balance = Decimal("200.0000")
-            wallet = Wallet(
-                user_id=user.id,
-                balance=initial_balance,
-                reserved=Decimal("0.0000"),
-                currency="INR",
-                updated_at=now_ist()
-            )
-            db.add(wallet)
-
-            # Create initial transaction record
-            db.flush()  # Get wallet.id before creating transaction
-            transaction = WalletTransaction(
-                wallet_id=wallet.id,
-                user_id=user.id,
-                type="topup",
-                amount=initial_balance,
-                balance_after=initial_balance,
-                reference_id="initial_signup_bonus",
-                meta={"reason": "New user signup bonus"},
-                created_at=now_ist()
-            )
-            db.add(transaction)
-
-            db.commit()
-            db.refresh(wallet)
-
-        return WalletOut(
-            balance=str(wallet.balance),
-            reserved=str(wallet.reserved),
-            currency=wallet.currency
-        )
-
+#not used currently
 @app.post("/api/wallet/create", response_model=CreateWalletOut)
 def create_wallet(user: User = Depends(get_current_user)):
     """Explicitly create a wallet for the user"""
     with get_session() as db:
+        from app.services.wallet_service import WalletService
+        wallet_service = WalletService(db)
+        
         # Check if wallet already exists
-        existing = db.exec(select(Wallet).where(Wallet.user_id == user.id)).scalar_one_or_none()
+        existing = wallet_service.find_wallet_by_user_id(user.id)
         if existing:
             return CreateWalletOut(
                 wallet_id=existing.id,
@@ -609,34 +539,8 @@ def create_wallet(user: User = Depends(get_current_user)):
                 currency=existing.currency
             )
 
-        # Create new wallet with initial balance of 200
-        initial_balance = Decimal("200.0000")
-        wallet = Wallet(
-            user_id=user.id,
-            balance=initial_balance,
-            reserved=Decimal("0.0000"),
-            currency="INR",
-            updated_at=now_ist()
-        )
-        db.add(wallet)
-
-        # Create initial transaction record
-        db.flush()  # Get wallet.id before creating transaction
-        transaction = WalletTransaction(
-            wallet_id=wallet.id,
-            user_id=user.id,
-            type="topup",
-            amount=initial_balance,
-            balance_after=initial_balance,
-            reference_id="initial_signup_bonus",
-            meta={"reason": "New user signup bonus"},
-            created_at=now_ist()
-        )
-        db.add(transaction)
-
-        db.commit()
-        db.refresh(wallet)
-
+        # Create new wallet with initial balance using wallet service
+        wallet = wallet_service.create_wallet_with_bonus(user.id)
         return CreateWalletOut(
             wallet_id=wallet.id,
             balance=str(wallet.balance),
