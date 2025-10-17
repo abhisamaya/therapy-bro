@@ -17,6 +17,7 @@ from app.utils import now_ist, hash_password, verify_password, create_access_tok
 from app.prompts import system_prompt_for
 from app.openai_client import OpenAIStreamer
 from app.anthropic_client import AnthropicStreamer
+from app.together_client import TogetherStreamer
 from app.auth import get_current_user
 
 from app.google_auth import google_auth_service
@@ -331,6 +332,8 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
     provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
     if provider == "anthropic":
         streamer = AnthropicStreamer()
+    elif provider == "together":
+        streamer = TogetherStreamer()
     else:
         streamer = OpenAIStreamer()
     print(f"Using LLM provider: {provider}, model: {getattr(streamer, 'model', 'unknown')}")
