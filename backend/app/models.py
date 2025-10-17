@@ -23,7 +23,7 @@ class User(SQLModel, table=True):
     avatar_url: Optional[str] = None
     auth_provider: str = Field(default="local")
 
-
+# backend/app/models.py
 class ChatSession(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     session_id: str = Field(index=True, unique=True)
@@ -31,10 +31,8 @@ class ChatSession(SQLModel, table=True):
     peer_id: Optional[int] = Field(default=None)  # who they chat with
     category: str
     notes: Optional[str] = None
-    complete_chat: str  # JSON string of messages (or use JSON column later)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    status: str = Field(default="active")  # active | paused_waiting_payment | ended
     minutes_used: Decimal = Field(
         sa_column=Column(Numeric(10, 4), default=0), default=Decimal("0")
     )

@@ -1,14 +1,40 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from typing import List, Optional
+from datetime import datetime
+from enum import Enum
 
-# Auth
-class RegisterIn(BaseModel):
-    login_id: str
-    password: str
+# --- small helpful types ---
+MoneyStr = str  # alias: replace with Decimal if/when you change transport
+
+class Role(str, Enum):
+    user = "user"
+    assistant = "assistant"
+    system = "system"
+
+class SessionStatus(str, Enum):
+    active = "active"
+    ended = "ended"
+
+# --- user/profile ---
+class ProfileInfo(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
     age: Optional[int] = None
+
+class UserBase(ProfileInfo):
+    login_id: str
+    email: Optional[str] = None
+    avatar_url: Optional[str] = None
+    auth_provider: str
+
+class UserOut(UserBase):
+    pass
+
+# Auth
+class RegisterIn(ProfileInfo):
+    login_id: str
+    password: str
 
 class LoginIn(BaseModel):
     login_id: str
@@ -18,58 +44,9 @@ class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
-class MeOut(BaseModel):
-    login_id: str
-    name: Optional[str]
-
-# Chat
-class StartSessionIn(BaseModel):
-    category: str
-
-class StartSessionOut(BaseModel):
-    session_id: str
-
-class MessageIn(BaseModel):
-    content: str
-
-class MessageOut(BaseModel):
-    role: str
-    content: str
-
-class HistoryOut(BaseModel):
-    session_id: str
-    category: str
-    messages: List[MessageOut]
-
-class ConversationItem(BaseModel):
-    session_id: str
-    category: str
-    updated_at: str
-    notes: Optional[str] = None
-
-class NotesIn(BaseModel):
-    notes: str
-
 # AUTH - Google OAuth
 class GoogleAuthIn(BaseModel):
     id_token: str
-
-class UserOut(BaseModel):
-    login_id: str
-    name: Optional[str]
-    email: Optional[str]
-    avatar_url: Optional[str]
-    auth_provider: str
-
-# Update MeOut to include more fields
-class MeOut(BaseModel):
-    login_id: str
-    name: Optional[str]
-    email: Optional[str]
-    avatar_url: Optional[str]
-    auth_provider: str
-    phone: Optional[str] = None
-    age: Optional[int] = None
 
 # Profile Update
 class UpdateProfileIn(BaseModel):
@@ -77,13 +54,76 @@ class UpdateProfileIn(BaseModel):
     phone: Optional[str] = None
     age: Optional[int] = None
 
-# Wallet
-class WalletOut(BaseModel):
-    balance: str  # String representation of Decimal
-    reserved: str
+# --- wallet/money ---
+class WalletSummary(BaseModel):
+    balance: MoneyStr
+    reserved: MoneyStr
     currency: str
+    
+class WalletOut(WalletSummary):
+    pass
 
 class CreateWalletOut(BaseModel):
     wallet_id: int
-    balance: str
+    balance: MoneyStr
     currency: str
+
+# --- session time / common session mixins ---
+class SessionTimes(BaseModel):
+    session_id: str
+    session_start_time: Optional[datetime] = None  # Match DB field name
+    session_end_time: Optional[datetime] = None   # Match DB field name
+    duration_seconds: Optional[int] = None
+
+class SessionFinancials(BaseModel):
+    cost_charged: Optional[MoneyStr] = None
+    wallet_balance: Optional[MoneyStr] = None
+    wallet_reserved: Optional[MoneyStr] = None
+    
+# --- Chat / conversation ---
+class MessageIn(BaseModel):
+    content: str
+
+class MessageOut(BaseModel):
+    role: str
+    content: str
+
+class HistoryOut(SessionTimes, BaseModel):
+    category: str
+    messages: List[MessageOut]
+
+class ConversationItem(BaseModel):
+    session_id: str
+    category: str
+    updated_at: datetime
+    notes: Optional[str] = None
+
+class NotesIn(BaseModel):
+    notes: str
+
+# --- session endpoints outputs (compose instead of repeat) ---
+class StartSessionIn(BaseModel):
+    category: str
+
+class StartSessionOut(SessionTimes, SessionFinancials):
+    # If start/end/duration set, they come from SessionTimes
+    pass
+
+# Session Extension and Status
+class ExtendSessionIn(BaseModel):
+    duration_seconds: int = 300  # Default 5 minutes
+    request_id: Optional[str] = None  # For idempotency
+
+class ExtendSessionOut(SessionTimes, SessionFinancials):
+    remaining_seconds: int
+
+class SessionStatusOut(SessionTimes, SessionFinancials):
+    status: SessionStatus
+    remaining_seconds: int
+
+class FinalizeSessionOut(BaseModel):
+    session_id: str
+    minutes_used: float           # numeric
+    cost_charged: MoneyStr
+    refund_amount: MoneyStr
+    wallet_balance: MoneyStr     # String representation of Decimal

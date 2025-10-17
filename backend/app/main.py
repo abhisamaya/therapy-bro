@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from app.db import init_db, get_session
 from app.models import User, ChatSession, Message, Wallet, WalletTransaction
 from app.schemas import (
-    RegisterIn, LoginIn, TokenOut, MeOut,
+    RegisterIn, LoginIn, TokenOut,
     StartSessionIn, StartSessionOut, MessageIn, MessageOut, HistoryOut,
     ConversationItem, NotesIn, UpdateProfileIn, WalletOut, CreateWalletOut,
 )
@@ -160,13 +160,9 @@ def login(payload: LoginIn):
     token = create_access_token(payload.login_id)
     return TokenOut(access_token=token)
 
-# @app.get("/auth/me", response_model=MeOut)
-# def me(user: User = Depends(get_current_user)):
-#     return MeOut(login_id=user.login_id, name=user.name)
-
-@app.get("/auth/me", response_model=MeOut)
+@app.get("/auth/me", response_model=UserOut)
 def me(user: User = Depends(get_current_user)):
-    return MeOut(
+    return UserOut(
         login_id=user.login_id,
         name=user.name,
         email=user.email,
@@ -251,7 +247,6 @@ def start_session(payload: StartSessionIn, user: User = Depends(get_current_user
             user_id=user.id,
             category=payload.category,
             notes=None,
-            complete_chat=json.dumps([{"role":"system","content":system_prompt}], ensure_ascii=False),
             created_at=now_ist(),
             updated_at=now_ist(),
         )
@@ -314,9 +309,6 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
       # persist user message
       db.add(Message(session_id=session_id, role="user", content=payload.content, created_at=now_ist()))
       # update complete_chat JSON snapshot
-      current = json.loads(chat.complete_chat)
-      current.append({"role":"user","content":payload.content})
-      chat.complete_chat = json.dumps(current, ensure_ascii=False)
       chat.updated_at = now_ist()
       db.commit()
 
@@ -350,12 +342,6 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
             full = "".join(assembled)
             with get_session() as db2:
                 db2.add(Message(session_id=session_id, role="assistant", content=full, created_at=now_ist()))
-                # update complete_chat JSON
-                chat2 = db2.query(ChatSession).filter(ChatSession.session_id == session_id).first()
-                hist = json.loads(chat2.complete_chat)
-                hist.append({"role":"assistant","content": full})
-                chat2.complete_chat = json.dumps(hist, ensure_ascii=False)
-                chat2.updated_at = now_ist()
                 db2.commit()
             yield (json.dumps({"type":"done"}) + "\n").encode("utf-8")
 
