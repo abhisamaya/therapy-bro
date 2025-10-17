@@ -5,6 +5,7 @@ from typing import Optional
 from .utils import decode_token
 from .db import get_session
 from .models import User
+from sqlalchemy import select
 
 security = HTTPBearer(auto_error=False)  # Don't auto-error for OPTIONS requests
 
@@ -24,7 +25,7 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="Invalid token")
 
     with get_session() as db:
-        user = db.query(User).filter(User.login_id == sub).first()
+        user = db.exec(select(User).where(User.login_id == sub)).scalar_one_or_none()
         if not user:
             raise HTTPException(status_code=401, detail="User not found")
         return user

@@ -25,6 +25,7 @@ from app.schemas import GoogleAuthIn, UserOut
 
 from fastapi import Cookie, Response
 from typing import Optional
+from sqlalchemy import select, delete
 
 load_dotenv()
 
@@ -108,7 +109,7 @@ async def options_handler(full_path: str):
 def register(payload: RegisterIn):
     from .db import get_session
     with get_session() as db:
-        if db.query(User).filter(User.login_id == payload.login_id).first():
+        if db.exec(select(User).where(User.login_id == payload.login_id)).scalar_one_or_none():
             raise HTTPException(status_code=400, detail="login_id already exists")
         user = User(
             login_id=payload.login_id,
@@ -154,7 +155,7 @@ def register(payload: RegisterIn):
 @app.post("/auth/login", response_model=TokenOut)
 def login(payload: LoginIn):
     with get_session() as db:
-        user = db.query(User).filter(User.login_id == payload.login_id).first()
+        user = db.exec(select(User).where(User.login_id == payload.login_id)).scalar_one_or_none()
         if not user or not verify_password(payload.password, user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token(payload.login_id)
@@ -179,7 +180,7 @@ def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_us
 
     try:
         with get_session() as db:
-            db_user = db.query(User).filter(User.id == user.id).first()
+            db_user = db.exec(select(User).where(User.id == user.id)).scalar_one_or_none()
             if not db_user:
                 print(f"User not found with ID: {user.id}")
                 raise HTTPException(status_code=404, detail="User not found")
@@ -222,10 +223,7 @@ def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_us
 def list_chats(user: User = Depends(get_current_user)):
     with get_session() as db:
         rows = (
-            db.query(ChatSession)
-              .filter(ChatSession.user_id == user.id)
-              .order_by(ChatSession.updated_at.desc())
-              .all()
+            db.exec(select(ChatSession).where(ChatSession.user_id == user.id).order_by(ChatSession.updated_at.desc())).scalars().all()
         )
         return [
             ConversationItem(
@@ -258,14 +256,11 @@ def start_session(payload: StartSessionIn, user: User = Depends(get_current_user
 @app.get("/api/sessions/{session_id}", response_model=HistoryOut)
 def get_history(session_id: str, user: User = Depends(get_current_user)):
     with get_session() as db:
-        chat = db.query(ChatSession).filter(ChatSession.session_id == session_id, ChatSession.user_id == user.id).first()
+        chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
         if not chat:
             raise HTTPException(status_code=404, detail="Session not found")
         msgs = (
-            db.query(Message)
-              .filter(Message.session_id == session_id)
-              .order_by(Message.created_at.asc())
-              .all()
+            db.exec(select(Message).where(Message.session_id == session_id).order_by(Message.created_at.asc())).scalars().all()
         )
         return {
             "session_id": chat.session_id,
@@ -276,7 +271,7 @@ def get_history(session_id: str, user: User = Depends(get_current_user)):
 @app.put("/api/sessions/{session_id}/notes")
 def put_notes(session_id: str, payload: NotesIn, user: User = Depends(get_current_user)):
     with get_session() as db:
-        chat = db.query(ChatSession).filter(ChatSession.session_id == session_id, ChatSession.user_id == user.id).first()
+        chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
         if not chat:
             raise HTTPException(status_code=404, detail="Session not found")
         
@@ -288,12 +283,12 @@ def put_notes(session_id: str, payload: NotesIn, user: User = Depends(get_curren
 @app.delete("/api/sessions/{session_id}")
 def delete_session(session_id: str, user: User = Depends(get_current_user)):
     with get_session() as db:
-        chat = db.query(ChatSession).filter(ChatSession.session_id == session_id, ChatSession.user_id == user.id).first()
+        chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
         if not chat:
             raise HTTPException(status_code=404, detail="Session not found")
         
         # Delete all messages for this session
-        db.query(Message).filter(Message.session_id == session_id).delete()
+        db.exec(delete(Message).where(Message.session_id == session_id)).scalars().all()
         
         # Delete the chat session
         db.delete(chat)
@@ -303,7 +298,7 @@ def delete_session(session_id: str, user: User = Depends(get_current_user)):
 @app.post("/api/sessions/{session_id}/messages")
 def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_current_user)):
     with get_session() as db:
-      chat = db.query(ChatSession).filter(ChatSession.session_id == session_id, ChatSession.user_id == user.id).first()
+      chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
       if not chat:
           raise HTTPException(status_code=404, detail="Session not found")
       # persist user message
@@ -314,10 +309,7 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
 
       # build history for LLM
       msgs = (
-          db.query(Message)
-            .filter(Message.session_id == session_id)
-            .order_by(Message.created_at.asc())
-            .all()
+          db.exec(select(Message).where(Message.session_id == session_id).order_by(Message.created_at.asc())).scalars().all()
       )
       wire = [{"role": m.role, "content": m.content} for m in msgs]
 
@@ -380,7 +372,7 @@ def google_auth(payload: GoogleAuthIn, response: Response):
 
         # Check if user exists by Google ID
         login_logger.info(f"🔍 Checking if user exists by Google ID: {google_user_info['google_id']}")
-        user = db.query(User).filter(User.google_id == google_user_info['google_id']).first()
+        user = db.exec(select(User).where(User.google_id == google_user_info['google_id'])).scalar_one_or_none()
 
         if user:
             login_logger.info(f"✅ Found existing user by Google ID: {user.login_id}")
@@ -389,7 +381,7 @@ def google_auth(payload: GoogleAuthIn, response: Response):
 
             # Check if user exists by email (for account linking)
             login_logger.info(f"🔍 Checking if user exists by email: {google_user_info['email']}")
-            user = db.query(User).filter(User.email == google_user_info['email']).first()
+            user = db.exec(select(User).where(User.email == google_user_info['email'])).scalar_one_or_none()
 
             if user:
                 login_logger.info(f"✅ Found existing user by email: {user.login_id}")
@@ -428,7 +420,7 @@ def google_auth(payload: GoogleAuthIn, response: Response):
             login_logger.info(f"✅ User ID after commit: {user.id}")
 
             # Create wallet with initial balance for new Google users
-            existing_wallet = db.query(Wallet).filter(Wallet.user_id == user.id).first()
+            existing_wallet = db.exec(select(Wallet).where(Wallet.user_id == user.id)).scalar_one_or_none()
             if not existing_wallet:
                 login_logger.info("💰 Creating wallet with initial balance for new user...")
                 initial_balance = Decimal("200.0000")
@@ -481,7 +473,7 @@ def google_auth(payload: GoogleAuthIn, response: Response):
         login_logger.info(f"✅ Cookie set successfully (secure={is_production})")
 
         login_logger.info("--- FINAL USER STATE IN DB ---")
-        final_user = db.query(User).filter(User.id == user.id).first()
+        final_user = db.exec(select(User).where(User.id == user.id)).scalar_one_or_none()
         login_logger.info(f"User ID: {final_user.id}")
         login_logger.info(f"Login ID: {final_user.login_id}")
         login_logger.info(f"Name: {final_user.name}")
@@ -508,7 +500,7 @@ from decimal import Decimal
 def get_wallet(user: User = Depends(get_current_user)):
     """Get or create user's wallet and return balance"""
     with get_session() as db:
-        wallet = db.query(Wallet).filter(Wallet.user_id == user.id).first()
+        wallet = db.exec(select(Wallet).where(Wallet.user_id == user.id)).scalar_one_or_none()
 
         # Create wallet if it doesn't exist with initial balance of 200
         if not wallet:
@@ -550,7 +542,7 @@ def create_wallet(user: User = Depends(get_current_user)):
     """Explicitly create a wallet for the user"""
     with get_session() as db:
         # Check if wallet already exists
-        existing = db.query(Wallet).filter(Wallet.user_id == user.id).first()
+        existing = db.exec(select(Wallet).where(Wallet.user_id == user.id)).scalar_one_or_none()
         if existing:
             return CreateWalletOut(
                 wallet_id=existing.id,
