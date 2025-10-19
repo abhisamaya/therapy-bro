@@ -438,3 +438,53 @@ google.auth.exceptions.InvalidValue: Token has wrong audience 91594839033-tsceqr
 2025-10-20 02:13:03 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
 2025-10-20 02:13:03 - app.main - INFO - Starting TherapyBro application
 2025-10-20 02:13:03 - app.main - INFO - Database initialized successfully
+2025-10-20 02:13:52 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:13:52 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:13:52 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:13:52 - app.main - INFO - Database initialized successfully
+2025-10-20 02:14:51 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:14:52 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:14:52 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:14:52 - app.main - INFO - Database initialized successfully
+2025-10-20 02:15:09 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:15:09 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:15:09 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:15:09 - app.main - INFO - Database initialized successfully
+2025-10-20 02:15:14 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:15:15 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:15:15 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:15:15 - app.main - INFO - Database initialized successfully
+2025-10-20 02:15:20 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:15:21 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:15:21 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:15:21 - app.main - INFO - Database initialized successfully
+2025-10-20 02:15:47 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:15:48 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:15:48 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:15:48 - app.main - INFO - Database initialized successfully
+2025-10-20 02:15:53 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:15:54 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:15:54 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:15:54 - app.main - INFO - Database initialized successfully
+2025-10-20 02:15:59 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:16:06 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:16:06 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:16:06 - app.main - INFO - Database initialized successfully
+2025-10-20 02:16:12 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:16:12 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:16:17 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:16:17 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:16:17 - app.main - INFO - Database initialized successfully
+2025-10-20 02:16:24 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:17:23 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:17:24 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:17:24 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:17:24 - app.main - INFO - Database initialized successfully
+2025-10-20 02:17:59 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:18:01 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:18:01 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:18:01 - app.main - INFO - Database initialized successfully
+2025-10-20 02:18:49 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:18:50 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:18:50 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:18:50 - app.main - INFO - Database initialized successfully
