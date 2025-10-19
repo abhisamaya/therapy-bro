@@ -1,7 +1,7 @@
 """Tests for LLM factory."""
 import pytest
 from unittest.mock import Mock, patch
-from app.services.llm_factory import LLMFactory, llm_factory
+from app.services.llm_factory import LLMFactory, get_llm_factory
 
 
 class TestLLMFactory:
@@ -38,6 +38,7 @@ class TestLLMFactory:
     
     def test_global_factory_instance(self):
         """Test global factory instance."""
+        llm_factory = get_llm_factory()
         assert isinstance(llm_factory, LLMFactory)
         assert llm_factory.get_supported_providers() == ["anthropic", "openai", "together"]
     

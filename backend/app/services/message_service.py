@@ -4,7 +4,7 @@ import logging
 from typing import List, Dict, Iterable, Generator
 from fastapi.responses import StreamingResponse
 from app.services.base_service import BaseService
-from app.services.llm_factory import llm_factory, LLMStreamer
+from app.services.llm_factory import get_llm_factory, LLMStreamer
 from app.services.session_service import SessionService
 
 
@@ -54,6 +54,7 @@ class MessageService(BaseService):
 
         # Create LLM streamer
         try:
+            llm_factory = get_llm_factory()
             streamer = llm_factory.create_streamer(provider=provider)
             self.logger.info(f"Using LLM provider: {provider or 'default'}, model: {getattr(streamer, 'model', 'unknown')}")
         except Exception as e:

@@ -61,5 +61,25 @@ class Settings(BaseSettings):
     debug: bool = Field(default=False, alias="DEBUG")
 
 
-# Global settings instance
-settings = Settings()
+class SettingsFactory:
+    """Factory for creating Settings instances with lazy initialization."""
+    
+    _instance: Optional[Settings] = None
+    
+    @classmethod
+    def create_settings(cls) -> Settings:
+        """Create or return existing Settings instance."""
+        if cls._instance is None:
+            cls._instance = Settings()
+        return cls._instance
+    
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Reset the singleton instance (useful for testing)."""
+        cls._instance = None
+
+
+# Factory function for backward compatibility
+def get_settings() -> Settings:
+    """Get the global settings instance."""
+    return SettingsFactory.create_settings()

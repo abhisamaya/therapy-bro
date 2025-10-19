@@ -1,5 +1,5 @@
 """Configuration module for TherapyBro backend."""
-from .settings import settings
+from .settings import get_settings
 
-__all__ = ["settings"]
+__all__ = ["get_settings"]
 

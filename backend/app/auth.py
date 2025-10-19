@@ -11,11 +11,32 @@ from sqlalchemy import select
 # Create logger for authentication
 auth_logger = logging.getLogger('auth')
 
-security = HTTPBearer(auto_error=False)  # Don't auto-error for OPTIONS requests
+class SecurityFactory:
+    """Factory for creating security instances with lazy initialization."""
+    
+    _instance: Optional[HTTPBearer] = None
+    
+    @classmethod
+    def create_security(cls) -> HTTPBearer:
+        """Create or return existing security instance."""
+        if cls._instance is None:
+            cls._instance = HTTPBearer(auto_error=False)  # Don't auto-error for OPTIONS requests
+        return cls._instance
+    
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Reset the singleton instance (useful for testing)."""
+        cls._instance = None
+
+
+# Factory function for backward compatibility
+def get_security() -> HTTPBearer:
+    """Get the global security instance."""
+    return SecurityFactory.create_security()
 
 def get_current_user(
     request: Request,
-    creds: Optional[HTTPAuthorizationCredentials] = Depends(security)
+    creds: Optional[HTTPAuthorizationCredentials] = Depends(get_security())
 ) -> User:
     # Allow OPTIONS requests without authentication (for CORS preflight)
     if request.method == "OPTIONS":

@@ -10,7 +10,28 @@ import logging
 # Create logger for utilities
 utils_logger = logging.getLogger('utils')
 
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+class PasswordContextFactory:
+    """Factory for creating password context instances with lazy initialization."""
+    
+    _instance: Optional[CryptContext] = None
+    
+    @classmethod
+    def create_context(cls) -> CryptContext:
+        """Create or return existing password context instance."""
+        if cls._instance is None:
+            cls._instance = CryptContext(schemes=["argon2"], deprecated="auto")
+        return cls._instance
+    
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Reset the singleton instance (useful for testing)."""
+        cls._instance = None
+
+
+# Factory function for backward compatibility
+def get_password_context() -> CryptContext:
+    """Get the global password context instance."""
+    return PasswordContextFactory.create_context()
 
 JWT_SECRET = os.getenv("JWT_SECRET", "dev-secret-change")
 JWT_ALG = os.getenv("JWT_ALG", "HS256")
@@ -21,12 +42,14 @@ def now_ist() -> datetime:
 
 def hash_password(p: str) -> str:
     utils_logger.debug("Hashing password")
+    pwd_context = get_password_context()
     hashed = pwd_context.hash(p)
     utils_logger.debug("Password hashed successfully")
     return hashed
 
 def verify_password(p: str, h: str) -> bool:
     utils_logger.debug("Verifying password")
+    pwd_context = get_password_context()
     is_valid = pwd_context.verify(p, h)
     utils_logger.debug(f"Password verification result: {is_valid}")
     return is_valid

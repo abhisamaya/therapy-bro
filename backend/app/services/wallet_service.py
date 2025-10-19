@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.models import Wallet, WalletTransaction, User
 from app.schemas import WalletOut
 from app.services.base_service import BaseService
-from app.config.settings import settings
+from app.config.settings import get_settings
 from app.utils import now_ist
 
 
@@ -24,6 +24,7 @@ class WalletService(BaseService):
         self.logger.info(f"Creating wallet with bonus for user ID: {user_id}")
         
         # Create wallet with initial balance from settings
+        settings = get_settings()
         wallet = Wallet(
             user_id=user_id,
             balance=settings.initial_wallet_balance,

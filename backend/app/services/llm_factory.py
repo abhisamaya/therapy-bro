@@ -1,8 +1,8 @@
 """LLM factory for creating and managing LLM providers."""
 import os
 import logging
-from typing import Dict, Iterable, List, Protocol
-from app.config.settings import settings
+from typing import Dict, Iterable, List, Protocol, Optional
+from app.config.settings import get_settings
 from app.openai_client import OpenAIStreamer
 from app.anthropic_client import AnthropicStreamer
 from app.together_client import TogetherStreamer
@@ -43,6 +43,7 @@ class LLMFactory:
             RuntimeError: If provider initialization fails
         """
         if provider is None:
+            settings = get_settings()
             provider = settings.llm_provider
         
         provider = provider.strip().lower()
@@ -91,5 +92,25 @@ class LLMFactory:
         return provider.strip().lower() in self._providers
 
 
-# Global factory instance
-llm_factory = LLMFactory()
+class LLMFactoryManager:
+    """Manager for LLM factory instances with lazy initialization."""
+    
+    _instance: Optional[LLMFactory] = None
+    
+    @classmethod
+    def create_factory(cls) -> LLMFactory:
+        """Create or return existing LLM factory instance."""
+        if cls._instance is None:
+            cls._instance = LLMFactory()
+        return cls._instance
+    
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Reset the singleton instance (useful for testing)."""
+        cls._instance = None
+
+
+# Factory function for backward compatibility
+def get_llm_factory() -> LLMFactory:
+    """Get the global LLM factory instance."""
+    return LLMFactoryManager.create_factory()

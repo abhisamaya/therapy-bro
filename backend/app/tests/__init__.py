@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from app.db import get_session
 from app.models import User, ChatSession, Message, Wallet, WalletTransaction
-from app.config.settings import settings
+from app.config.settings import get_settings
 import tempfile
 import os
 

@@ -24,11 +24,13 @@ class TestMessageService:
         )
         
         # Mock the LLM factory and streamer
-        with patch('app.services.message_service.llm_factory') as mock_factory:
+        with patch('app.services.message_service.get_llm_factory') as mock_get_factory:
+            mock_factory = Mock()
             mock_streamer = Mock()
             mock_streamer.model = "test-model"
             mock_streamer.stream_chat.return_value = ["Hello", " there", "!"]
             mock_factory.create_streamer.return_value = mock_streamer
+            mock_get_factory.return_value = mock_factory
             
             # Process message
             response = message_service.process_message_stream(
@@ -64,8 +66,10 @@ class TestMessageService:
         )
         
         # Mock LLM factory to raise error
-        with patch('app.services.message_service.llm_factory') as mock_factory:
+        with patch('app.services.message_service.get_llm_factory') as mock_get_factory:
+            mock_factory = Mock()
             mock_factory.create_streamer.side_effect = RuntimeError("API key not set")
+            mock_get_factory.return_value = mock_factory
             
             with pytest.raises(RuntimeError, match="Failed to create LLM streamer"):
                 message_service.process_message_stream(
@@ -217,11 +221,13 @@ class TestMessageService:
         )
         
         # Mock the LLM factory and streamer
-        with patch('app.services.message_service.llm_factory') as mock_factory:
+        with patch('app.services.message_service.get_llm_factory') as mock_get_factory:
+            mock_factory = Mock()
             mock_streamer = Mock()
             mock_streamer.model = "test-model"
             mock_streamer.stream_chat.return_value = ["Hello", " world"]
             mock_factory.create_streamer.return_value = mock_streamer
+            mock_get_factory.return_value = mock_factory
             
             # Process message
             response = message_service.process_message_stream(
