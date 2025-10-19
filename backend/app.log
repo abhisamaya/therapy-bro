@@ -414,3 +414,27 @@ google.auth.exceptions.InvalidValue: Token has wrong audience 91594839033-tsceqr
 2025-10-20 01:52:07 - app.main - INFO - Database initialized successfully
 2025-10-20 01:52:19 - app.main - INFO - Shutting down TherapyBro application
 2025-10-20 01:54:14 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:02:24 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:09:29 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:09:29 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:09:29 - app.main - INFO - Database initialized successfully
+2025-10-20 02:09:40 - app.main - INFO - Request: GET http://localhost:8000/docs
+2025-10-20 02:09:40 - app.main - INFO - Response: 200 - GET http://localhost:8000/docs - 0.001s
+2025-10-20 02:09:44 - app.main - INFO - Request: GET http://127.0.0.1:8000/
+2025-10-20 02:09:44 - app.main - INFO - Response: 405 - GET http://127.0.0.1:8000/ - 0.001s
+2025-10-20 02:09:44 - app.main - INFO - Request: GET http://127.0.0.1:8000/favicon.ico
+2025-10-20 02:09:44 - app.main - INFO - Response: 405 - GET http://127.0.0.1:8000/favicon.ico - 0.001s
+2025-10-20 02:10:00 - app.main - INFO - Request: GET http://localhost:8000/openapi.json
+2025-10-20 02:10:00 - app.main - INFO - Response: 200 - GET http://localhost:8000/openapi.json - 0.008s
+2025-10-20 02:10:03 - app.main - INFO - Request: GET http://localhost:8000/api/sessions
+2025-10-20 02:10:03 - app.main - INFO - Response: 405 - GET http://localhost:8000/api/sessions - 0.001s
+2025-10-20 02:10:04 - app.main - INFO - Request: GET http://localhost:8000/health
+2025-10-20 02:10:04 - app.main - INFO - Response: 200 - GET http://localhost:8000/health - 0.002s
+2025-10-20 02:10:48 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:11:02 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:11:02 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:11:02 - app.main - INFO - Database initialized successfully
+2025-10-20 02:13:02 - app.main - INFO - Shutting down TherapyBro application
+2025-10-20 02:13:03 - app.main - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 02:13:03 - app.main - INFO - Starting TherapyBro application
+2025-10-20 02:13:03 - app.main - INFO - Database initialized successfully

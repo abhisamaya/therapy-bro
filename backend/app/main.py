@@ -7,16 +7,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from app.db import init_db, get_session
-from app.models import User, ChatSession, Message, Wallet, WalletTransaction
+from app.models import User, Wallet, WalletTransaction
 from app.schemas import (
-    StartSessionIn, StartSessionOut, MessageIn, MessageOut, HistoryOut,
-    ConversationItem, NotesIn, WalletOut, CreateWalletOut,
+    WalletOut, CreateWalletOut,
 )
 from app.utils import now_ist
-from app.prompts import system_prompt_for
 from app.auth import get_current_user
 
-from app.routers import auth_router
+from app.routers import auth_router, sessions_router
 
 from fastapi import Cookie, Response
 
@@ -88,6 +86,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth_router)
+app.include_router(sessions_router)
 
 # Add request/response logging middleware
 @app.middleware("http")
@@ -119,93 +118,6 @@ from fastapi import Response as FastAPIResponse
 @app.options("/{full_path:path}")
 async def options_handler(full_path: str):
     return FastAPIResponse(status_code=200)
-
-# ---------- Chat ----------
-@app.get("/api/chats", response_model=List[ConversationItem])
-def list_chats(user: User = Depends(get_current_user)):
-    with get_session() as db:
-        from app.services.session_service import SessionService
-        session_service = SessionService(db)
-        return session_service.list_user_sessions(user.id)
-
-@app.post("/api/sessions", response_model=StartSessionOut)
-def start_session(payload: StartSessionIn, user: User = Depends(get_current_user)):
-    session_logger.info(f"Starting new session for user: {user.login_id}, category: {payload.category}")
-    
-    system_prompt = system_prompt_for(payload.category)
-    
-    try:
-        with get_session() as db:
-            from app.services.session_service import SessionService
-            session_service = SessionService(db)
-            session_id = session_service.create_session(user.id, payload.category, system_prompt)
-        
-        session_logger.info(f"Session created successfully: {session_id} for user: {user.login_id}")
-        return {"session_id": session_id}
-    except Exception as e:
-        session_logger.error(f"Failed to create session for user {user.login_id}: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to create session")
-
-@app.get("/api/sessions/{session_id}", response_model=HistoryOut)
-def get_history(session_id: str, user: User = Depends(get_current_user)):
-    session_logger.info(f"Retrieving history for session: {session_id}, user: {user.login_id}")
-    
-    try:
-        with get_session() as db:
-            from app.services.session_service import SessionService
-            session_service = SessionService(db)
-            return session_service.get_session_history(session_id, user.id)
-    except ValueError as e:
-        session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
-        raise HTTPException(status_code=404, detail=str(e))
-
-@app.put("/api/sessions/{session_id}/notes")
-def put_notes(session_id: str, payload: NotesIn, user: User = Depends(get_current_user)):
-    try:
-        with get_session() as db:
-            from app.services.session_service import SessionService
-            session_service = SessionService(db)
-            session_service.update_session_notes(session_id, payload.notes, user.id)
-        return {"ok": True}
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
-@app.delete("/api/sessions/{session_id}")
-def delete_session(session_id: str, user: User = Depends(get_current_user)):
-    try:
-        with get_session() as db:
-            from app.services.session_service import SessionService
-            session_service = SessionService(db)
-            session_service.delete_session(session_id, user.id)
-        return {"ok": True}
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
-@app.post("/api/sessions/{session_id}/messages")
-def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_current_user)):
-    session_logger.info(f"Processing message for session: {session_id}, user: {user.login_id}")
-    session_logger.debug(f"Message length: {len(payload.content)} characters")
-    
-    try:
-        with get_session() as db:
-            from app.services.message_service import MessageService
-            message_service = MessageService(db)
-            
-            # Get provider from environment or use default
-            provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
-            
-            # Process message and get streaming response
-            return message_service.process_message_stream(
-                session_id, user.id, payload.content, provider
-            )
-            
-    except ValueError as e:
-        session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
-        raise HTTPException(status_code=404, detail=str(e))
-    except RuntimeError as e:
-        session_logger.error(f"LLM processing error for session {session_id}: {str(e)}")
-        raise HTTPException(status_code=500, detail="LLM processing failed")
-
 
 # ---------- Wallet ----------
 from decimal import Decimal
