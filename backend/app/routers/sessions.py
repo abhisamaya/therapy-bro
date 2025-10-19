@@ -13,36 +13,33 @@ from app.schemas import (
 )
 from app.prompts import system_prompt_for
 from app.auth import get_current_user
+from app.dependencies import get_session_service, get_message_service
 from app.services.session_service import SessionService
 from app.services.message_service import MessageService
+from app.logging_config import get_logger
 
 # Create logger for sessions router
-sessions_router_logger = logging.getLogger('sessions_router')
+sessions_router_logger = get_logger('sessions_router')
 
 # Create router
 router = APIRouter(prefix="/api", tags=["sessions"])
 
 
 @router.get("/chats", response_model=List[ConversationItem])
-def list_chats(user: User = Depends(get_current_user)):
+def list_chats(user: User = Depends(get_current_user), session_service: SessionService = Depends(get_session_service)):
     """Get list of user's chat sessions."""
-    with get_session() as db:
-        session_service = SessionService(db)
-        return session_service.list_user_sessions(user.id)
+    return session_service.list_user_sessions(user.id)
 
 
 @router.post("/sessions", response_model=StartSessionOut)
-def start_session(payload: StartSessionIn, user: User = Depends(get_current_user)):
+def start_session(payload: StartSessionIn, user: User = Depends(get_current_user), session_service: SessionService = Depends(get_session_service)):
     """Start a new chat session."""
     sessions_router_logger.info(f"Starting new session for user: {user.login_id}, category: {payload.category}")
     
     system_prompt = system_prompt_for(payload.category)
     
     try:
-        with get_session() as db:
-            session_service = SessionService(db)
-            session_id = session_service.create_session(user.id, payload.category, system_prompt)
-        
+        session_id = session_service.create_session(user.id, payload.category, system_prompt)
         sessions_router_logger.info(f"Session created successfully: {session_id} for user: {user.login_id}")
         return {"session_id": session_id}
     except Exception as e:
