@@ -70,4 +70,7 @@ class GoogleAuthService:
             logger.error(f"   Stack trace:\n{traceback.format_exc()}")
             return None
 
-google_auth_service = GoogleAuthService()
+class GoogleAuthServiceFactory:
+    @staticmethod
+    def create_service():
+        return GoogleAuthService()

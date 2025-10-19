@@ -15,12 +15,9 @@ from app.schemas import (
 )
 from app.utils import now_ist, hash_password, verify_password, create_access_token, JWT_EXPIRE_MIN
 from app.prompts import system_prompt_for
-from app.openai_client import OpenAIStreamer
-from app.anthropic_client import AnthropicStreamer
-from app.together_client import TogetherStreamer
 from app.auth import get_current_user
 
-from app.google_auth import google_auth_service
+from app.google_auth import GoogleAuthServiceFactory
 from app.schemas import GoogleAuthIn, UserOut
 
 from fastapi import Cookie, Response
@@ -260,50 +257,23 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
     
     try:
         with get_session() as db:
-            from app.services.session_service import SessionService
-            session_service = SessionService(db)
+            from app.services.message_service import MessageService
+            message_service = MessageService(db)
             
-            # Add user message
-            session_service.add_user_message(session_id, payload.content, user.id)
-            session_logger.debug(f"User message persisted for session: {session_id}")
-
-            # Build history for LLM
-            wire = session_service.get_conversation_history(session_id)
-            session_logger.debug(f"Built conversation history with {len(wire)} messages")
+            # Get provider from environment or use default
+            provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
+            
+            # Process message and get streaming response
+            return message_service.process_message_stream(
+                session_id, user.id, payload.content, provider
+            )
+            
     except ValueError as e:
         session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
         raise HTTPException(status_code=404, detail=str(e))
-
-    provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
-    if provider == "anthropic":
-        streamer = AnthropicStreamer()
-    elif provider == "together":
-        streamer = TogetherStreamer()
-    else:
-        streamer = OpenAIStreamer()
-    logger.info(f"Using LLM provider: {provider}, model: {getattr(streamer, 'model', 'unknown')}")
-
-    def ndjson_stream():
-        assembled: List[str] = []
-        try:
-            session_logger.info(f"Starting LLM stream for session: {session_id}")
-            for tok in streamer.stream_chat(wire):
-                assembled.append(tok)
-                yield (json.dumps({"type":"delta","content": tok}) + "\n").encode("utf-8")
-        except Exception as e:
-            session_logger.error(f"LLM streaming error for session {session_id}: {str(e)}")
-            yield (json.dumps({"type":"delta","content": "[Error streaming, please retry]"}) + "\n").encode("utf-8")
-        finally:
-            full = "".join(assembled)
-            session_logger.info(f"LLM response completed for session {session_id}, length: {len(full)} characters")
-            with get_session() as db2:
-                from app.services.session_service import SessionService
-                session_service = SessionService(db2)
-                session_service.add_assistant_message(session_id, full)
-                session_logger.debug(f"Assistant message persisted for session: {session_id}")
-            yield (json.dumps({"type":"done"}) + "\n").encode("utf-8")
-
-    return StreamingResponse(ndjson_stream(), media_type="application/x-ndjson")
+    except RuntimeError as e:
+        session_logger.error(f"LLM processing error for session {session_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="LLM processing failed")
 
 
 # Add this new Google auth endpoint
@@ -318,6 +288,7 @@ def google_auth(payload: GoogleAuthIn, response: Response):
 
     # Verify Google token
     login_logger.info("🔍 Verifying Google token with Google API...")
+    google_auth_service = GoogleAuthServiceFactory.create_service()
     google_user_info = google_auth_service.verify_google_token(payload.id_token)
 
     if not google_user_info:
