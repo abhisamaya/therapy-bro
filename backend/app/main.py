@@ -196,39 +196,21 @@ def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_us
 @app.get("/api/chats", response_model=List[ConversationItem])
 def list_chats(user: User = Depends(get_current_user)):
     with get_session() as db:
-        rows = (
-            db.exec(select(ChatSession).where(ChatSession.user_id == user.id).order_by(ChatSession.updated_at.desc())).scalars().all()
-        )
-        return [
-            ConversationItem(
-                session_id=r.session_id,
-                category=r.category,
-                updated_at=r.updated_at.isoformat(),
-                notes=r.notes,
-            )
-            for r in rows
-        ]
+        from app.services.session_service import SessionService
+        session_service = SessionService(db)
+        return session_service.list_user_sessions(user.id)
 
 @app.post("/api/sessions", response_model=StartSessionOut)
 def start_session(payload: StartSessionIn, user: User = Depends(get_current_user)):
     session_logger.info(f"Starting new session for user: {user.login_id}, category: {payload.category}")
     
-    session_id = uuid.uuid4().hex
     system_prompt = system_prompt_for(payload.category)
     
     try:
         with get_session() as db:
-            chat = ChatSession(
-                session_id=session_id,
-                user_id=user.id,
-                category=payload.category,
-                notes=None,
-                created_at=now_ist(),
-                updated_at=now_ist(),
-            )
-            db.add(chat)
-            db.add(Message(session_id=session_id, role="system", content=system_prompt, created_at=now_ist()))
-            db.commit()
+            from app.services.session_service import SessionService
+            session_service = SessionService(db)
+            session_id = session_service.create_session(user.id, payload.category, system_prompt)
         
         session_logger.info(f"Session created successfully: {session_id} for user: {user.login_id}")
         return {"session_id": session_id}
@@ -240,73 +222,57 @@ def start_session(payload: StartSessionIn, user: User = Depends(get_current_user
 def get_history(session_id: str, user: User = Depends(get_current_user)):
     session_logger.info(f"Retrieving history for session: {session_id}, user: {user.login_id}")
     
-    with get_session() as db:
-        chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
-        if not chat:
-            session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
-            raise HTTPException(status_code=404, detail="Session not found")
-        
-        msgs = (
-            db.exec(select(Message).where(Message.session_id == session_id).order_by(Message.created_at.asc())).scalars().all()
-        )
-        session_logger.info(f"Retrieved {len(msgs)} messages for session: {session_id}")
-        
-        return {
-            "session_id": chat.session_id,
-            "category": chat.category,
-            "messages": [MessageOut(role=m.role, content=m.content) for m in msgs],
-        }
+    try:
+        with get_session() as db:
+            from app.services.session_service import SessionService
+            session_service = SessionService(db)
+            return session_service.get_session_history(session_id, user.id)
+    except ValueError as e:
+        session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
+        raise HTTPException(status_code=404, detail=str(e))
 
 @app.put("/api/sessions/{session_id}/notes")
 def put_notes(session_id: str, payload: NotesIn, user: User = Depends(get_current_user)):
-    with get_session() as db:
-        chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
-        if not chat:
-            raise HTTPException(status_code=404, detail="Session not found")
-        
-        chat.notes = payload.notes
-        chat.updated_at = now_ist()
-        db.commit()
+    try:
+        with get_session() as db:
+            from app.services.session_service import SessionService
+            session_service = SessionService(db)
+            session_service.update_session_notes(session_id, payload.notes, user.id)
         return {"ok": True}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 @app.delete("/api/sessions/{session_id}")
 def delete_session(session_id: str, user: User = Depends(get_current_user)):
-    with get_session() as db:
-        chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
-        if not chat:
-            raise HTTPException(status_code=404, detail="Session not found")
-        
-        # Delete all messages for this session
-        db.exec(delete(Message).where(Message.session_id == session_id)).scalars().all()
-        
-        # Delete the chat session
-        db.delete(chat)
-        db.commit()
+    try:
+        with get_session() as db:
+            from app.services.session_service import SessionService
+            session_service = SessionService(db)
+            session_service.delete_session(session_id, user.id)
         return {"ok": True}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 @app.post("/api/sessions/{session_id}/messages")
 def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_current_user)):
     session_logger.info(f"Processing message for session: {session_id}, user: {user.login_id}")
     session_logger.debug(f"Message length: {len(payload.content)} characters")
     
-    with get_session() as db:
-      chat = db.exec(select(ChatSession).where(ChatSession.session_id == session_id, ChatSession.user_id == user.id)).scalar_one_or_none()
-      if not chat:
-          session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
-          raise HTTPException(status_code=404, detail="Session not found")
-      
-      # persist user message
-      db.add(Message(session_id=session_id, role="user", content=payload.content, created_at=now_ist()))
-      chat.updated_at = now_ist()
-      db.commit()
-      session_logger.debug(f"User message persisted for session: {session_id}")
+    try:
+        with get_session() as db:
+            from app.services.session_service import SessionService
+            session_service = SessionService(db)
+            
+            # Add user message
+            session_service.add_user_message(session_id, payload.content, user.id)
+            session_logger.debug(f"User message persisted for session: {session_id}")
 
-      # build history for LLM
-      msgs = (
-          db.exec(select(Message).where(Message.session_id == session_id).order_by(Message.created_at.asc())).scalars().all()
-      )
-      wire = [{"role": m.role, "content": m.content} for m in msgs]
-      session_logger.debug(f"Built conversation history with {len(wire)} messages")
+            # Build history for LLM
+            wire = session_service.get_conversation_history(session_id)
+            session_logger.debug(f"Built conversation history with {len(wire)} messages")
+    except ValueError as e:
+        session_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
+        raise HTTPException(status_code=404, detail=str(e))
 
     provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
     if provider == "anthropic":
@@ -331,8 +297,9 @@ def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_c
             full = "".join(assembled)
             session_logger.info(f"LLM response completed for session {session_id}, length: {len(full)} characters")
             with get_session() as db2:
-                db2.add(Message(session_id=session_id, role="assistant", content=full, created_at=now_ist()))
-                db2.commit()
+                from app.services.session_service import SessionService
+                session_service = SessionService(db2)
+                session_service.add_assistant_message(session_id, full)
                 session_logger.debug(f"Assistant message persisted for session: {session_id}")
             yield (json.dumps({"type":"done"}) + "\n").encode("utf-8")
 
