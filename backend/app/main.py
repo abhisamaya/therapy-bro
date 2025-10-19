@@ -131,30 +131,9 @@ def register(payload: RegisterIn):
     
     from .db import get_session
     with get_session() as db:
-        if db.exec(select(User).where(User.login_id == payload.login_id)).scalar_one_or_none():
-            logger.warning(f"Registration failed - login_id already exists: {payload.login_id}")
-            raise HTTPException(status_code=400, detail="login_id already exists")
-        
-        logger.info(f"Creating new user: {payload.login_id}")
-        user = User(
-            login_id=payload.login_id,
-            password_hash=hash_password(payload.password),
-            name=payload.name,
-            phone=payload.phone,
-            age=payload.age,
-            created_at=now_ist(),
-        )
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-        logger.info(f"User created successfully: {user.login_id} (ID: {user.id})")
-
-        # Create wallet with initial balance using wallet service
-        logger.info(f"Creating wallet for new user: {user.login_id}")
-        from app.services.wallet_service import WalletService
-        wallet_service = WalletService(db)
-        wallet = wallet_service.create_wallet_with_bonus(user.id)
-        logger.info(f"Wallet created with initial balance of {wallet.balance} for user: {user.login_id}")
+        from app.services.user_service import UserService
+        user_service = UserService(db)
+        user = user_service.create_user(payload)
 
     token = create_access_token(payload.login_id)
     logger.info(f"Registration completed successfully for: {payload.login_id}")
@@ -165,8 +144,10 @@ def login(payload: LoginIn):
     logger.info(f"Login attempt for login_id: {payload.login_id}")
     
     with get_session() as db:
-        user = db.exec(select(User).where(User.login_id == payload.login_id)).scalar_one_or_none()
-        if not user or not verify_password(payload.password, user.password_hash):
+        from app.services.user_service import UserService
+        user_service = UserService(db)
+        user = user_service.authenticate_user(payload.login_id, payload.password)
+        if not user:
             logger.warning(f"Login failed - invalid credentials for: {payload.login_id}")
             raise HTTPException(status_code=401, detail="Invalid credentials")
     
@@ -176,15 +157,10 @@ def login(payload: LoginIn):
 
 @app.get("/auth/me", response_model=UserOut)
 def me(user: User = Depends(get_current_user)):
-    return UserOut(
-        login_id=user.login_id,
-        name=user.name,
-        email=user.email,
-        avatar_url=user.avatar_url,
-        auth_provider=user.auth_provider,
-        phone=user.phone,
-        age=user.age
-    )
+    with get_session() as db:
+        from app.services.user_service import UserService
+        user_service = UserService(db)
+        return user_service.get_user_profile(user)
 
 @app.put("/auth/profile")
 def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_user)):
@@ -193,40 +169,25 @@ def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_us
 
     try:
         with get_session() as db:
-            db_user = db.exec(select(User).where(User.id == user.id)).scalar_one_or_none()
-            if not db_user:
-                logger.warning(f"User not found with ID: {user.id}")
-                raise HTTPException(status_code=404, detail="User not found")
-
-            logger.debug(f"Found user: {db_user.login_id}")
-
-            # Update only provided fields (email/login_id cannot be changed)
-            if payload.name is not None and payload.name != "":
-                logger.debug(f"Updating name: {db_user.name} -> {payload.name}")
-                db_user.name = payload.name
-            if payload.phone is not None and payload.phone != "":
-                logger.debug(f"Updating phone: {db_user.phone} -> {payload.phone}")
-                db_user.phone = payload.phone
-            if payload.age is not None:
-                logger.debug(f"Updating age: {db_user.age} -> {payload.age}")
-                db_user.age = payload.age
-
-            db.commit()
-            db.refresh(db_user)
-
-            logger.info(f"Profile updated successfully for user: {db_user.login_id}")
+            from app.services.user_service import UserService
+            user_service = UserService(db)
+            updated_user = user_service.update_user_profile(user.id, payload)
 
             return {
                 "ok": True,
                 "user": {
-                    "login_id": db_user.login_id,
-                    "name": db_user.name,
-                    "phone": db_user.phone,
-                    "age": db_user.age
+                    "login_id": updated_user.login_id,
+                    "name": updated_user.name,
+                    "email": updated_user.email,
+                    "avatar_url": updated_user.avatar_url,
+                    "auth_provider": updated_user.auth_provider,
+                    "phone": updated_user.phone,
+                    "age": updated_user.age
                 }
             }
-    except HTTPException:
-        raise
+    except ValueError as e:
+        logger.error(f"Error updating profile: {str(e)}")
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         logger.error(f"Error updating profile: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to update profile: {str(e)}")
@@ -457,14 +418,39 @@ def google_auth(payload: GoogleAuthIn, response: Response):
             db.refresh(user)
             login_logger.info(f"✅ User ID after commit: {user.id}")
 
-            # Create wallet with initial balance for new Google users using wallet service
-            existing_wallet = db.exec(select(Wallet).where(Wallet.user_id == user.id)).scalar_one_or_none()
-            if not existing_wallet:
-                login_logger.info("💰 Creating wallet with initial balance for new user...")
-                from app.services.wallet_service import WalletService
-                wallet_service = WalletService(db)
-                wallet = wallet_service.create_wallet_with_bonus(user.id)
-                login_logger.info(f"✅ Wallet created with initial balance of {wallet.balance}")
+        login_logger.info("--- DATABASE OPERATIONS ---")
+        
+        from app.services.user_service import UserService
+        user_service = UserService(db)
+
+        # Check if user exists by Google ID
+        login_logger.info(f"🔍 Checking if user exists by Google ID: {google_user_info['google_id']}")
+        user = user_service.find_by_google_id(google_user_info['google_id'])
+
+        if user:
+            login_logger.info(f"✅ Found existing user by Google ID: {user.login_id}")
+        else:
+            login_logger.info("⚠️ No user found with this Google ID")
+
+            # Check if user exists by email (for account linking)
+            login_logger.info(f"🔍 Checking if user exists by email: {google_user_info['email']}")
+            user = user_service.find_by_email(google_user_info['email'])
+
+            if user:
+                login_logger.info(f"✅ Found existing user by email: {user.login_id}")
+                login_logger.info("🔗 Linking Google account to existing user...")
+
+                # Link Google account to existing user
+                user = user_service.link_google_account(user, google_user_info)
+                login_logger.info(f"✅ Updated user: login_id={user.login_id}, google_id={user.google_id}, name={user.name}")
+            else:
+                login_logger.info("⚠️ No existing user found, creating new user...")
+
+                # Create new user
+                user = user_service.create_google_user(google_user_info)
+                login_logger.info(f"✅ Created new user: login_id={user.login_id}, google_id={user.google_id}, name={user.name}")
+
+            login_logger.info(f"✅ User ID: {user.id}")
 
         login_logger.info("--- TOKEN GENERATION ---")
         # Create token using login_id (which is email for Google users)
