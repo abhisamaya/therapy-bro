@@ -5,11 +5,21 @@ from app.models import User
 from app.schemas import RegisterIn, UpdateProfileIn, UserOut
 from app.services.base_service import BaseService
 from app.services.wallet_service import WalletService
+from app.repositories.user_repository import UserRepository
 from app.utils import hash_password, verify_password, now_ist
 
 
 class UserService(BaseService):
     """Service for user operations."""
+    
+    def __init__(self, db_session: Session):
+        """Initialize service with database session.
+        
+        Args:
+            db_session: SQLAlchemy database session
+        """
+        super().__init__(db_session)
+        self.user_repository = UserRepository(db_session)
     
     def create_user(self, user_data: RegisterIn) -> User:
         """Create a new user with wallet.
@@ -26,7 +36,7 @@ class UserService(BaseService):
         self.logger.info(f"Creating new user: {user_data.login_id}")
         
         # Check if user already exists
-        existing_user = self.find_by_login_id(user_data.login_id)
+        existing_user = self.user_repository.find_by_login_id(user_data.login_id)
         if existing_user:
             self.logger.warning(f"Registration failed - login_id already exists: {user_data.login_id}")
             raise ValueError("login_id already exists")
@@ -41,7 +51,7 @@ class UserService(BaseService):
             created_at=now_ist(),
         )
         
-        created_user = self.create(user)
+        created_user = self.user_repository.create(user)
         self.logger.info(f"User created successfully: {created_user.login_id} (ID: {created_user.id})")
         
         # Create wallet with initial balance
@@ -64,7 +74,7 @@ class UserService(BaseService):
         """
         self.logger.info(f"Authenticating user: {login_id}")
         
-        user = self.find_by_login_id(login_id)
+        user = self.user_repository.find_by_login_id(login_id)
         if not user:
             self.logger.warning(f"Authentication failed - user not found: {login_id}")
             return None
@@ -92,7 +102,7 @@ class UserService(BaseService):
         self.logger.info(f"Updating profile for user ID: {user_id}")
         self.logger.debug(f"Payload: name={profile_data.name}, phone={profile_data.phone}, age={profile_data.age}")
         
-        user = self.get_by_id(User, user_id)
+        user = self.user_repository.find_by_id(user_id)
         if not user:
             self.logger.warning(f"User not found with ID: {user_id}")
             raise ValueError("User not found")
@@ -110,7 +120,7 @@ class UserService(BaseService):
             self.logger.debug(f"Updating age: {user.age} -> {profile_data.age}")
             user.age = profile_data.age
         
-        updated_user = self.update(user)
+        updated_user = self.user_repository.update(user)
         self.logger.info(f"Profile updated successfully for user: {updated_user.login_id}")
         
         return updated_user
@@ -124,8 +134,7 @@ class UserService(BaseService):
         Returns:
             User if found, None otherwise
         """
-        self.logger.debug(f"Finding user by login_id: {login_id}")
-        return self.find_one_by_criteria(User, login_id=login_id)
+        return self.user_repository.find_by_login_id(login_id)
     
     def find_by_google_id(self, google_id: str) -> Optional[User]:
         """Find user by Google ID.
@@ -136,8 +145,7 @@ class UserService(BaseService):
         Returns:
             User if found, None otherwise
         """
-        self.logger.debug(f"Finding user by google_id: {google_id}")
-        return self.find_one_by_criteria(User, google_id=google_id)
+        return self.user_repository.find_by_google_id(google_id)
     
     def find_by_email(self, email: str) -> Optional[User]:
         """Find user by email.
@@ -148,8 +156,7 @@ class UserService(BaseService):
         Returns:
             User if found, None otherwise
         """
-        self.logger.debug(f"Finding user by email: {email}")
-        return self.find_one_by_criteria(User, email=email)
+        return self.user_repository.find_by_email(email)
     
     def link_google_account(self, user: User, google_user_info: dict) -> User:
         """Link Google account to existing user.
@@ -170,7 +177,7 @@ class UserService(BaseService):
         if not user.name:
             user.name = google_user_info['name']
         
-        updated_user = self.update(user)
+        updated_user = self.user_repository.update(user)
         self.logger.info(f"Google account linked successfully for user: {updated_user.login_id}")
         
         return updated_user
@@ -196,7 +203,7 @@ class UserService(BaseService):
             created_at=now_ist(),
         )
         
-        created_user = self.create(user)
+        created_user = self.user_repository.create(user)
         self.logger.info(f"Google user created successfully: {created_user.login_id} (ID: {created_user.id})")
         
         # Create wallet with initial balance

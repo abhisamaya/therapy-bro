@@ -5,12 +5,23 @@ from sqlalchemy.orm import Session
 from app.models import Wallet, WalletTransaction, User
 from app.schemas import WalletOut
 from app.services.base_service import BaseService
+from app.repositories.wallet_repository import WalletRepository, TransactionRepository
 from app.config.settings import get_settings
 from app.utils import now_ist
 
 
 class WalletService(BaseService):
     """Service for wallet operations."""
+    
+    def __init__(self, db_session: Session):
+        """Initialize service with database session.
+        
+        Args:
+            db_session: SQLAlchemy database session
+        """
+        super().__init__(db_session)
+        self.wallet_repository = WalletRepository(db_session)
+        self.transaction_repository = TransactionRepository(db_session)
     
     def create_wallet_with_bonus(self, user_id: int) -> Wallet:
         """Create a wallet with initial bonus for a new user.
@@ -34,8 +45,7 @@ class WalletService(BaseService):
         )
         
         # Add wallet to database
-        self.db.add(wallet)
-        self.db.flush()  # Get wallet.id before creating transaction
+        wallet = self.wallet_repository.create(wallet)
         
         # Create initial transaction record
         transaction = WalletTransaction(
@@ -48,8 +58,7 @@ class WalletService(BaseService):
             meta={"reason": "New user signup bonus"},
             created_at=now_ist()
         )
-        self.db.add(transaction)
-        self.db.commit()
+        self.transaction_repository.create(transaction)
         self.db.refresh(wallet)
         
         self.logger.info(f"Wallet created with initial balance of {settings.initial_wallet_balance} for user ID: {user_id}")
@@ -68,7 +77,7 @@ class WalletService(BaseService):
         self.logger.debug(f"Getting or creating wallet for user ID: {user_id}")
         
         # Try to find existing wallet
-        wallet = self.find_one_by_criteria(Wallet, user_id=user_id)
+        wallet = self.wallet_repository.find_by_user_id(user_id)
         
         if wallet:
             self.logger.debug(f"Found existing wallet for user ID: {user_id}")
@@ -107,7 +116,7 @@ class WalletService(BaseService):
             Wallet if found, None otherwise
         """
         self.logger.debug(f"Finding wallet for user ID: {user_id}")
-        return self.find_one_by_criteria(Wallet, user_id=user_id)
+        return self.wallet_repository.find_by_user_id(user_id)
     
     #not used currently
     def update_wallet_balance(self, wallet_id: int, new_balance: Decimal, reserved: Decimal = None) -> Wallet:
@@ -123,7 +132,7 @@ class WalletService(BaseService):
         """
         self.logger.info(f"Updating wallet balance for wallet ID: {wallet_id}")
         
-        wallet = self.get_by_id(Wallet, wallet_id)
+        wallet = self.wallet_repository.find_by_id(wallet_id)
         if not wallet:
             raise ValueError(f"Wallet with ID {wallet_id} not found")
         
@@ -132,7 +141,7 @@ class WalletService(BaseService):
             wallet.reserved = reserved
         wallet.updated_at = now_ist()
         
-        return self.update(wallet)
+        return self.wallet_repository.update(wallet)
 
 
     #not used
@@ -154,7 +163,7 @@ class WalletService(BaseService):
         self.logger.info(f"Adding transaction for wallet ID: {wallet_id}, type: {transaction_type}")
         
         # Get current wallet balance
-        wallet = self.get_by_id(Wallet, wallet_id)
+        wallet = self.wallet_repository.find_by_id(wallet_id)
         if not wallet:
             raise ValueError(f"Wallet with ID {wallet_id} not found")
         
@@ -178,14 +187,13 @@ class WalletService(BaseService):
             created_at=now_ist()
         )
         
-        self.db.add(transaction)
+        transaction = self.transaction_repository.create(transaction)
         
         # Update wallet balance
         wallet.balance = new_balance
         wallet.updated_at = now_ist()
         
-        self.db.commit()
-        self.db.refresh(transaction)
+        self.wallet_repository.update(wallet)
         
         self.logger.info(f"Transaction added successfully for wallet ID: {wallet_id}")
         return transaction

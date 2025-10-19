@@ -5,11 +5,23 @@ from sqlalchemy.orm import Session
 from app.models import ChatSession, Message
 from app.schemas import StartSessionIn, MessageIn, NotesIn, ConversationItem, HistoryOut, MessageOut
 from app.services.base_service import BaseService
+from app.repositories.session_repository import SessionRepository
+from app.repositories.message_repository import MessageRepository
 from app.utils import now_ist
 
 
 class SessionService(BaseService):
     """Service for chat session operations."""
+    
+    def __init__(self, db_session: Session):
+        """Initialize service with database session.
+        
+        Args:
+            db_session: SQLAlchemy database session
+        """
+        super().__init__(db_session)
+        self.session_repository = SessionRepository(db_session)
+        self.message_repository = MessageRepository(db_session)
     
     def list_user_sessions(self, user_id: int) -> List[ConversationItem]:
         """Get all chat sessions for a user.
@@ -22,10 +34,7 @@ class SessionService(BaseService):
         """
         self.logger.debug(f"Listing sessions for user_id: {user_id}")
         
-        sessions = self.find_by_criteria(
-            ChatSession, 
-            user_id=user_id
-        )
+        sessions = self.session_repository.find_by_user_id(user_id)
         
         # Sort by updated_at desc since find_by_criteria sorts by PK
         sessions.sort(key=lambda s: s.updated_at, reverse=True)
@@ -68,7 +77,7 @@ class SessionService(BaseService):
                 created_at=now_ist(),
                 updated_at=now_ist(),
             )
-            self.db.add(chat_session)
+            chat_session = self.session_repository.create(chat_session)
             
             # Add system message
             system_message = Message(
@@ -77,9 +86,8 @@ class SessionService(BaseService):
                 content=system_prompt,
                 created_at=now_ist()
             )
-            self.db.add(system_message)
+            self.message_repository.create(system_message)
             
-            self.db.commit()
             self.logger.info(f"Session created successfully: {session_id}")
             
             return session_id
@@ -104,21 +112,14 @@ class SessionService(BaseService):
         self.logger.info(f"Retrieving history for session: {session_id}, user_id: {user_id}")
         
         # Find session
-        chat_session = self.find_one_by_criteria(
-            ChatSession,
-            session_id=session_id,
-            user_id=user_id
-        )
+        chat_session = self.session_repository.find_by_session_and_user(session_id, user_id)
         
         if not chat_session:
             self.logger.warning(f"Session not found: {session_id} for user: {user_id}")
             raise ValueError("Session not found")
         
         # Get messages
-        messages = self.find_by_criteria(
-            Message,
-            session_id=session_id
-        )
+        messages = self.message_repository.find_by_session_id(session_id)
         
         # Sort by created_at asc since find_by_criteria sorts by PK
         messages.sort(key=lambda m: m.created_at)
@@ -145,11 +146,7 @@ class SessionService(BaseService):
         self.logger.debug(f"Adding user message to session: {session_id}")
         
         # Verify session exists and belongs to user
-        chat_session = self.find_one_by_criteria(
-            ChatSession,
-            session_id=session_id,
-            user_id=user_id
-        )
+        chat_session = self.session_repository.find_by_session_and_user(session_id, user_id)
         
         if not chat_session:
             self.logger.warning(f"Session not found: {session_id} for user: {user_id}")
@@ -162,12 +159,11 @@ class SessionService(BaseService):
             content=content,
             created_at=now_ist()
         )
-        self.db.add(user_message)
+        self.message_repository.create(user_message)
         
         # Update session timestamp
         chat_session.updated_at = now_ist()
-        
-        self.db.commit()
+        self.session_repository.update(chat_session)
         self.logger.debug(f"User message added to session: {session_id}")
     
     def add_assistant_message(self, session_id: str, content: str) -> None:
@@ -185,8 +181,7 @@ class SessionService(BaseService):
             content=content,
             created_at=now_ist()
         )
-        self.db.add(assistant_message)
-        self.db.commit()
+        self.message_repository.create(assistant_message)
         self.logger.debug(f"Assistant message added to session: {session_id}")
     
     def get_conversation_history(self, session_id: str) -> List[dict]:
@@ -200,10 +195,7 @@ class SessionService(BaseService):
         """
         self.logger.debug(f"Building conversation history for session: {session_id}")
         
-        messages = self.find_by_criteria(
-            Message,
-            session_id=session_id
-        )
+        messages = self.message_repository.find_by_session_id(session_id)
         
         # Sort by created_at asc since find_by_criteria sorts by PK
         messages.sort(key=lambda m: m.created_at)
@@ -226,11 +218,7 @@ class SessionService(BaseService):
         """
         self.logger.debug(f"Updating notes for session: {session_id}")
         
-        chat_session = self.find_one_by_criteria(
-            ChatSession,
-            session_id=session_id,
-            user_id=user_id
-        )
+        chat_session = self.session_repository.find_by_session_and_user(session_id, user_id)
         
         if not chat_session:
             self.logger.warning(f"Session not found: {session_id} for user: {user_id}")
@@ -239,7 +227,7 @@ class SessionService(BaseService):
         chat_session.notes = notes
         chat_session.updated_at = now_ist()
         
-        self.db.commit()
+        self.session_repository.update(chat_session)
         self.logger.debug(f"Notes updated for session: {session_id}")
     
     def delete_session(self, session_id: str, user_id: int) -> None:
@@ -254,24 +242,17 @@ class SessionService(BaseService):
         """
         self.logger.info(f"Deleting session: {session_id} for user: {user_id}")
         
-        chat_session = self.find_one_by_criteria(
-            ChatSession,
-            session_id=session_id,
-            user_id=user_id
-        )
+        chat_session = self.session_repository.find_by_session_and_user(session_id, user_id)
         
         if not chat_session:
             self.logger.warning(f"Session not found: {session_id} for user: {user_id}")
             raise ValueError("Session not found")
         
         # Delete all messages for this session
-        messages = self.find_by_criteria(Message, session_id=session_id)
-        for message in messages:
-            self.db.delete(message)
+        self.message_repository.delete_by_session_id(session_id)
         
         # Delete the chat session
-        self.db.delete(chat_session)
-        self.db.commit()
+        self.session_repository.delete(session_id)
         
         self.logger.info(f"Session deleted: {session_id}")
     
@@ -286,8 +267,4 @@ class SessionService(BaseService):
             ChatSession if found, None otherwise
         """
         self.logger.debug(f"Finding session: {session_id} for user: {user_id}")
-        return self.find_one_by_criteria(
-            ChatSession,
-            session_id=session_id,
-            user_id=user_id
-        )
+        return self.session_repository.find_by_session_and_user(session_id, user_id)
