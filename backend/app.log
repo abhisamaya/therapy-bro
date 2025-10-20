@@ -764,3 +764,466 @@ google.auth.exceptions.InvalidValue: Token has wrong audience 91594839033-tsceqr
 2025-10-20 03:00:56 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
 2025-10-20 03:00:56 - app.logging_config - INFO - Starting TherapyBro application
 2025-10-20 03:00:56 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:05:30 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:05:31 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:05:31 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:05:31 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:05:31 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:06:22 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:06:23 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:06:23 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:06:23 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:06:23 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:06:28 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:06:29 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:06:29 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:06:29 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:06:29 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:06:29 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:06:29 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:06:29 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:06:29 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:06:34 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:06:35 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:06:35 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:06:35 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:06:35 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:07:37 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:07:38 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:07:38 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:07:38 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:07:38 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:07:38 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:07:47 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:07:48 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:07:48 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:07:48 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:07:48 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:07:48 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:08:10 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:08:11 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:08:11 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:08:11 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:08:11 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:08:11 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:08:19 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:08:20 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:08:20 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:08:20 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:08:20 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:08:20 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:08:35 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:08:36 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:08:36 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:08:36 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:08:36 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:08:36 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:08:38 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:08:38 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:08:38 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:09:21 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:09:22 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:09:22 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:09:22 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:09:22 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:09:22 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:09:23 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:09:23 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:09:23 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:09:23 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:09:23 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:09:47 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:09:48 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:09:48 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:09:48 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:09:48 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:09:48 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:10:03 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:10:03 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:10:03 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:10:03 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:10:04 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:10:04 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:10:12 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:10:13 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:10:13 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:10:13 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:10:13 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:10:13 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:10:18 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:10:19 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:10:19 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:10:19 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:10:19 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:10:19 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:10:27 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:10:28 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:10:28 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:10:28 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:10:28 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:10:28 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:10:34 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:10:35 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:10:35 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:10:35 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:10:35 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:10:35 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:10:41 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:10:42 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:10:42 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:10:42 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:10:42 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:10:42 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:10:51 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:10:51 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:10:51 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:10:51 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:10:51 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:10:51 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:11:15 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:11:16 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:11:16 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:11:16 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:11:16 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:11:16 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:11:37 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:11:38 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:11:38 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:11:38 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:11:38 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:11:38 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:11:48 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:11:48 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:11:48 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:11:48 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:11:48 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:11:48 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:11:54 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:11:55 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:11:55 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:11:55 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:11:55 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:11:55 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:12:19 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:12:20 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:12:20 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:12:20 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:12:20 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:12:20 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:12:26 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:12:27 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:12:27 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:12:27 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:12:27 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:12:27 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:12:36 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:12:37 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:12:37 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:12:37 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:12:37 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:12:37 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:12:46 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:12:46 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:12:46 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:12:46 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:12:46 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:12:46 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:13:15 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 03:13:16 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 03:13:16 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 03:13:16 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 03:13:16 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 03:13:16 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 03:17:21 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 14:59:19 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 14:59:19 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 14:59:19 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 14:59:19 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 14:59:19 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:02:49 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:02:50 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:02:50 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:02:50 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:02:50 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:02:50 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:06:20 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:06:21 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:06:21 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:06:21 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:06:21 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:06:21 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:16:36 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:16:37 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:16:37 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:16:37 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:16:37 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:16:37 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:16:39 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:16:39 - auth_router - DEBUG - Test DEBUG message
+2025-10-20 15:16:39 - auth_router - INFO - Test INFO message
+2025-10-20 15:16:43 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:16:43 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:16:43 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:17:01 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:17:01 - auth_router - DEBUG - DEBUG: This will show
+2025-10-20 15:17:01 - auth_router - INFO - INFO: This will show
+2025-10-20 15:17:01 - auth_router - WARNING - WARNING: This will show
+2025-10-20 15:17:04 - auth_router - DEBUG - DEBUG: This will NOT show
+2025-10-20 15:17:04 - auth_router - INFO - INFO: This will NOT show
+2025-10-20 15:17:04 - auth_router - WARNING - WARNING: This will show
+2025-10-20 15:17:21 - auth_router - DEBUG - DEBUG: This should NOT show
+2025-10-20 15:17:21 - auth_router - INFO - INFO: This should NOT show
+2025-10-20 15:17:21 - auth_router - WARNING - WARNING: This should show
+2025-10-20 15:17:46 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:17:47 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:17:47 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:17:47 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:17:47 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:17:47 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:17:49 - auth_router - WARNING - WARNING: This should show
+2025-10-20 15:17:54 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:17:54 - auth_router - DEBUG - DEBUG: This should show
+2025-10-20 15:17:54 - auth_router - INFO - INFO: This should show
+2025-10-20 15:17:54 - auth_router - WARNING - WARNING: This should show
+2025-10-20 15:17:58 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:17:58 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:17:58 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:18:34 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:18:36 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:18:36 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:18:36 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:18:36 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:18:36 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:19:09 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:19:10 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:19:10 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:19:10 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:19:10 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:19:10 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:24:59 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:25:00 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:25:00 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:25:00 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:25:00 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:25:00 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:27:34 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:27:35 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:27:35 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:27:35 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:27:35 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:27:35 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:28:04 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:28:05 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:28:05 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:28:05 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:28:05 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:28:05 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:31:51 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:31:52 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:31:52 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:31:52 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:31:52 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:31:52 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:32:20 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:32:20 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:32:20 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:32:20 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:32:20 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:32:20 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:32:59 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:32:59 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:32:59 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:32:59 - utils - INFO - Creating access token for user: testuser
+2025-10-20 15:32:59 - utils - INFO - Access token created successfully for user: testuser
+2025-10-20 15:32:59 - app.logging_config - INFO - Request: PUT http://testserver/auth/profile
+2025-10-20 15:32:59 - auth - INFO - User authenticated successfully: testuser (ID: 3)
+2025-10-20 15:32:59 - auth_router - INFO - Profile update request for user: testuser
+2025-10-20 15:32:59 - UserService - INFO - Updating profile for user ID: 3
+2025-10-20 15:32:59 - UserRepository - INFO - Updated user: testuser (ID: 3)
+2025-10-20 15:32:59 - UserService - INFO - Profile updated successfully for user: testuser
+2025-10-20 15:32:59 - app.logging_config - INFO - Response: 200 - PUT http://testserver/auth/profile - 0.026s
+2025-10-20 15:32:59 - app.logging_config - INFO - Request: PUT http://testserver/auth/profile
+2025-10-20 15:32:59 - auth - INFO - User authenticated successfully: testuser (ID: 3)
+2025-10-20 15:33:00 - auth_router - INFO - Profile update request for user: testuser
+2025-10-20 15:33:00 - UserService - INFO - Updating profile for user ID: 3
+2025-10-20 15:33:00 - auth_router - ERROR - Error updating profile: Invalid phone number format
+2025-10-20 15:33:00 - app.middleware.error_handler - WARNING - HTTP exception: 500 - Failed to update profile: Invalid phone number format
+2025-10-20 15:33:00 - app.logging_config - INFO - Response: 500 - PUT http://testserver/auth/profile - 0.003s
+2025-10-20 15:33:00 - app.logging_config - INFO - Request: PUT http://testserver/auth/profile
+2025-10-20 15:33:00 - auth - INFO - User authenticated successfully: testuser (ID: 3)
+2025-10-20 15:33:00 - auth_router - INFO - Profile update request for user: testuser
+2025-10-20 15:33:00 - UserService - INFO - Updating profile for user ID: 3
+2025-10-20 15:33:00 - auth_router - ERROR - Error updating profile: Age must be between 13 and 120
+2025-10-20 15:33:00 - app.middleware.error_handler - WARNING - HTTP exception: 500 - Failed to update profile: Age must be between 13 and 120
+2025-10-20 15:33:00 - app.logging_config - INFO - Response: 500 - PUT http://testserver/auth/profile - 0.003s
+2025-10-20 15:33:12 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:33:14 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:33:14 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:33:14 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:33:14 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:33:14 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:33:27 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:33:28 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:33:28 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:33:28 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:33:28 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:33:28 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:33:35 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:33:35 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:33:35 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:33:35 - utils - INFO - Creating access token for user: testuser
+2025-10-20 15:33:35 - utils - INFO - Access token created successfully for user: testuser
+2025-10-20 15:33:35 - app.logging_config - INFO - Request: PUT http://testserver/auth/profile
+2025-10-20 15:33:35 - auth - INFO - User authenticated successfully: testuser (ID: 3)
+2025-10-20 15:33:35 - auth_router - INFO - Profile update request for user: testuser
+2025-10-20 15:33:35 - UserService - INFO - Updating profile for user ID: 3
+2025-10-20 15:33:35 - auth_router - WARNING - Validation error updating profile: Invalid phone number format
+2025-10-20 15:33:35 - app.middleware.error_handler - WARNING - HTTP exception: 400 - Invalid phone number format
+2025-10-20 15:33:35 - app.logging_config - INFO - Response: 400 - PUT http://testserver/auth/profile - 0.016s
+2025-10-20 15:33:35 - app.logging_config - INFO - Request: PUT http://testserver/auth/profile
+2025-10-20 15:33:35 - auth - INFO - User authenticated successfully: testuser (ID: 3)
+2025-10-20 15:33:35 - auth_router - INFO - Profile update request for user: testuser
+2025-10-20 15:33:35 - UserService - INFO - Updating profile for user ID: 3
+2025-10-20 15:33:35 - auth_router - WARNING - Validation error updating profile: Age must be between 13 and 120
+2025-10-20 15:33:35 - app.middleware.error_handler - WARNING - HTTP exception: 400 - Age must be between 13 and 120
+2025-10-20 15:33:35 - app.logging_config - INFO - Response: 400 - PUT http://testserver/auth/profile - 0.004s
+2025-10-20 15:33:35 - app.logging_config - INFO - Request: PUT http://testserver/auth/profile
+2025-10-20 15:33:35 - auth - INFO - User authenticated successfully: testuser (ID: 3)
+2025-10-20 15:33:35 - auth_router - INFO - Profile update request for user: testuser
+2025-10-20 15:33:35 - UserService - INFO - Updating profile for user ID: 3
+2025-10-20 15:33:35 - UserRepository - INFO - Updated user: testuser (ID: 3)
+2025-10-20 15:33:35 - UserService - INFO - Profile updated successfully for user: testuser
+2025-10-20 15:33:35 - app.logging_config - INFO - Response: 200 - PUT http://testserver/auth/profile - 0.005s
+2025-10-20 15:34:21 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:34:23 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:34:23 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:34:23 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:34:23 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:34:23 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 15:34:32 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:34:32 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:34:32 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:34:32 - utils - INFO - Creating access token for user: testuser
+2025-10-20 15:34:32 - utils - INFO - Access token created successfully for user: testuser
+2025-10-20 15:34:32 - app.logging_config - INFO - Request: PUT http://testserver/auth/profile
+2025-10-20 15:34:32 - auth - INFO - User authenticated successfully: testuser (ID: 3)
+2025-10-20 15:34:32 - auth_router - INFO - Profile update request for user: testuser
+2025-10-20 15:34:32 - UserService - INFO - Updating profile for user ID: 3
+2025-10-20 15:34:32 - auth_router - WARNING - Validation error updating profile: Name cannot be empty
+2025-10-20 15:34:32 - app.middleware.error_handler - WARNING - HTTP exception: 400 - Name cannot be empty
+2025-10-20 15:34:32 - app.logging_config - INFO - Response: 400 - PUT http://testserver/auth/profile - 0.015s
+2025-10-20 15:34:32 - app.logging_config - INFO - Request: PUT http://testserver/auth/profile
+2025-10-20 15:34:32 - auth - INFO - User authenticated successfully: testuser (ID: 3)
+2025-10-20 15:34:32 - auth_router - INFO - Profile update request for user: testuser
+2025-10-20 15:34:32 - UserService - INFO - Updating profile for user ID: 3
+2025-10-20 15:34:32 - UserRepository - INFO - Updated user: testuser (ID: 3)
+2025-10-20 15:34:32 - UserService - INFO - Profile updated successfully for user: testuser
+2025-10-20 15:34:32 - app.logging_config - INFO - Response: 200 - PUT http://testserver/auth/profile - 0.005s
+2025-10-20 15:35:04 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 15:35:05 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 15:35:05 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 15:35:05 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 15:35:05 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 15:35:05 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:02:23 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:02:25 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:02:25 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:02:25 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:02:25 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:02:25 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:08:57 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:08:59 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:08:59 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:08:59 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:08:59 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:08:59 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:10:04 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:10:05 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:10:05 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:10:05 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:10:05 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:10:05 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:11:09 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:11:10 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:11:10 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:11:10 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:11:10 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:11:10 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:12:28 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:12:29 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:12:29 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:12:29 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:12:29 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:12:29 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:12:36 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:12:37 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:12:37 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:12:37 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:12:37 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:12:37 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:13:07 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:13:08 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:13:08 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:13:08 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:13:08 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:13:08 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:13:27 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:13:28 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:13:28 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:13:28 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:13:28 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:13:28 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:14:09 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:14:10 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:14:10 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:14:10 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:14:10 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:14:10 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:14:44 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:14:45 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:14:45 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:14:45 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:14:45 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:14:45 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:15:23 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:15:25 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:15:25 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:15:25 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:15:25 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:15:25 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:15:54 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:15:55 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:15:55 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:15:55 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:15:55 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:15:55 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:16:24 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:16:25 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:16:25 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:16:25 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:16:25 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:16:25 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:17:18 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:17:18 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:17:18 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:17:18 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:17:18 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:17:18 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:17:43 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:17:44 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:17:44 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:17:44 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:17:44 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:17:44 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:19:04 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:19:05 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:19:05 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:19:05 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:19:05 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:19:05 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:27:47 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:27:48 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:27:48 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:27:48 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:27:48 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:27:48 - app.logging_config - INFO - Database initialized successfully

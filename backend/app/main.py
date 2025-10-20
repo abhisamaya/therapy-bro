@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from app.db import init_db
 from app.routers import auth_router, sessions_router, wallet_router
 from app.logging_config import configure_logging, get_logger
+from app.middleware import register_error_handlers
 
 # Load environment variables
 load_dotenv()
@@ -33,6 +34,9 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app
 app = FastAPI(title="TherapyBro API", version="1.0.0", lifespan=lifespan)
+
+# Register error handlers
+register_error_handlers(app)
 
 # Configure CORS
 def configure_cors():

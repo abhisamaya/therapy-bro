@@ -53,10 +53,12 @@ def db_session(test_session_factory):
 def test_user(db_session):
     """Create a test user."""
     import uuid
+    from app.utils import hash_password
+    
     unique_id = str(uuid.uuid4())[:8]
     user = User(
         login_id=f"test_user_{unique_id}",
-        password_hash="hashed_password",
+        password_hash=hash_password("testpassword123"),
         name="Test User",
         phone="1234567890",
         age=25,

@@ -17,7 +17,7 @@ export async function register(login_id: string, password: string, name?: string
     credentials: 'include',
     body: JSON.stringify({ login_id, password, name })
   })
-  if (!res.ok) throw new Error('register failed')
+  if (!res.ok) throw new Error('User Already Exists!')
   const j = await res.json(); localStorage.setItem('token', j.access_token); return j
 }
 

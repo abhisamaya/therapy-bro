@@ -3,6 +3,7 @@ import pytest
 from app.services.user_service import UserService
 from app.models import User
 from app.schemas import RegisterIn, UpdateProfileIn, UserOut
+from app.exceptions import DuplicateResourceError, AuthenticationError, UserNotFoundError
 
 
 class TestUserService:
@@ -61,7 +62,7 @@ class TestUserService:
             age=30
         )
         
-        with pytest.raises(ValueError, match="login_id already exists"):
+        with pytest.raises(DuplicateResourceError, match="User with login_id 'duplicate_user' already exists"):
             user_service.create_user(user_data2)
     
     def test_authenticate_user_success(self, db_session):
@@ -101,20 +102,16 @@ class TestUserService:
         user_service.create_user(user_data)
         
         # Try to authenticate with wrong password
-        authenticated_user = user_service.authenticate_user("wrong_pass_user", "wrong_password")
-        
-        # Verify authentication failed
-        assert authenticated_user is None
+        with pytest.raises(AuthenticationError, match="Invalid password"):
+            user_service.authenticate_user("wrong_pass_user", "wrong_password")
     
     def test_authenticate_user_not_found(self, db_session):
         """Test authentication for non-existent user."""
         user_service = UserService(db_session)
         
         # Try to authenticate non-existent user
-        authenticated_user = user_service.authenticate_user("nonexistent_user", "password")
-        
-        # Verify authentication failed
-        assert authenticated_user is None
+        with pytest.raises(UserNotFoundError, match="User with login_id 'nonexistent_user' not found"):
+            user_service.authenticate_user("nonexistent_user", "password")
     
     def test_update_user_profile(self, db_session, test_user):
         """Test updating user profile."""

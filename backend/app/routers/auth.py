@@ -16,6 +16,7 @@ from app.google_auth import GoogleAuthServiceFactory
 from app.dependencies import get_user_service
 from app.services.user_service import UserService
 from app.logging_config import get_logger
+from app.exceptions import ValidationError
 
 # Create logger for auth router
 auth_router_logger = get_logger('auth_router')
@@ -29,17 +30,10 @@ def register(payload: RegisterIn, user_service: UserService = Depends(get_user_s
     """Register a new user."""
     auth_router_logger.info(f"Registration attempt for login_id: {payload.login_id}")
     
-    try:
-        user = user_service.create_user(payload)
-        token = create_access_token(payload.login_id)
-        auth_router_logger.info(f"Registration completed successfully for: {payload.login_id}")
-        return TokenOut(access_token=token)
-    except ValueError as e:
-        auth_router_logger.warning(f"Registration failed for login_id: {payload.login_id} - {str(e)}")
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        auth_router_logger.error(f"Registration error for login_id: {payload.login_id} - {str(e)}")
-        raise HTTPException(status_code=500, detail="Registration failed")
+    user = user_service.create_user(payload)
+    token = create_access_token(payload.login_id)
+    auth_router_logger.info(f"Registration completed successfully for: {payload.login_id}")
+    return TokenOut(access_token=token)
 
 
 @router.post("/login", response_model=TokenOut)
@@ -48,10 +42,6 @@ def login(payload: LoginIn, user_service: UserService = Depends(get_user_service
     auth_router_logger.info(f"Login attempt for login_id: {payload.login_id}")
     
     user = user_service.authenticate_user(payload.login_id, payload.password)
-    if not user:
-        auth_router_logger.warning(f"Login failed - invalid credentials for: {payload.login_id}")
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
     token = create_access_token(payload.login_id)
     auth_router_logger.info(f"Login successful for: {payload.login_id}")
     return TokenOut(access_token=token)
@@ -84,6 +74,9 @@ def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_us
                 "age": updated_user.age
             }
         }
+    except ValidationError as e:
+        auth_router_logger.warning(f"Validation error updating profile: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
     except ValueError as e:
         auth_router_logger.error(f"Error updating profile: {str(e)}")
         raise HTTPException(status_code=404, detail=str(e))

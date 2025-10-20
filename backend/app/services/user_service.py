@@ -1,5 +1,5 @@
 """User service for managing user operations."""
-from typing import Optional
+from typing import Optional, Union
 from sqlalchemy.orm import Session
 from app.models import User
 from app.schemas import RegisterIn, UpdateProfileIn, UserOut
@@ -7,6 +7,10 @@ from app.services.base_service import BaseService
 from app.services.wallet_service import WalletService
 from app.repositories.user_repository import UserRepository
 from app.utils import hash_password, verify_password, now_ist
+from app.exceptions import (
+    UserNotFoundError, AuthenticationError, DuplicateResourceError, 
+    ValidationError, AuthorizationError
+)
 
 
 class UserService(BaseService):
@@ -31,15 +35,19 @@ class UserService(BaseService):
             The created user
             
         Raises:
-            ValueError: If login_id already exists
+            DuplicateResourceError: If login_id already exists
+            ValidationError: If validation fails
         """
         self.logger.info(f"Creating new user: {user_data.login_id}")
+        
+        # Validate input data
+        self._validate_user_data(user_data)
         
         # Check if user already exists
         existing_user = self.user_repository.find_by_login_id(user_data.login_id)
         if existing_user:
             self.logger.warning(f"Registration failed - login_id already exists: {user_data.login_id}")
-            raise ValueError("login_id already exists")
+            raise DuplicateResourceError("User", "login_id", user_data.login_id)
         
         # Create user
         user = User(
@@ -62,7 +70,7 @@ class UserService(BaseService):
         
         return created_user
     
-    def authenticate_user(self, login_id: str, password: str) -> Optional[User]:
+    def authenticate_user(self, login_id: str, password: str) -> User:
         """Authenticate a user with login credentials.
         
         Args:
@@ -70,18 +78,22 @@ class UserService(BaseService):
             password: User's password
             
         Returns:
-            User if authentication successful, None otherwise
+            User if authentication successful
+            
+        Raises:
+            UserNotFoundError: If user not found
+            AuthenticationError: If password is invalid
         """
         self.logger.info(f"Authenticating user: {login_id}")
         
         user = self.user_repository.find_by_login_id(login_id)
         if not user:
             self.logger.warning(f"Authentication failed - user not found: {login_id}")
-            return None
+            raise UserNotFoundError(login_id=login_id)
         
         if not verify_password(password, user.password_hash):
             self.logger.warning(f"Authentication failed - invalid password for: {login_id}")
-            return None
+            raise AuthenticationError("Invalid password", login_id)
         
         self.logger.info(f"Authentication successful for: {login_id}")
         return user
@@ -108,6 +120,9 @@ class UserService(BaseService):
             raise ValueError("User not found")
         
         self.logger.debug(f"Found user: {user.login_id}")
+        
+        # Validate the profile data before updating
+        self._validate_user_data(profile_data)
         
         # Update only provided fields (email/login_id cannot be changed)
         if profile_data.name is not None and profile_data.name != "":
@@ -234,3 +249,51 @@ class UserService(BaseService):
             phone=user.phone,
             age=user.age
         )
+    
+    def _validate_user_data(self, user_data: Union[RegisterIn, UpdateProfileIn, User]) -> None:
+        """Validate user data (registration, profile update, or user object).
+        
+        Args:
+            user_data: Registration data, profile update data, or user object to validate
+            
+        Raises:
+            ValidationError: If validation fails
+        """
+        import re
+        
+        # Handle different input types
+        if isinstance(user_data, RegisterIn):
+            # Registration validation
+            if not user_data.login_id or len(user_data.login_id.strip()) < 3:
+                raise ValidationError("Login ID must be at least 3 characters long", "login_id", user_data.login_id)
+            
+            if not user_data.password or len(user_data.password) < 6:
+                raise ValidationError("Password must be at least 6 characters long", "password")
+            
+            if not user_data.name or len(user_data.name.strip()) < 2:
+                raise ValidationError("Name must be at least 2 characters long", "name", user_data.name)
+                
+        elif isinstance(user_data, UpdateProfileIn):
+            # Profile update validation
+            if user_data.name is not None and user_data.name.strip() == "":
+                raise ValidationError("Name cannot be empty", "name", user_data.name)
+                
+        elif isinstance(user_data, User):
+            # User object validation
+            if user_data.name and len(user_data.name.strip()) < 2:
+                raise ValidationError("Name must be at least 2 characters long", "name", user_data.name)
+        
+        # Common validation for phone and age
+        phone_value = getattr(user_data, 'phone', None)
+        age_value = getattr(user_data, 'age', None)
+        
+        # Validate phone format if provided
+        if phone_value and phone_value.strip() != "":
+            phone_pattern = r'^\+?[\d\s\-\(\)]{10,}$'
+            if not re.match(phone_pattern, phone_value):
+                raise ValidationError("Invalid phone number format", "phone", phone_value)
+        
+        # Validate age if provided
+        if age_value is not None:
+            if age_value < 13 or age_value > 120:
+                raise ValidationError("Age must be between 13 and 120", "age", age_value)

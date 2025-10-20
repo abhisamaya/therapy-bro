@@ -41,6 +41,27 @@ export default function AccountPage() {
     age: ''
   })
   const [saving, setSaving] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<{ phone?: string; age?: string }>({})
+
+  const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/
+
+  const validateProfile = (fd: { phone: string; age: string }) => {
+    const errs: { phone?: string; age?: string } = {}
+
+    const trimmedPhone = fd.phone?.trim() || ''
+    if (trimmedPhone && !phoneRegex.test(trimmedPhone)) {
+      errs.phone = 'Invalid phone number format'
+    }
+
+    if (fd.age !== '') {
+      const ageNum = parseInt(fd.age, 10)
+      if (Number.isNaN(ageNum) || ageNum < 13 || ageNum > 120) {
+        errs.age = 'Age must be between 13 and 120'
+      }
+    }
+
+    return errs
+  }
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -79,6 +100,13 @@ export default function AccountPage() {
     setSuccess('')
 
     try {
+      const errs = validateProfile(formData)
+      setFieldErrors(errs)
+      if (errs.phone || errs.age) {
+        setError(Object.values(errs).join(' • '))
+        setSaving(false)
+        return
+      }
       const updateData: any = {}
       // Only include fields that have values
       if (formData.name && formData.name.trim() !== '') {
@@ -88,7 +116,10 @@ export default function AccountPage() {
         updateData.phone = formData.phone.trim()
       }
       if (formData.age && formData.age !== '') {
-        updateData.age = parseInt(formData.age)
+        const ageNum = parseInt(formData.age, 10)
+        if (!Number.isNaN(ageNum)) {
+          updateData.age = ageNum
+        }
       }
 
       console.log('4. Data to send:', updateData)
@@ -110,6 +141,7 @@ export default function AccountPage() {
       })
       setSuccess('Profile updated successfully!')
       setEditMode(false)
+      setFieldErrors({})
 
       console.log('9. Profile update completed successfully!')
       // Clear success message after 3 seconds
@@ -287,6 +319,9 @@ export default function AccountPage() {
                   </label>
                   <input
                     type="tel"
+                    pattern="^(?:\+?91[\s-]?|0)?(?:[()\s-]*[6-9][()\s-]*\d[()\s-]*){9}$"
+                    minLength={10}
+                    maxLength={12}
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     disabled={!editMode}
@@ -294,7 +329,11 @@ export default function AccountPage() {
                       editMode ? 'bg-white focus:ring-2 focus:ring-accent focus:border-accent' : 'bg-bg-muted cursor-not-allowed'
                     }`}
                     placeholder="Enter your phone number"
+                    aria-invalid={!!fieldErrors.phone}
                   />
+                  {fieldErrors.phone && (
+                    <p className="text-sm text-red-600">{fieldErrors.phone}</p>
+                  )}
                 </div>
 
                 {/* Age */}
@@ -305,6 +344,8 @@ export default function AccountPage() {
                   </label>
                   <input
                     type="number"
+                    min={13}
+                    max={120}
                     value={formData.age}
                     onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                     disabled={!editMode}
@@ -312,7 +353,11 @@ export default function AccountPage() {
                       editMode ? 'bg-white focus:ring-2 focus:ring-accent focus:border-accent' : 'bg-bg-muted cursor-not-allowed'
                     }`}
                     placeholder="Enter your age"
+                    aria-invalid={!!fieldErrors.age}
                   />
+                  {fieldErrors.age && (
+                    <p className="text-sm text-red-600">{fieldErrors.age}</p>
+                  )}
                 </div>
               </div>
 

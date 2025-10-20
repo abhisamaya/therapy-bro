@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, Suspense } from "react";
 import { listChats, startSession, getHistory, streamMessage, deleteSession } from "@/lib/api";
 import ChatInput from "@/components/ChatInput";
 import ChatMessage from "@/components/ChatMessage";
@@ -16,7 +16,7 @@ type Conv = {
   notes?: string;
 };
 
-export default function ChatPage() {
+function ChatPageInner() {
   const [convs, setConvs] = useState<Conv[]>([]);
   const [active, setActive] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -688,5 +688,13 @@ export default function ChatPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-bg text-text flex items-center justify-center">Loading chat...</div>}>
+      <ChatPageInner />
+    </Suspense>
   );
 }
