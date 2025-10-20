@@ -1227,3 +1227,21 @@ google.auth.exceptions.InvalidValue: Token has wrong audience 91594839033-tsceqr
 2025-10-20 16:27:48 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
 2025-10-20 16:27:48 - app.logging_config - INFO - Starting TherapyBro application
 2025-10-20 16:27:48 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:36:32 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:36:33 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:36:33 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:36:33 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:36:33 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:36:33 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:39:11 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:39:12 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:39:12 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:39:12 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:39:12 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:39:12 - app.logging_config - INFO - Database initialized successfully
+2025-10-20 16:40:16 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-20 16:40:17 - app.logging_config - INFO - Logging configured successfully
+2025-10-20 16:40:17 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-20 16:40:17 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-20 16:40:17 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-20 16:40:17 - app.logging_config - INFO - Database initialized successfully
