@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AuthResponse, RegisterData, LoginData, Listener } from '@/types';
+import { AuthResponse, RegisterData, LoginData, Listener, ProfileUpdateData } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -32,6 +32,11 @@ export const authApi = {
 
   getMe: async (): Promise<Listener> => {
     const response = await api.get<Listener>('/auth/me');
+    return response.data;
+  },
+
+  updateProfile: async (data: ProfileUpdateData): Promise<Listener> => {
+    const response = await api.put<Listener>('/auth/profile', data);
     return response.data;
   },
 
