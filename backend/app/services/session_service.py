@@ -77,8 +77,19 @@ class SessionService(BaseService):
             # Create chat session
             # Initialize server-enforced timer for default 5 minutes
             start_time = now_utc()
-            default_duration = 300
-            end_time = start_time + timedelta(seconds=default_duration)
+            # Check if this is the user's first session
+            existing = self.session_repository.find_by_user_id(user_id)
+            is_first_session = len(existing) == 0
+
+            if is_first_session:
+                default_duration = 300
+                end_time = start_time + timedelta(seconds=default_duration)
+                status = "active"
+            else:
+                default_duration = 0
+                end_time = start_time  # ended immediately
+                status = "ended"
+
 
             chat_session = ChatSession(
                 session_id=session_id,
@@ -90,7 +101,7 @@ class SessionService(BaseService):
                 session_start_time=start_time,
                 session_end_time=end_time,
                 duration_seconds=default_duration,
-                status="active",
+                status=status,
             )
             chat_session = self.session_repository.create(chat_session)
             

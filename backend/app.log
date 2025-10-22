@@ -4024,3 +4024,75 @@ google.auth.exceptions.InvalidValue: Token has wrong audience 91594839033-tsceqr
 2025-10-23 00:38:55 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
 2025-10-23 00:38:55 - app.logging_config - INFO - Starting TherapyBro application
 2025-10-23 00:38:55 - app.logging_config - INFO - Database initialized successfully
+2025-10-23 00:41:12 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 00:41:12 - auth - INFO - User authenticated successfully: demo (ID: 4)
+2025-10-23 00:41:12 - wallet_router - INFO - Getting wallet for user: demo
+2025-10-23 00:41:12 - wallet_router - INFO - Wallet retrieved for user: demo, balance: 200.0000
+2025-10-23 00:41:12 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.014s
+2025-10-23 00:41:12 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 00:41:12 - auth - INFO - User authenticated successfully: demo (ID: 4)
+2025-10-23 00:41:12 - wallet_router - INFO - Getting wallet for user: demo
+2025-10-23 00:41:12 - wallet_router - INFO - Wallet retrieved for user: demo, balance: 200.0000
+2025-10-23 00:41:12 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 00:41:13 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 00:41:13 - auth - INFO - User authenticated successfully: demo (ID: 4)
+2025-10-23 00:41:13 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.014s
+2025-10-23 00:41:13 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 00:41:13 - auth - INFO - User authenticated successfully: demo (ID: 4)
+2025-10-23 00:41:13 - wallet_router - INFO - Getting wallet for user: demo
+2025-10-23 00:41:13 - wallet_router - INFO - Wallet retrieved for user: demo, balance: 200.0000
+2025-10-23 00:41:13 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 00:41:13 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/ea459a39e49045f09bbf71c1e782affa
+2025-10-23 00:41:13 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/ea459a39e49045f09bbf71c1e782affa - 0.000s
+2025-10-23 00:41:13 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/ea459a39e49045f09bbf71c1e782affa
+2025-10-23 00:41:13 - auth - INFO - User authenticated successfully: demo (ID: 4)
+2025-10-23 00:41:13 - sessions_router - INFO - Retrieving history for session: ea459a39e49045f09bbf71c1e782affa, user: demo
+2025-10-23 00:41:13 - SessionService - INFO - Retrieving history for session: ea459a39e49045f09bbf71c1e782affa, user_id: 4
+2025-10-23 00:41:13 - SessionService - INFO - Retrieved 3 messages for session: ea459a39e49045f09bbf71c1e782affa
+2025-10-23 00:41:13 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/ea459a39e49045f09bbf71c1e782affa - 0.004s
+2025-10-23 00:43:19 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-23 00:43:20 - app.logging_config - INFO - Logging configured successfully
+2025-10-23 00:43:20 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-23 00:43:20 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-23 00:43:20 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-23 00:43:20 - app.logging_config - INFO - Database initialized successfully
+2025-10-23 00:44:13 - app.logging_config - INFO - Shutting down TherapyBro application
+2025-10-23 00:44:14 - app.logging_config - INFO - Logging configured successfully
+2025-10-23 00:44:14 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-23 00:44:14 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-23 00:44:14 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-23 00:44:14 - app.logging_config - INFO - Database initialized successfully
+2025-10-23 00:51:44 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/ea459a39e49045f09bbf71c1e782affa/extend
+2025-10-23 00:51:44 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/ea459a39e49045f09bbf71c1e782affa/extend - 0.000s
+2025-10-23 00:51:44 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/ea459a39e49045f09bbf71c1e782affa/extend
+2025-10-23 00:51:44 - auth - INFO - User authenticated successfully: demo (ID: 4)
+2025-10-23 00:51:44 - SessionService - INFO - Extending session ea459a39e49045f09bbf71c1e782affa for user 4 by 300s
+2025-10-23 00:51:44 - WalletRepository - INFO - Updated wallet: 4 for user_id: 4
+2025-10-23 00:51:44 - TransactionRepository - INFO - Created transaction: charge (ID: 8)
+2025-10-23 00:51:44 - SessionRepository - INFO - Updated session: ea459a39e49045f09bbf71c1e782affa (ID: 4)
+2025-10-23 00:51:44 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions/ea459a39e49045f09bbf71c1e782affa/extend - 0.062s
+2025-10-23 00:51:44 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/chats
+2025-10-23 00:51:44 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/chats - 0.000s
+2025-10-23 00:51:44 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 00:51:44 - auth - INFO - User authenticated successfully: demo (ID: 4)
+2025-10-23 00:51:44 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 00:52:08 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/chats
+2025-10-23 00:52:08 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/chats - 0.000s
+2025-10-23 00:52:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 00:52:08 - auth - INFO - User authenticated successfully: test (ID: 1)
+2025-10-23 00:52:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 00:52:08 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/wallet
+2025-10-23 00:52:08 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/wallet - 0.000s
+2025-10-23 00:52:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 00:52:08 - auth - INFO - User authenticated successfully: test (ID: 1)
+2025-10-23 00:52:08 - wallet_router - INFO - Getting wallet for user: test
+2025-10-23 00:52:08 - wallet_router - INFO - Wallet retrieved for user: test, balance: 200.0000
+2025-10-23 00:52:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 00:52:08 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/0d8f3668680a47da959dd5e0af886cac
+2025-10-23 00:52:08 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/0d8f3668680a47da959dd5e0af886cac - 0.000s
+2025-10-23 00:52:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/0d8f3668680a47da959dd5e0af886cac
+2025-10-23 00:52:08 - auth - INFO - User authenticated successfully: test (ID: 1)
+2025-10-23 00:52:08 - sessions_router - INFO - Retrieving history for session: 0d8f3668680a47da959dd5e0af886cac, user: test
+2025-10-23 00:52:08 - SessionService - INFO - Retrieving history for session: 0d8f3668680a47da959dd5e0af886cac, user_id: 1
+2025-10-23 00:52:08 - SessionService - INFO - Retrieved 7 messages for session: 0d8f3668680a47da959dd5e0af886cac
+2025-10-23 00:52:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/0d8f3668680a47da959dd5e0af886cac - 0.004s

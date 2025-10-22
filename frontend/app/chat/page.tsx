@@ -286,6 +286,11 @@ function ChatPageInner() {
           // Start timer from session response
           console.log('📝 [SESSION] Calling startTimerFromSessionResponse...');
           startTimerFromSessionResponse(s);
+
+          // If session is ended (e.g., non-free session), open modal to extend/pay
+          if (s?.status === "ended") {
+            setExpiredModalOpen(true);
+          }
           
           // Update conversations list
           const updatedList = await listChats();
@@ -361,6 +366,11 @@ function ChatPageInner() {
     
     // Start timer from session response
     startTimerFromSessionResponse(s);
+
+    // If session is ended immediately, prompt user to extend/pay
+    if (s?.status === "ended") {
+      setExpiredModalOpen(true);
+    }
     
     // Update conversations list after creating new session
     const updatedList = await listChats();
