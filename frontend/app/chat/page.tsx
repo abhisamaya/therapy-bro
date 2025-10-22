@@ -326,7 +326,22 @@ function ChatPageInner() {
   const select = async (id: string) => {
     setActive(id);
     const h = await load(id);
-    
+
+    // Compute UTC "today" using session_start_time from history (source of truth)
+    const todayUTC = new Date().toISOString().slice(0, 10); // YYYY-MM-DD in UTC
+    const startIso: string | null = h?.session_start_time ? String(h.session_start_time) : null;
+    const isToday = startIso ? new Date(startIso).toISOString().slice(0, 10) === todayUTC : false;
+
+    // If session ended and it started today (UTC), open expired modal to allow extension
+    if (h?.status === "ended") {
+      setRunning(false);
+      setRemaining(0);
+      if (isToday) {
+        setExpiredModalOpen(true);
+      }
+      return;
+    }
+
     // Start timer from history response (which includes timer state)
     console.log('🔄 [SELECT] Session history loaded:', h);
     console.log('🔄 [SELECT] Timer state - status:', h?.status, 'remaining_seconds:', h?.remaining_seconds);

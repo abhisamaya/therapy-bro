@@ -189,10 +189,19 @@ class SessionService(BaseService):
         minutes = Decimal(duration_seconds) / Decimal(60)
         amount = (unit_price * minutes).quantize(Decimal("0.01"))
 
-        # Load session and wallet
+        # Load session and ensure it belongs to user
         chat_session = self.session_repository.find_by_session_and_user(session_id, user_id)
         if not chat_session:
             raise ValueError("Session not found")
+
+        # Enforce: only allow extending sessions that started today (UTC)
+        start_time = chat_session.session_start_time
+        if start_time is None:
+            raise RuntimeError("NOT_TODAY")
+        if getattr(start_time, "tzinfo", None) is None:
+            start_time = start_time.replace(tzinfo=timezone.utc)
+        if start_time.date() != now_utc().date():
+            raise RuntimeError("NOT_TODAY")
 
         wallet_repo = WalletRepository(self.db)
         tx_repo = TransactionRepository(self.db)

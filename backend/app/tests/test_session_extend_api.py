@@ -107,3 +107,48 @@ def test_extend_session_success(db_session, test_user):
     assert "wallet_balance" in data
     assert data["cost_charged"] in ("20.00", "20.0", "20.0000")
 
+
+def test_extend_session_fails_when_not_today_utc(db_session, test_user):
+    # Create a session that started yesterday (UTC)
+    start = now_utc() - timedelta(days=1)
+    s = ChatSession(
+        session_id="sess-extend-not-today",
+        user_id=test_user.id,
+        category="TherapyBro",
+        created_at=start,
+        updated_at=start,
+        session_start_time=start,
+        session_end_time=start + timedelta(seconds=300),
+        duration_seconds=300,
+        status="ended",
+    )
+    db = db_session
+    db.add(s)
+    db.commit()
+
+    # Sufficient wallet balance
+    w = Wallet(user_id=test_user.id, balance=Decimal("100.00"), reserved=Decimal("0.00"), currency="INR")
+    db.add(w)
+    db.commit()
+
+    token = create_access_token(test_user.login_id)
+
+    # Override auth and DB for test app
+    app.dependency_overrides[get_current_user] = lambda: test_user
+    def _override_db3():
+        yield db_session
+    app.dependency_overrides[get_db_session] = _override_db3
+    try:
+        res = client.post(
+            f"/api/sessions/{s.session_id}/extend",
+            json={"duration_seconds": 300},
+            headers=auth_headers(token),
+        )
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
+        app.dependency_overrides.pop(get_db_session, None)
+
+    assert res.status_code == 403
+    body = res.json()
+    assert body["error"]["code"] == "HTTP_403"
+    assert "today" in body["error"]["message"].lower()

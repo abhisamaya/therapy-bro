@@ -120,4 +120,6 @@ def extend_session(session_id: str, payload: ExtendSessionIn, user: User = Depen
     except RuntimeError as e:
         if str(e) == "INSUFFICIENT_FUNDS":
             raise HTTPException(status_code=402, detail="Insufficient wallet balance")
+        if str(e) == "NOT_TODAY":
+            raise HTTPException(status_code=403, detail="Only today's sessions (UTC) can be extended")
         raise HTTPException(status_code=500, detail="Failed to extend session")
