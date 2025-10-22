@@ -7,7 +7,7 @@ from app.schemas import WalletOut
 from app.services.base_service import BaseService
 from app.repositories.wallet_repository import WalletRepository, TransactionRepository
 from app.config.settings import get_settings
-from app.utils import now_ist
+from app.utils import now_utc
 
 
 class WalletService(BaseService):
@@ -41,7 +41,7 @@ class WalletService(BaseService):
             balance=settings.initial_wallet_balance,
             reserved=Decimal("0.0000"),
             currency=settings.wallet_currency,
-            updated_at=now_ist()
+            updated_at=now_utc()
         )
         
         # Add wallet to database
@@ -56,7 +56,7 @@ class WalletService(BaseService):
             balance_after=settings.initial_wallet_balance,
             reference_id="initial_signup_bonus",
             meta={"reason": "New user signup bonus"},
-            created_at=now_ist()
+            created_at=now_utc()
         )
         self.transaction_repository.create(transaction)
         self.db.refresh(wallet)
@@ -139,7 +139,7 @@ class WalletService(BaseService):
         wallet.balance = new_balance
         if reserved is not None:
             wallet.reserved = reserved
-        wallet.updated_at = now_ist()
+        wallet.updated_at = now_utc()
         
         return self.wallet_repository.update(wallet)
 
@@ -184,14 +184,14 @@ class WalletService(BaseService):
             balance_after=new_balance,
             reference_id=reference_id,
             meta=meta or {},
-            created_at=now_ist()
+            created_at=now_utc()
         )
         
         transaction = self.transaction_repository.create(transaction)
         
         # Update wallet balance
         wallet.balance = new_balance
-        wallet.updated_at = now_ist()
+        wallet.updated_at = now_utc()
         
         self.wallet_repository.update(wallet)
         

@@ -5,6 +5,9 @@ from sqlmodel import SQLModel, create_engine, Session
 from sqlalchemy.pool import QueuePool
 import os
 
+# Import all models so SQLModel knows about them
+from app.models import User, ChatSession, Message, Wallet, WalletTransaction, SessionCharge, Payment
+
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./chat.db")
 
 # Configure connection pooling

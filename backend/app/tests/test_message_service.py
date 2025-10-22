@@ -17,11 +17,12 @@ class TestMessageService:
         
         # Create a test session
         session_service = SessionService(db_session)
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Mock the LLM factory and streamer
         with patch('app.services.message_service.get_llm_factory') as mock_get_factory:
@@ -59,11 +60,12 @@ class TestMessageService:
         
         # Create a test session
         session_service = SessionService(db_session)
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Mock LLM factory to raise error
         with patch('app.services.message_service.get_llm_factory') as mock_get_factory:
@@ -82,11 +84,12 @@ class TestMessageService:
         
         # Create a test session with messages
         session_service = SessionService(db_session)
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         session_service.add_user_message(session_id, "Hello", test_user.id)
         session_service.add_assistant_message(session_id, "Hi there!")
         
@@ -107,11 +110,12 @@ class TestMessageService:
         
         # Create a test session
         session_service = SessionService(db_session)
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Add user message
         message_service.add_user_message(session_id, "Test message", test_user.id)
@@ -135,11 +139,12 @@ class TestMessageService:
         
         # Create a test session
         session_service = SessionService(db_session)
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Add assistant message
         message_service.add_assistant_message(session_id, "Assistant response")
@@ -156,11 +161,12 @@ class TestMessageService:
         
         # Create a test session
         session_service = SessionService(db_session)
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Validate access
         has_access = message_service.validate_session_access(session_id, test_user.id)
@@ -188,11 +194,12 @@ class TestMessageService:
         
         # Create a test session for test_user
         session_service = SessionService(db_session)
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Validate access with other user
         has_access = message_service.validate_session_access(session_id, other_user.id)
@@ -214,11 +221,12 @@ class TestMessageService:
         
         # Create a test session
         session_service = SessionService(db_session)
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Mock the LLM factory and streamer
         with patch('app.services.message_service.get_llm_factory') as mock_get_factory:

@@ -9,7 +9,7 @@ from app.db import get_session
 from app.models import User
 from app.schemas import (
     StartSessionIn, StartSessionOut, MessageIn, MessageOut, HistoryOut,
-    ConversationItem, NotesIn
+    ConversationItem, NotesIn, ExtendSessionIn, ExtendSessionOut
 )
 from app.prompts import system_prompt_for
 from app.auth import get_current_user
@@ -39,9 +39,9 @@ def start_session(payload: StartSessionIn, user: User = Depends(get_current_user
     system_prompt = system_prompt_for(payload.category)
     
     try:
-        session_id = session_service.create_session(user.id, payload.category, system_prompt)
-        sessions_router_logger.info(f"Session created successfully: {session_id} for user: {user.login_id}")
-        return {"session_id": session_id}
+        session_out = session_service.create_session(user.id, payload.category, system_prompt)
+        sessions_router_logger.info(f"Session created successfully: {session_out.session_id} for user: {user.login_id}")
+        return session_out
     except Exception as e:
         sessions_router_logger.error(f"Failed to create session for user {user.login_id}: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to create session")
@@ -86,26 +86,38 @@ def delete_session(session_id: str, user: User = Depends(get_current_user)):
 
 
 @router.post("/sessions/{session_id}/messages")
-def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_current_user)):
+def send_message(session_id: str, payload: MessageIn, user: User = Depends(get_current_user), message_service: MessageService = Depends(get_message_service)):
     """Send a message to a chat session and get streaming response."""
     sessions_router_logger.info(f"Processing message for session: {session_id}, user: {user.login_id}")
     sessions_router_logger.debug(f"Message length: {len(payload.content)} characters")
     
     try:
-        with get_session() as db:
-            message_service = MessageService(db)
-            
-            # Get provider from environment or use default
-            provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
-            
-            # Process message and get streaming response
-            return message_service.process_message_stream(
-                session_id, user.id, payload.content, provider
-            )
+        # Get provider from environment or use default
+        provider = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()
+        
+        # Process message and get streaming response
+        return message_service.process_message_stream(
+            session_id, user.id, payload.content, provider
+        )
             
     except ValueError as e:
         sessions_router_logger.warning(f"Session not found: {session_id} for user: {user.login_id}")
         raise HTTPException(status_code=404, detail=str(e))
     except RuntimeError as e:
+        if str(e) == "SESSION_EXPIRED":
+            raise HTTPException(status_code=403, detail="Session has ended. Please extend to continue.")
         sessions_router_logger.error(f"LLM processing error for session {session_id}: {str(e)}")
         raise HTTPException(status_code=500, detail="LLM processing failed")
+
+
+@router.post("/sessions/{session_id}/extend", response_model=ExtendSessionOut)
+def extend_session(session_id: str, payload: ExtendSessionIn, user: User = Depends(get_current_user), session_service: SessionService = Depends(get_session_service)):
+    """Extend a session after charging wallet based on duration."""
+    try:
+        return session_service.extend_session(session_id, user.id, payload.duration_seconds, payload.request_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except RuntimeError as e:
+        if str(e) == "INSUFFICIENT_FUNDS":
+            raise HTTPException(status_code=402, detail="Insufficient wallet balance")
+        raise HTTPException(status_code=500, detail="Failed to extend session")

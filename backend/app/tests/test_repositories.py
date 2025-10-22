@@ -6,7 +6,7 @@ from app.repositories.session_repository import SessionRepository
 from app.repositories.message_repository import MessageRepository
 from app.repositories.wallet_repository import WalletRepository, TransactionRepository
 from app.models import User, ChatSession, Message, Wallet, WalletTransaction
-from app.utils import now_ist
+from app.utils import now_utc
 
 
 class TestUserRepository:
@@ -22,7 +22,7 @@ class TestUserRepository:
             name="Test User Repo",
             phone="1234567890",
             age=25,
-            created_at=now_ist()
+            created_at=now_utc()
         )
         
         created_user = repo.create(user)
@@ -71,8 +71,8 @@ class TestSessionRepository:
             user_id=test_user.id,
             category="test",
             notes=None,
-            created_at=now_ist(),
-            updated_at=now_ist()
+            created_at=now_utc(),
+            updated_at=now_utc()
         )
         
         created_session = repo.create(session)
@@ -89,8 +89,8 @@ class TestSessionRepository:
             session_id="find_test_session",
             user_id=test_user.id,
             category="test",
-            created_at=now_ist(),
-            updated_at=now_ist()
+            created_at=now_utc(),
+            updated_at=now_utc()
         )
         created_session = repo.create(session)
         
@@ -109,15 +109,15 @@ class TestSessionRepository:
             session_id="user_session_1",
             user_id=test_user.id,
             category="test1",
-            created_at=now_ist(),
-            updated_at=now_ist()
+            created_at=now_utc(),
+            updated_at=now_utc()
         )
         session2 = ChatSession(
             session_id="user_session_2",
             user_id=test_user.id,
             category="test2",
-            created_at=now_ist(),
-            updated_at=now_ist()
+            created_at=now_utc(),
+            updated_at=now_utc()
         )
         
         repo.create(session1)
@@ -143,7 +143,7 @@ class TestMessageRepository:
             session_id="test_session",
             role="user",
             content="Test message content",
-            created_at=now_ist()
+            created_at=now_utc()
         )
         
         created_message = repo.create(message)
@@ -161,13 +161,13 @@ class TestMessageRepository:
             session_id="test_session_messages",
             role="user",
             content="First message",
-            created_at=now_ist()
+            created_at=now_utc()
         )
         message2 = Message(
             session_id="test_session_messages",
             role="assistant",
             content="Second message",
-            created_at=now_ist()
+            created_at=now_utc()
         )
         
         repo.create(message1)
@@ -194,7 +194,7 @@ class TestWalletRepository:
             balance=Decimal("100.0000"),
             reserved=Decimal("0.0000"),
             currency="USD",
-            updated_at=now_ist()
+            updated_at=now_utc()
         )
         
         created_wallet = repo.create(wallet)
@@ -212,7 +212,7 @@ class TestWalletRepository:
             balance=Decimal("200.0000"),
             reserved=Decimal("0.0000"),
             currency="USD",
-            updated_at=now_ist()
+            updated_at=now_utc()
         )
         created_wallet = repo.create(wallet)
         
@@ -238,7 +238,7 @@ class TestTransactionRepository:
             balance_after=Decimal("250.0000"),
             reference_id="test_transaction",
             meta={"reason": "Test transaction"},
-            created_at=now_ist()
+            created_at=now_utc()
         )
         
         created_transaction = repo.create(transaction)
@@ -259,7 +259,7 @@ class TestTransactionRepository:
             amount=Decimal("100.0000"),
             balance_after=Decimal("300.0000"),
             reference_id="transaction_1",
-            created_at=now_ist()
+            created_at=now_utc()
         )
         transaction2 = WalletTransaction(
             wallet_id=test_wallet.id,
@@ -268,7 +268,7 @@ class TestTransactionRepository:
             amount=Decimal("50.0000"),
             balance_after=Decimal("250.0000"),
             reference_id="transaction_2",
-            created_at=now_ist()
+            created_at=now_utc()
         )
         
         repo.create(transaction1)

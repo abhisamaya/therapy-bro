@@ -50,6 +50,8 @@ class Settings(BaseSettings):
     # Wallet Configuration
     initial_wallet_balance: Decimal = Field(default=Decimal("200.0000"))
     wallet_currency: str = Field(default="INR")
+    # Pricing Configuration (server-side enforced minutes pricing)
+    inr_per_minute: Decimal = Field(default=Decimal("4.00"), alias="INR_PER_MINUTE")
     
     # Logging Configuration
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")

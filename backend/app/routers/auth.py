@@ -10,7 +10,7 @@ from app.models import User
 from app.schemas import (
     RegisterIn, LoginIn, TokenOut, UpdateProfileIn, GoogleAuthIn, UserOut
 )
-from app.utils import now_ist, create_access_token, JWT_EXPIRE_MIN
+from app.utils import now_utc, create_access_token, JWT_EXPIRE_MIN
 from app.auth import get_current_user
 from app.google_auth import GoogleAuthServiceFactory
 from app.dependencies import get_user_service
@@ -92,7 +92,7 @@ def google_auth(payload: GoogleAuthIn, response: Response, user_service: UserSer
     login_logger.info("="*60)
     login_logger.info("=== FASTAPI BACKEND: /auth/google ===")
     login_logger.info("="*60)
-    login_logger.info(f"🔵 Timestamp: {now_ist()}")
+    login_logger.info(f"🔵 Timestamp: {now_utc()}")
     login_logger.info(f"📦 Received id_token length: {len(payload.id_token)}")
     login_logger.debug(f"📦 ID Token preview: {payload.id_token[:50]}...")
 

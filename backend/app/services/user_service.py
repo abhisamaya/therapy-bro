@@ -6,7 +6,7 @@ from app.schemas import RegisterIn, UpdateProfileIn, UserOut
 from app.services.base_service import BaseService
 from app.services.wallet_service import WalletService
 from app.repositories.user_repository import UserRepository
-from app.utils import hash_password, verify_password, now_ist
+from app.utils import hash_password, verify_password, now_utc
 from app.exceptions import (
     UserNotFoundError, AuthenticationError, DuplicateResourceError, 
     ValidationError, AuthorizationError
@@ -56,7 +56,7 @@ class UserService(BaseService):
             name=user_data.name,
             phone=user_data.phone,
             age=user_data.age,
-            created_at=now_ist(),
+            created_at=now_utc(),
         )
         
         created_user = self.user_repository.create(user)
@@ -215,7 +215,7 @@ class UserService(BaseService):
             avatar_url=google_user_info['avatar_url'],
             google_id=google_user_info['google_id'],
             auth_provider="google",
-            created_at=now_ist(),
+            created_at=now_utc(),
         )
         
         created_user = self.user_repository.create(user)

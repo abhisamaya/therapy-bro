@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback, Suspense } from "react";
-import { listChats, startSession, getHistory, streamMessage, deleteSession } from "@/lib/api";
+import { listChats, startSession, getHistory, streamMessage, deleteSession, extendSessionAPI, getWallet } from "@/lib/api";
 import ChatInput from "@/components/ChatInput";
 import ChatMessage from "@/components/ChatMessage";
 import TopNav from "@/components/TopNav";
@@ -14,6 +14,8 @@ type Conv = {
   category: string;
   updated_at: string;
   notes?: string;
+  status: "active" | "ended";
+  remaining_seconds: number;
 };
 
 function ChatPageInner() {
@@ -37,6 +39,16 @@ function ChatPageInner() {
   const [remaining, setRemaining] = useState<number>(300);
   const [running, setRunning] = useState<boolean>(false);
   const timerRef = useRef<number | null>(null);
+
+  // Server-side timer state
+  const [serverTimerState, setServerTimerState] = useState<{
+    status: "active" | "ended";
+    remaining_seconds: number;
+  } | null>(null);
+
+  // Wallet state
+  const [walletBalance, setWalletBalance] = useState<string>("0.00");
+  const [walletLoading, setWalletLoading] = useState(false);
 
   // Expiry modal
   const [expiredModalOpen, setExpiredModalOpen] = useState(false);
@@ -65,6 +77,110 @@ function ChatPageInner() {
   const appendSystem = useCallback((text: string) => {
     setMessages((prev) => [...prev, { role: "system", content: text }]);
   }, []);
+
+  // Load wallet balance
+  const loadWalletBalance = useCallback(async () => {
+    try {
+      setWalletLoading(true);
+      const wallet = await getWallet();
+      setWalletBalance(wallet.balance);
+    } catch (error) {
+      console.error('Failed to load wallet:', error);
+    } finally {
+      setWalletLoading(false);
+    }
+  }, []);
+
+  // Sync timer state with server
+  const syncTimerWithServer = useCallback((conv: Conv) => {
+    console.log('🔄 [SYNC] syncTimerWithServer called');
+    console.log('🔄 [SYNC] Conv object:', JSON.stringify(conv, null, 2));
+    console.log('🔄 [SYNC] status:', conv?.status);
+    console.log('🔄 [SYNC] remaining_seconds:', conv?.remaining_seconds);
+    console.log('🔄 [SYNC] Condition: status === "active"?', conv?.status === "active");
+    console.log('🔄 [SYNC] Condition: remaining_seconds > 0?', conv?.remaining_seconds > 0);
+    
+    if (conv.status === "active" && conv.remaining_seconds > 0) {
+      console.log('✅ [SYNC] SYNCING TIMER with', conv.remaining_seconds, 'seconds');
+      setServerTimerState({
+        status: conv.status,
+        remaining_seconds: conv.remaining_seconds
+      });
+      setRemaining(conv.remaining_seconds);
+      setRunning(true);
+      
+      // Start client-side countdown
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      
+      timerRef.current = window.setInterval(() => {
+        setRemaining((prev) => {
+          if (prev <= 1) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+            setRunning(false);
+            setExpiredModalOpen(true);
+            appendSystem("Time's up — session ended.");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      setServerTimerState({
+        status: conv.status,
+        remaining_seconds: 0
+      });
+      setRemaining(0);
+      setRunning(false);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+  }, [appendSystem]);
+
+  // Helper function to start timer from session response
+  const startTimerFromSessionResponse = useCallback((sessionResponse: any) => {
+    console.log('🔍 [TIMER] startTimerFromSessionResponse called');
+    console.log('🔍 [TIMER] Full response:', JSON.stringify(sessionResponse, null, 2));
+    console.log('🔍 [TIMER] status:', sessionResponse?.status);
+    console.log('🔍 [TIMER] remaining_seconds:', sessionResponse?.remaining_seconds);
+    console.log('🔍 [TIMER] Condition check: status === "active"?', sessionResponse?.status === "active");
+    console.log('🔍 [TIMER] Condition check: remaining_seconds > 0?', sessionResponse?.remaining_seconds > 0);
+    
+    if (sessionResponse.status === "active" && sessionResponse.remaining_seconds > 0) {
+      console.log('✅ [TIMER] STARTING TIMER with', sessionResponse.remaining_seconds, 'seconds');
+      setRemaining(sessionResponse.remaining_seconds);
+      setRunning(true);
+      
+      // Start client-side countdown
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      
+      timerRef.current = window.setInterval(() => {
+        setRemaining((prev) => {
+          if (prev <= 1) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+            setRunning(false);
+            setExpiredModalOpen(true);
+            appendSystem("Time's up — session ended.");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+  }, [appendSystem]);
 
   // get category name for active session id
   const getActiveCategory = (): string | null => {
@@ -115,6 +231,9 @@ function ChatPageInner() {
         const list = await listChats();
         setConvs(list);
         
+        // Load wallet balance
+        await loadWalletBalance();
+        
         // Handle specific session from URL
         if (sessionParam) {
           const sessionExists = list.find((c: Conv) => c.session_id === sessionParam);
@@ -155,16 +274,30 @@ function ChatPageInner() {
           }
         } else {
           // create a default session and start it
+          console.log('📝 [SESSION] Creating default session...');
           const s = await startSession("TherapyBro");
+          console.log('📝 [SESSION] Session created, raw response:', s);
+          console.log('📝 [SESSION] Session ID:', s?.session_id);
+          console.log('📝 [SESSION] Has status:', 'status' in (s || {}));
+          console.log('📝 [SESSION] Has remaining_seconds:', 'remaining_seconds' in (s || {}));
           setActive(s.session_id);
           await load(s.session_id);
-          setConvs(await listChats());
-          startTimerWithCurrentDuration();
+          
+          // Start timer from session response
+          console.log('📝 [SESSION] Calling startTimerFromSessionResponse...');
+          startTimerFromSessionResponse(s);
+          
+          // Update conversations list
+          const updatedList = await listChats();
+          setConvs(updatedList);
+          
           appendSystem(LISTENER_META.TherapyBro.welcome);
         }
         
         isProcessing.current = false;
-      } catch {
+      } catch (error) {
+        console.error('❌ [ERROR] Exception in useEffect:', error);
+        console.error('❌ [ERROR] Error details:', error instanceof Error ? error.message : String(error));
         isProcessing.current = false;
         router.push("/login");
       }
@@ -186,22 +319,33 @@ function ChatPageInner() {
       const meta = LISTENER_META[cat] ?? LISTENER_META.TherapyBro;
       appendSystem(meta.welcome);
     }
+    return h; // Return history with timer state
   };
 
-  // select an existing conversation and auto-start timer (continue)
+  // select an existing conversation and sync timer with server state
   const select = async (id: string) => {
     setActive(id);
-    await load(id);
-    // auto-start timer for continuing the session
-    startTimerWithCurrentDuration();
+    const h = await load(id);
+    
+    // Start timer from history response (which includes timer state)
+    console.log('🔄 [SELECT] Session history loaded:', h);
+    console.log('🔄 [SELECT] Timer state - status:', h?.status, 'remaining_seconds:', h?.remaining_seconds);
+    if (h && h.status && h.remaining_seconds !== undefined) {
+      startTimerFromSessionResponse(h);
+    } else {
+      console.warn('⚠️ [SELECT] No timer state in history response');
+    }
   };
 
-  // create new category/session and auto-start timer
+  // create new category/session and sync timer with server state
   const newCategory = async (cat: string) => {
     console.log('Creating new category:', cat);
     const s = await startSession(cat);
     setActive(s.session_id);
     await load(s.session_id);
+    
+    // Start timer from session response
+    startTimerFromSessionResponse(s);
     
     // Update conversations list after creating new session
     const updatedList = await listChats();
@@ -210,8 +354,6 @@ function ChatPageInner() {
     // append listener-specific system welcome for the newly created chat
     const meta = LISTENER_META[cat] ?? LISTENER_META.TherapyBro;
     appendSystem(meta.welcome);
-    // auto-start timer for newly created session
-    startTimerWithCurrentDuration();
   };
 
   // keep remaining in sync whenever duration changes and timer not running
@@ -231,70 +373,62 @@ function ChatPageInner() {
     };
   }, []);
 
-  // start timer using currently selected totalSeconds (used on select/new)
-  const startTimerWithCurrentDuration = () => {
-    // ensure we use the chosen duration
-    setRemaining(totalSeconds);
-    // clear any old timer
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    // start ticking
-    timerRef.current = window.setInterval(() => {
-      setRemaining((prev) => {
-        if (prev <= 1) {
-          // stop timer
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
+  // Extend session using server-side API
+  const extendSessionHandler = async (durationSeconds: number) => {
+    if (!active) return;
+    
+    try {
+      setWalletLoading(true);
+      const result = await extendSessionAPI(active, durationSeconds);
+      
+      // Update wallet balance
+      setWalletBalance(result.wallet_balance);
+      
+      // Update timer state
+      setRemaining(result.remaining_seconds);
+      setRunning(true);
+      
+      // Start client-side countdown
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      
+      timerRef.current = window.setInterval(() => {
+        setRemaining((prev) => {
+          if (prev <= 1) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+            setRunning(false);
+            setExpiredModalOpen(true);
+            appendSystem("Time's up — session ended.");
+            return 0;
           }
-          setRunning(false);
-          setExpiredModalOpen(true); // show modal to ask continue or start new
-          appendSystem("Time's up — session ended.");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    setRunning(true);
-    appendSystem("Timer started.");
+          return prev - 1;
+        });
+      }, 1000);
+      
+      setExpiredModalOpen(false);
+      appendSystem(`Session extended by ${Math.floor(durationSeconds / 60)} minutes.`);
+      
+      // Refresh conversations list
+      const updatedList = await listChats();
+      setConvs(updatedList);
+      
+    } catch (error) {
+      console.error('Failed to extend session:', error);
+      alert(`Failed to extend session: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setWalletLoading(false);
+    }
   };
 
-  // manual "continue" from modal: restart same chat using a chosen duration
-  const continueSameChat = (secs: number) => {
-    setTotalSeconds(secs);
-    setRemaining(secs);
+  // "start new chat" from modal: pick a category, create new session
+  const startNewChatFromModal = async (cat: string) => {
     setExpiredModalOpen(false);
-    // restart timer
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    timerRef.current = window.setInterval(() => {
-      setRemaining((prev) => {
-        if (prev <= 1) {
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-          }
-          setRunning(false);
-          setExpiredModalOpen(true);
-          appendSystem("Time's up — session ended.");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    setRunning(true);
-    appendSystem("Session continued.");
-  };
-
-  // "start new chat" from modal: pick a category, create new session and auto-start
-  const startNewChatFromModal = async (cat: string, secs: number) => {
-    setExpiredModalOpen(false);
-    setTotalSeconds(secs);
-    // create new session and auto-start inside newCategory
+    // create new session
     await newCategory(cat);
   };
 
@@ -624,6 +758,12 @@ function ChatPageInner() {
               Your chat session has ended. Would you like to continue?
             </p>
 
+            {/* Wallet balance */}
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="text-xs font-medium text-gray-600 mb-1">Wallet Balance</div>
+              <div className="text-lg font-semibold text-gray-900">₹{walletBalance}</div>
+            </div>
+
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Choose duration</label>
               <select
@@ -633,18 +773,19 @@ function ChatPageInner() {
              px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring
              disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <option value={300}>5 minutes</option>
-                <option value={600}>10 minutes</option>
-                <option value={900}>15 minutes</option>
+                <option value={300}>5 minutes - ₹20</option>
+                <option value={600}>10 minutes - ₹40</option>
+                <option value={900}>15 minutes - ₹60</option>
               </select>
             </div>
 
             <div className="flex flex-col gap-3">
               <button
-                onClick={() => continueSameChat(totalSeconds)}
-                className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700"
+                onClick={() => extendSessionHandler(totalSeconds)}
+                disabled={walletLoading}
+                className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Continue chat
+                {walletLoading ? "Processing..." : "Continue chat"}
               </button>
 
               <button

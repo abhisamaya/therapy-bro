@@ -40,6 +40,10 @@ JWT_EXPIRE_MIN = int(os.getenv("JWT_EXPIRE_MIN", "1440"))  # 24h
 def now_ist() -> datetime:
     return datetime.now(ZoneInfo("Asia/Kolkata"))
 
+def now_utc() -> datetime:
+    """Get current UTC time (timezone-aware)"""
+    return datetime.now(timezone.utc)
+
 def hash_password(p: str) -> str:
     utils_logger.debug("Hashing password")
     pwd_context = get_password_context()

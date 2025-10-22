@@ -36,6 +36,11 @@ class ChatSession(SQLModel, table=True):
     minutes_used: Decimal = Field(
         sa_column=Column(Numeric(10, 4), default=0), default=Decimal("0")
     )
+    # Server-enforced timer fields (Phase 2)
+    session_start_time: Optional[datetime] = Field(default=None)
+    session_end_time: Optional[datetime] = Field(default=None)
+    duration_seconds: Optional[int] = Field(default=None)
+    status: str = Field(default="ended")  # active | ended
 
 
 class Message(SQLModel, table=True):

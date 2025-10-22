@@ -50,15 +50,17 @@ class TestSessionService:
         """Test creating a new session."""
         session_service = SessionService(db_session)
         
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
-        
+        session_id = session_out.session_id
+
         # Verify session was created
-        assert session_id is not None
-        assert len(session_id) == 32  # UUID hex length
+        assert session_out is not None
+        assert session_out.session_id is not None
+        assert len(session_out.session_id) == 32  # UUID hex length
         
         # Verify session exists in database
         session = session_service.find_session_by_id(session_id, test_user.id)
@@ -78,11 +80,12 @@ class TestSessionService:
         session_service = SessionService(db_session)
         
         # Create session with messages
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Add user message
         session_service.add_user_message(session_id, "Hello", test_user.id)
@@ -113,11 +116,12 @@ class TestSessionService:
         session_service = SessionService(db_session)
         
         # Create session
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Add user message
         session_service.add_user_message(session_id, "Hello world", test_user.id)
@@ -140,11 +144,12 @@ class TestSessionService:
         session_service = SessionService(db_session)
         
         # Create session
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Add assistant message
         session_service.add_assistant_message(session_id, "How can I help you?")
@@ -160,11 +165,12 @@ class TestSessionService:
         session_service = SessionService(db_session)
         
         # Create session
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Add messages
         session_service.add_user_message(session_id, "Hello", test_user.id)
@@ -187,11 +193,12 @@ class TestSessionService:
         session_service = SessionService(db_session)
         
         # Create session
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Update notes
         session_service.update_session_notes(session_id, "Important session notes", test_user.id)
@@ -212,11 +219,12 @@ class TestSessionService:
         session_service = SessionService(db_session)
         
         # Create session with messages
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         session_service.add_user_message(session_id, "Hello", test_user.id)
         session_service.add_assistant_message(session_id, "Hi!")
         
@@ -247,11 +255,12 @@ class TestSessionService:
         session_service = SessionService(db_session)
         
         # Create session
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Find session
         session = session_service.find_session_by_id(session_id, test_user.id)
@@ -288,11 +297,12 @@ class TestSessionService:
         db_session.refresh(other_user)
         
         # Create session for test_user
-        session_id = session_service.create_session(
+        session_out = session_service.create_session(
             test_user.id,
             "therapy",
             "You are a helpful therapist."
         )
+        session_id = session_out.session_id
         
         # Try to find session with other_user
         session = session_service.find_session_by_id(session_id, other_user.id)

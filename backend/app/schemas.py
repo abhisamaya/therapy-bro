@@ -91,12 +91,16 @@ class MessageOut(BaseModel):
 class HistoryOut(SessionTimes, BaseModel):
     category: str
     messages: List[MessageOut]
+    status: SessionStatus
+    remaining_seconds: int
 
 class ConversationItem(BaseModel):
     session_id: str
     category: str
     updated_at: datetime
     notes: Optional[str] = None
+    status: SessionStatus
+    remaining_seconds: int
 
 class NotesIn(BaseModel):
     notes: str
@@ -107,7 +111,8 @@ class StartSessionIn(BaseModel):
 
 class StartSessionOut(SessionTimes, SessionFinancials):
     # If start/end/duration set, they come from SessionTimes
-    pass
+    status: SessionStatus
+    remaining_seconds: int
 
 # Session Extension and Status
 class ExtendSessionIn(BaseModel):

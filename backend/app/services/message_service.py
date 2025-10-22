@@ -6,6 +6,9 @@ from fastapi.responses import StreamingResponse
 from app.services.base_service import BaseService
 from app.services.llm_factory import get_llm_factory, LLMStreamer
 from app.services.session_service import SessionService
+from datetime import timezone
+from app.utils import now_utc
+from app.repositories.session_repository import SessionRepository
 
 
 class MessageService(BaseService):
@@ -40,6 +43,20 @@ class MessageService(BaseService):
         self.logger.debug(f"Message length: {len(content)} characters")
         
         try:
+            # Enforce server-side timer: reject if expired/not active
+            repo = SessionRepository(self.db)
+            chat_session = repo.find_by_session_and_user(session_id, user_id)
+            if not chat_session:
+                raise ValueError("Session not found")
+            now = now_utc()
+            end = chat_session.session_end_time
+            if end is not None and getattr(end, "tzinfo", None) is None:
+                end = end.replace(tzinfo=timezone.utc)
+            # Block if session not active or time elapsed
+            if getattr(chat_session, "status", "ended") != "active" or (end is not None and end <= now):
+                self.logger.info(f"Blocking send: session expired for {session_id}")
+                raise RuntimeError("SESSION_EXPIRED")
+
             # Add user message to session
             self.session_service.add_user_message(session_id, content, user_id)
             self.logger.debug(f"User message persisted for session: {session_id}")
@@ -51,6 +68,11 @@ class MessageService(BaseService):
         except ValueError as e:
             self.logger.warning(f"Session not found: {session_id} for user: {user_id}")
             raise ValueError(f"Session not found: {session_id}")
+        except RuntimeError as e:
+            if str(e) == "SESSION_EXPIRED":
+                # Map to HTTP 403 via router handler
+                raise RuntimeError("SESSION_EXPIRED")
+            raise
 
         # Create LLM streamer
         try:
