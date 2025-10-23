@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
 from .db import get_collection
-from .models import Message, ListenerRegister, ListenerLogin, TokenResponse, ListenerOut
+from .models import Message, ListenerRegister, ListenerLogin, TokenResponse, ListenerOut, ListenerProfileUpdate
 from .auth import hash_password, verify_password, create_access_token, get_current_listener
 from typing import List
 from datetime import datetime
@@ -72,6 +72,69 @@ async def get_current_listener_info(current_listener: dict = Depends(get_current
         name=listener["name"],
         phone=listener.get("phone"),
         age=listener.get("age"),
+        headline=listener.get("headline"),
+        description=listener.get("description"),
+        categories=listener.get("categories", []),
+        years_of_experience=listener.get("years_of_experience"),
+        date_of_birth=listener.get("date_of_birth"),
+        profile_picture=listener.get("profile_picture"),
+        created_at=listener["created_at"]
+    )
+
+
+@router.put("/auth/profile", response_model=ListenerOut)
+async def update_listener_profile(
+    profile_data: ListenerProfileUpdate,
+    current_listener: dict = Depends(get_current_listener)
+):
+    """Update listener profile information"""
+    listeners_col = get_collection("listeners")
+
+    # Build update document with only provided fields
+    update_doc = {}
+    if profile_data.name is not None:
+        update_doc["name"] = profile_data.name
+    if profile_data.headline is not None:
+        update_doc["headline"] = profile_data.headline
+    if profile_data.description is not None:
+        update_doc["description"] = profile_data.description
+    if profile_data.categories is not None:
+        update_doc["categories"] = profile_data.categories
+    if profile_data.years_of_experience is not None:
+        update_doc["years_of_experience"] = profile_data.years_of_experience
+    if profile_data.date_of_birth is not None:
+        update_doc["date_of_birth"] = profile_data.date_of_birth
+    if profile_data.phone is not None:
+        update_doc["phone"] = profile_data.phone
+    if profile_data.profile_picture is not None:
+        update_doc["profile_picture"] = profile_data.profile_picture
+
+    if not update_doc:
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    # Update the listener
+    result = await listeners_col.update_one(
+        {"login_id": current_listener["sub"]},
+        {"$set": update_doc}
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Listener not found")
+
+    # Fetch updated listener
+    listener = await listeners_col.find_one({"login_id": current_listener["sub"]})
+
+    return ListenerOut(
+        login_id=listener["login_id"],
+        name=listener["name"],
+        phone=listener.get("phone"),
+        age=listener.get("age"),
+        headline=listener.get("headline"),
+        description=listener.get("description"),
+        categories=listener.get("categories", []),
+        years_of_experience=listener.get("years_of_experience"),
+        date_of_birth=listener.get("date_of_birth"),
+        profile_picture=listener.get("profile_picture"),
         created_at=listener["created_at"]
     )
 

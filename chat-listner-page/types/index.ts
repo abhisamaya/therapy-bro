@@ -1,11 +1,29 @@
 export interface Listener {
-  id: number;
+  id?: number;
   login_id: string;
   name: string;
   email?: string;
   phone?: string;
   age?: number;
   avatar_url?: string;
+  headline?: string;
+  description?: string;
+  categories?: string[];
+  years_of_experience?: number;
+  date_of_birth?: string;
+  profile_picture?: string;
+  created_at?: string;
+}
+
+export interface ProfileUpdateData {
+  name?: string;
+  headline?: string;
+  description?: string;
+  categories?: string[];
+  years_of_experience?: number;
+  date_of_birth?: string;
+  phone?: string;
+  profile_picture?: string;
 }
 
 export interface Message {

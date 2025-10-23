@@ -34,8 +34,8 @@ export default function RegisterPage() {
       // Store token
       localStorage.setItem("listener_token", response.access_token);
 
-      // Redirect to chat page
-      router.push("/chat");
+      // Redirect to profile page to complete profile
+      router.push("/profile");
     } catch (err: any) {
       setError(err.response?.data?.detail || "Registration failed. Please try again.");
     } finally {

@@ -45,11 +45,27 @@ class ListenerLogin(BaseModel):
     login_id: str
     password: str
 
+class ListenerProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    headline: Optional[str] = None
+    description: Optional[str] = None
+    categories: Optional[List[str]] = None  # e.g., ["relationship", "career", "stress"]
+    years_of_experience: Optional[int] = None
+    date_of_birth: Optional[str] = None  # Format: YYYY-MM-DD
+    phone: Optional[str] = None
+    profile_picture: Optional[str] = None  # URL or base64 string
+
 class ListenerOut(BaseModel):
     login_id: str
     name: str
     phone: Optional[str] = None
     age: Optional[int] = None
+    headline: Optional[str] = None
+    description: Optional[str] = None
+    categories: Optional[List[str]] = None
+    years_of_experience: Optional[int] = None
+    date_of_birth: Optional[str] = None
+    profile_picture: Optional[str] = None
     created_at: datetime
 
 class TokenResponse(BaseModel):

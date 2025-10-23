@@ -111,6 +111,12 @@ export default function ChatPage() {
               </span>
             </div>
             <button
+              onClick={() => router.push("/profile")}
+              className="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-md text-sm transition-colors"
+            >
+              Profile
+            </button>
+            <button
               onClick={handleLogout}
               className="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-md text-sm transition-colors"
             >
