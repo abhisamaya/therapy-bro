@@ -4096,3 +4096,1512 @@ google.auth.exceptions.InvalidValue: Token has wrong audience 91594839033-tsceqr
 2025-10-23 00:52:08 - SessionService - INFO - Retrieving history for session: 0d8f3668680a47da959dd5e0af886cac, user_id: 1
 2025-10-23 00:52:08 - SessionService - INFO - Retrieved 7 messages for session: 0d8f3668680a47da959dd5e0af886cac
 2025-10-23 00:52:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/0d8f3668680a47da959dd5e0af886cac - 0.004s
+2025-10-23 11:42:25 - app.logging_config - INFO - Logging configured successfully
+2025-10-23 11:42:25 - app.middleware.error_handler - INFO - Error handlers registered successfully
+2025-10-23 11:42:25 - app.logging_config - INFO - Allowed CORS origins: ['http://localhost:3000']
+2025-10-23 11:42:25 - app.logging_config - INFO - Starting TherapyBro application
+2025-10-23 11:42:25 - app.logging_config - INFO - Database initialized successfully
+2025-10-23 11:44:43 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/auth/login
+2025-10-23 11:44:43 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/auth/login - 0.000s
+2025-10-23 11:44:43 - app.logging_config - INFO - Request: POST http://localhost:8000/auth/login
+2025-10-23 11:44:43 - auth_router - INFO - Login attempt for login_id: test2
+2025-10-23 11:44:43 - UserService - INFO - Authenticating user: test2
+2025-10-23 11:44:44 - UserService - INFO - Authentication successful for: test2
+2025-10-23 11:44:44 - utils - INFO - Creating access token for user: test2
+2025-10-23 11:44:44 - utils - INFO - Access token created successfully for user: test2
+2025-10-23 11:44:44 - auth_router - INFO - Login successful for: test2
+2025-10-23 11:44:44 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/auth/login - 0.082s
+2025-10-23 11:44:44 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/wallet
+2025-10-23 11:44:44 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/wallet - 0.001s
+2025-10-23 11:44:44 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 11:44:44 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:44 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 11:44:44 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 80.0000
+2025-10-23 11:44:44 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.006s
+2025-10-23 11:44:44 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 11:44:44 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:44 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 11:44:44 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 80.0000
+2025-10-23 11:44:44 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 11:44:45 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/chats
+2025-10-23 11:44:45 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/chats - 0.001s
+2025-10-23 11:44:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 11:44:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 11:44:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 11:44:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:45 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 11:44:45 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 80.0000
+2025-10-23 11:44:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 11:44:45 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions
+2025-10-23 11:44:45 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions - 0.000s
+2025-10-23 11:44:45 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions
+2025-10-23 11:44:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:45 - sessions_router - INFO - Starting new session for user: test2, category: TherapyBro
+2025-10-23 11:44:45 - SessionService - INFO - Creating new session for user_id: 2, category: TherapyBro
+2025-10-23 11:44:45 - SessionRepository - INFO - Created session: 56685faa11f5442c922290329e46e44f (ID: 5)
+2025-10-23 11:44:45 - MessageRepository - INFO - Created message: system (ID: 29)
+2025-10-23 11:44:45 - SessionService - INFO - Session created successfully: 56685faa11f5442c922290329e46e44f
+2025-10-23 11:44:45 - sessions_router - INFO - Session created successfully: 56685faa11f5442c922290329e46e44f for user: test2
+2025-10-23 11:44:45 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions - 0.042s
+2025-10-23 11:44:45 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 11:44:45 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 11:44:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 11:44:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:45 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 11:44:45 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 11:44:45 - SessionService - INFO - Retrieved 1 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 11:44:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.005s
+2025-10-23 11:44:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 11:44:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 11:44:50 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 11:44:50 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 11:44:50 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 11:44:50 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:50 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 11:44:50 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 11:44:50 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 11:44:50 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 11:44:51 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 11:44:51 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 11:44:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 11:44:51 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:51 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 11:44:51 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 11:44:51 - SessionService - INFO - Retrieved 1 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 11:44:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.008s
+2025-10-23 11:44:59 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 11:44:59 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 11:44:59 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 11:44:59 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:44:59 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 11:44:59 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 11:44:59 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 11:44:59 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 11:45:01 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 11:45:01 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 11:45:01 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 11:45:01 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 11:45:01 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 11:45:01 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 11:45:01 - SessionService - INFO - Retrieved 1 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 11:45:01 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:18:52 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:18:52 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.008s
+2025-10-23 12:18:52 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:18:52 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:18:52 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:18:52 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:18:52 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:18:52 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.054s
+2025-10-23 12:19:01 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:01 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:19:01 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:01 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:01 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:19:01 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:19:01 - SessionService - INFO - Retrieved 1 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:01 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.005s
+2025-10-23 12:19:09 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:09 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:19:09 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:09 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:09 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:19:09 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:19:09 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:09 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:19:17 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:17 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:19:17 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:17 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:17 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:19:17 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:19:17 - SessionService - INFO - Retrieved 1 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:17 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:19:19 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend
+2025-10-23 12:19:19 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend - 0.000s
+2025-10-23 12:19:19 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend
+2025-10-23 12:19:19 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:19 - SessionService - INFO - Extending session 56685faa11f5442c922290329e46e44f for user 2 by 300s
+2025-10-23 12:19:19 - WalletRepository - INFO - Updated wallet: 2 for user_id: 2
+2025-10-23 12:19:19 - TransactionRepository - INFO - Created transaction: charge (ID: 9)
+2025-10-23 12:19:19 - SessionRepository - INFO - Updated session: 56685faa11f5442c922290329e46e44f (ID: 5)
+2025-10-23 12:19:19 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend - 0.115s
+2025-10-23 12:19:19 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/chats
+2025-10-23 12:19:19 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/chats - 0.000s
+2025-10-23 12:19:19 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:19:19 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:19 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:19:30 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/messages
+2025-10-23 12:19:30 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/messages - 0.000s
+2025-10-23 12:19:30 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/messages
+2025-10-23 12:19:30 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:30 - sessions_router - INFO - Processing message for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:19:30 - MessageService - INFO - Processing message stream for session: 56685faa11f5442c922290329e46e44f, user: 2
+2025-10-23 12:19:30 - MessageRepository - INFO - Created message: user (ID: 30)
+2025-10-23 12:19:30 - SessionRepository - INFO - Updated session: 56685faa11f5442c922290329e46e44f (ID: 5)
+2025-10-23 12:19:30 - llm.factory - INFO - Creating LLM streamer for provider: together
+2025-10-23 12:19:30 - llm.together - INFO - Together AI client initialized with model: Qwen/Qwen3-235B-A22B-Instruct-2507-tput
+2025-10-23 12:19:30 - llm.factory - INFO - LLM streamer created successfully: together, model: Qwen/Qwen3-235B-A22B-Instruct-2507-tput
+2025-10-23 12:19:30 - MessageService - INFO - Using LLM provider: together, model: Qwen/Qwen3-235B-A22B-Instruct-2507-tput
+2025-10-23 12:19:30 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/messages - 0.169s
+2025-10-23 12:19:30 - MessageService - INFO - Starting LLM stream for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:30 - llm.together - INFO - Starting Together AI chat stream with 2 messages
+2025-10-23 12:19:33 - llm.together - INFO - Together AI stream completed successfully, yielded 56 tokens
+2025-10-23 12:19:33 - MessageService - INFO - LLM response completed for session 56685faa11f5442c922290329e46e44f, length: 219 characters
+2025-10-23 12:19:33 - MessageRepository - INFO - Created message: assistant (ID: 31)
+2025-10-23 12:19:33 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:19:33 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:33 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:19:43 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:43 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:19:43 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:43 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:43 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:19:43 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:19:43 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:43 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:19:45 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:45 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:19:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:45 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:19:45 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:19:45 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:19:46 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:46 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:19:46 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:46 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:46 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:19:46 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:19:46 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:46 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:19:46 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:46 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:19:46 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:46 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:46 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:19:46 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:19:46 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:19:46 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:19:57 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:57 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:19:57 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:57 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:19:57 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:19:57 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:19:57 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:19:57 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:20:10 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:10 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:20:10 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:10 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:10 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:20:10 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:20:10 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:10 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:20:11 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:11 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:20:11 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:11 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:11 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:20:11 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:20:11 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:11 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:20:11 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:11 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:20:11 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:11 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:11 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:20:11 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:20:11 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:11 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:20:12 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:12 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:20:12 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:12 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:12 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:20:12 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:20:12 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:12 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:20:13 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:13 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:20:13 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:13 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:13 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:20:13 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:20:13 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:13 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:20:32 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:32 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:20:32 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:32 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:32 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:20:32 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:20:32 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:32 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:20:33 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:33 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:20:33 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:33 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:33 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:20:33 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:20:33 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:33 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:20:34 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:34 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:20:34 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:34 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:34 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:20:34 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:20:34 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:34 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:20:35 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:35 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:20:35 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:35 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:35 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:20:35 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:20:35 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:35 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:20:48 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:48 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:20:48 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:48 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:48 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:20:48 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:20:48 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:20:48 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:20:49 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:49 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.001s
+2025-10-23 12:20:49 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:49 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:20:49 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:20:49 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:20:49 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:20:49 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:21:15 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:15 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:21:15 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:15 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:15 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:21:15 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:21:15 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:15 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:21:21 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:21:21 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:21 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:21:21 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:21:21 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:21 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:21:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:21:51 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:21:51 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/wallet
+2025-10-23 12:21:51 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/wallet - 0.001s
+2025-10-23 12:21:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:21:51 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:51 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:21:51 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 60.0000
+2025-10-23 12:21:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:21:51 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:51 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:21:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:51 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:51 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:21:51 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:21:51 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:21:52 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:52 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:21:52 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:52 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:52 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:21:52 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:21:52 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:52 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:21:52 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:52 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:21:52 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:52 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:52 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:21:52 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:21:52 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:52 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:21:54 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:54 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:21:54 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:54 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:54 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:21:54 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:21:54 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:21:54 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:21:55 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:55 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:21:55 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:55 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:21:55 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:21:55 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:21:55 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:21:55 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:22:11 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:22:11 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:22:11 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:22:11 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 60.0000
+2025-10-23 12:22:11 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:22:11 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:22:11 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:22:11 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:22:11 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 60.0000
+2025-10-23 12:22:11 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:22:12 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:22:12 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:22:12 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:22:12 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:22:12 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:22:12 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:22:12 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 60.0000
+2025-10-23 12:22:12 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:22:12 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:22:12 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:22:12 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:22:12 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:22:12 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:22:12 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:22:12 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:22:12 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:22:31 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:22:31 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:22:31 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:22:31 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:22:31 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:22:31 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:22:31 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:22:31 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:22:36 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:22:36 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:22:36 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:22:36 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:22:36 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:22:36 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:22:36 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:22:36 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:22:39 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:22:39 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:22:39 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:22:39 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:22:39 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:22:39 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:22:39 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:22:39 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.006s
+2025-10-23 12:23:03 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:03 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:23:03 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:03 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:03 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:23:03 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:23:03 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:03 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:23:08 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:08 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:23:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:08 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:08 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:23:08 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:23:08 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:23:11 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:11 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:23:11 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:11 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:11 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:23:11 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:23:11 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:11 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:23:27 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:27 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:23:27 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:27 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:27 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:23:27 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:23:27 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:27 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:23:28 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:28 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:23:28 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:28 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:28 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:23:28 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:23:28 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:28 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:23:29 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:29 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:23:29 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:29 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:29 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:23:29 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:23:29 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:29 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:23:30 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:30 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.001s
+2025-10-23 12:23:30 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:30 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:30 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:23:30 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:23:30 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:30 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.005s
+2025-10-23 12:23:38 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:38 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:23:38 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:38 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:38 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:23:38 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:23:38 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:23:38 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:23:46 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:46 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.001s
+2025-10-23 12:23:46 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:46 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:23:46 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:23:46 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:23:46 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:23:46 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.006s
+2025-10-23 12:24:05 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:05 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:24:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:05 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:24:05 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:24:05 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:24:05 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.005s
+2025-10-23 12:24:06 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:06 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:24:06 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:06 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:24:06 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:24:06 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:24:06 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:06 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:24:07 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:07 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:24:07 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:07 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:24:07 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:24:07 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:24:07 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:07 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:24:08 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:08 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:24:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:08 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:24:08 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:24:08 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:24:08 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.005s
+2025-10-23 12:24:12 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:12 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:24:12 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:12 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:24:12 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:24:12 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:24:12 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:12 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:24:15 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:15 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:24:15 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:15 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:24:15 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:24:15 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:24:15 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:24:15 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:24:26 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:26 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:24:26 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:26 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:24:26 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:24:26 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:24:26 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:24:26 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:25:13 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend
+2025-10-23 12:25:13 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:13 - SessionService - INFO - Extending session 56685faa11f5442c922290329e46e44f for user 2 by 300s
+2025-10-23 12:25:13 - WalletRepository - INFO - Updated wallet: 2 for user_id: 2
+2025-10-23 12:25:13 - TransactionRepository - INFO - Created transaction: charge (ID: 10)
+2025-10-23 12:25:13 - SessionRepository - INFO - Updated session: 56685faa11f5442c922290329e46e44f (ID: 5)
+2025-10-23 12:25:13 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend - 0.068s
+2025-10-23 12:25:13 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:25:13 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:13 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:25:37 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:37 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:25:37 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:37 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:37 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:25:37 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:25:37 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:37 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:25:37 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:37 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:25:37 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:37 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:37 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:25:37 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:25:37 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:37 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:25:38 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:38 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:25:38 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:38 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:38 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:25:38 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:25:38 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:38 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:25:39 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:39 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:25:39 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:39 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:39 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:25:39 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:25:39 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:39 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:25:40 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:40 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:25:40 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:40 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:40 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:25:40 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:25:40 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:25:40 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:25:42 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:42 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:25:42 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:42 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:42 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:25:42 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:25:42 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:25:42 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:25:54 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:25:54 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:54 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:25:54 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:25:54 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:25:54 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:26:34 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:26:34 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:34 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:26:34 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:26:34 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:34 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:26:34 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:26:34 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:26:34 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:34 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:26:34 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:34 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:34 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:26:34 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:26:34 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:34 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:26:34 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:26:34 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:34 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:26:34 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:26:34 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:34 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:26:48 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:26:48 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:48 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:26:48 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:26:48 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:48 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:26:48 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:26:48 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:26:48 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:48 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:26:48 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:48 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:48 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:26:48 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:26:48 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:48 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:26:48 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:48 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:26:48 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:48 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:48 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:26:48 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:26:48 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:48 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:26:49 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:49 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:26:49 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:49 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:49 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:26:49 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:26:49 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:49 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:26:50 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:50 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:26:50 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:50 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:50 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:26:50 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:26:50 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:50 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:26:51 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:51 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:26:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:51 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:51 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:26:51 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:26:51 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:26:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:26:57 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:57 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:26:57 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:57 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:26:57 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:26:57 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:26:57 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:26:57 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:27:16 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:27:16 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:16 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:27:16 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:27:16 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:16 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:27:18 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:27:18 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:18 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:27:18 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:27:18 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:18 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:27:18 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:27:18 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:27:18 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:18 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:27:18 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:18 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:18 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:27:18 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:27:18 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:18 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:27:19 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:27:19 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:19 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:27:19 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:27:19 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:19 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:27:30 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:27:30 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:30 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:27:30 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:27:30 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:30 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:27:30 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:27:30 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:27:30 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:30 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:27:30 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:30 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:30 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:27:30 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:27:30 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:30 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:27:40 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:27:40 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:40 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/auth/me
+2025-10-23 12:27:40 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/auth/me - 0.000s
+2025-10-23 12:27:40 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:27:40 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:27:40 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.005s
+2025-10-23 12:27:40 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:27:40 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:40 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.002s
+2025-10-23 12:27:40 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:27:40 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:40 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:27:40 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:27:40 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:27:40 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.006s
+2025-10-23 12:27:40 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:40 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.005s
+2025-10-23 12:27:44 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:27:44 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:44 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:27:44 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:27:44 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:44 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:27:44 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:27:44 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:27:44 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:44 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:27:44 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:44 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:44 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:27:44 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:27:44 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:44 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:27:45 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:45 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:27:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:45 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:27:45 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:27:45 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:27:45 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:45 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:27:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:45 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:27:45 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:27:45 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:27:46 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:46 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:27:46 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:46 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:46 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:27:46 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:27:46 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:46 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:27:46 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:46 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:27:46 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:46 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:46 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:27:46 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:27:46 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:46 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:27:47 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:47 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:27:47 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:47 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:47 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:27:47 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:27:47 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:47 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:27:47 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:47 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:27:47 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:47 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:47 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:27:47 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:27:47 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:47 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:27:48 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:48 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:27:48 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:48 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:48 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:27:48 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:27:48 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:27:48 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:27:49 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:49 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:27:49 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:49 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:27:49 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:27:49 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:27:49 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:27:49 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:28:18 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:18 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:28:18 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:18 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:28:18 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:28:18 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:28:18 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:18 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:28:19 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:28:19 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.001s
+2025-10-23 12:28:19 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:28:19 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:28:19 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:28:19 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:28:19 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:28:19 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:28:19 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:19 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:28:19 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:19 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:28:19 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:28:19 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:28:19 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:19 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:28:53 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:53 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:28:53 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:53 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:28:53 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:28:53 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:28:53 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:28:53 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:29:42 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8/extend
+2025-10-23 12:29:42 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8/extend - 0.000s
+2025-10-23 12:29:42 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8/extend
+2025-10-23 12:29:42 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:29:42 - SessionService - INFO - Extending session 87270ebc93c54a7db13049809c2439a8 for user 2 by 900s
+2025-10-23 12:29:42 - app.middleware.error_handler - WARNING - HTTP exception: 403 - Only today's sessions (UTC) can be extended
+2025-10-23 12:29:42 - app.logging_config - INFO - Response: 403 - POST http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8/extend - 0.003s
+2025-10-23 12:29:54 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8/extend
+2025-10-23 12:29:54 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:29:54 - SessionService - INFO - Extending session 87270ebc93c54a7db13049809c2439a8 for user 2 by 600s
+2025-10-23 12:29:54 - app.middleware.error_handler - WARNING - HTTP exception: 403 - Only today's sessions (UTC) can be extended
+2025-10-23 12:29:54 - app.logging_config - INFO - Response: 403 - POST http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8/extend - 0.004s
+2025-10-23 12:30:02 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:02 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:30:02 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:02 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:30:02 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:30:02 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:30:02 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:02 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:30:05 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:30:05 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:30:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:30:05 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:30:05 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:30:05 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:30:05 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:30:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.005s
+2025-10-23 12:30:07 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:07 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:30:07 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:07 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:30:07 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:30:07 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:30:07 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:07 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:30:08 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:30:08 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:30:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:30:08 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:30:08 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:30:08 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:30:08 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:30:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:30:08 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:08 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:30:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:08 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:30:08 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:30:08 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:30:08 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:30:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:30:16 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend
+2025-10-23 12:30:16 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend - 0.000s
+2025-10-23 12:30:16 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend
+2025-10-23 12:30:16 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:30:16 - SessionService - INFO - Extending session 56685faa11f5442c922290329e46e44f for user 2 by 900s
+2025-10-23 12:30:16 - app.middleware.error_handler - WARNING - HTTP exception: 402 - Insufficient wallet balance
+2025-10-23 12:30:16 - app.logging_config - INFO - Response: 402 - POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend - 0.005s
+2025-10-23 12:31:45 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:31:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:31:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:31:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:31:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.007s
+2025-10-23 12:31:45 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:31:45 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:31:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.008s
+2025-10-23 12:31:45 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:31:45 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:31:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:31:45 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:31:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.005s
+2025-10-23 12:31:45 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:31:45 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:31:45 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.006s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/auth/profile
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/auth/profile - 0.000s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: PUT http://localhost:8000/auth/profile
+2025-10-23 12:34:09 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:34:09 - auth_router - INFO - Profile update request for user: test2
+2025-10-23 12:34:09 - UserService - INFO - Updating profile for user ID: 2
+2025-10-23 12:34:09 - UserRepository - INFO - Updated user: test2 (ID: 2)
+2025-10-23 12:34:09 - UserService - INFO - Profile updated successfully for user: test2
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - PUT http://localhost:8000/auth/profile - 0.032s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:34:09 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.003s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/chats
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/chats - 0.000s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:34:09 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/wallet
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/wallet - 0.001s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:34:09 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:34:09 - wallet_router - INFO - Getting wallet for user: test2
+2025-10-23 12:34:09 - wallet_router - INFO - Wallet retrieved for user: test2, balance: 40.0000
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:34:09 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:34:09 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:34:09 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:34:09 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:34:09 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:34:09 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:37:10 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:37:10 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.010s
+2025-10-23 12:37:10 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:37:10 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:37:10 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:37:10 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:37:10 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:37:10 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.005s
+2025-10-23 12:37:11 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:37:11 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.001s
+2025-10-23 12:37:11 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:37:11 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:37:11 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:37:11 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:37:11 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:37:11 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.014s
+2025-10-23 12:37:18 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:37:18 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:37:18 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:37:18 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:37:18 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:37:18 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:37:18 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:37:18 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.005s
+2025-10-23 12:37:19 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:37:19 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:37:19 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:37:19 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:37:19 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:37:19 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:37:19 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:37:19 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:38:05 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:38:05 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:38:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:38:05 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:38:05 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:38:05 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:38:05 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:38:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:38:10 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:38:10 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:38:10 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:38:10 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:38:10 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:38:10 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:38:10 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:38:10 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:38:42 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend
+2025-10-23 12:38:42 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:38:42 - SessionService - INFO - Extending session 56685faa11f5442c922290329e46e44f for user 2 by 300s
+2025-10-23 12:38:42 - WalletRepository - INFO - Updated wallet: 2 for user_id: 2
+2025-10-23 12:38:42 - TransactionRepository - INFO - Created transaction: charge (ID: 11)
+2025-10-23 12:38:42 - SessionRepository - INFO - Updated session: 56685faa11f5442c922290329e46e44f (ID: 5)
+2025-10-23 12:38:42 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f/extend - 0.059s
+2025-10-23 12:38:42 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:38:42 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:38:42 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.005s
+2025-10-23 12:39:01 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:01 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:39:01 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:01 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:39:01 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:39:01 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:39:01 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:01 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:39:04 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:04 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:39:04 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:04 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:39:04 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:39:04 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:39:04 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:04 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:39:06 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:06 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:39:06 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:06 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:39:06 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:39:06 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:39:06 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:06 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.003s
+2025-10-23 12:39:07 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:07 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:39:07 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:07 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:39:07 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:39:07 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:39:07 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:07 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.004s
+2025-10-23 12:39:12 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:12 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.000s
+2025-10-23 12:39:12 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:12 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:39:12 - sessions_router - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user: test2
+2025-10-23 12:39:12 - SessionService - INFO - Retrieving history for session: 87270ebc93c54a7db13049809c2439a8, user_id: 2
+2025-10-23 12:39:12 - SessionService - INFO - Retrieved 17 messages for session: 87270ebc93c54a7db13049809c2439a8
+2025-10-23 12:39:12 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/87270ebc93c54a7db13049809c2439a8 - 0.004s
+2025-10-23 12:39:18 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:18 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.000s
+2025-10-23 12:39:18 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:18 - auth - INFO - User authenticated successfully: test2 (ID: 2)
+2025-10-23 12:39:18 - sessions_router - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user: test2
+2025-10-23 12:39:18 - SessionService - INFO - Retrieving history for session: 56685faa11f5442c922290329e46e44f, user_id: 2
+2025-10-23 12:39:18 - SessionService - INFO - Retrieved 3 messages for session: 56685faa11f5442c922290329e46e44f
+2025-10-23 12:39:18 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/56685faa11f5442c922290329e46e44f - 0.003s
+2025-10-23 12:39:47 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/auth/register
+2025-10-23 12:39:47 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/auth/register - 0.000s
+2025-10-23 12:39:47 - app.logging_config - INFO - Request: POST http://localhost:8000/auth/register
+2025-10-23 12:39:47 - auth_router - INFO - Registration attempt for login_id: test3
+2025-10-23 12:39:47 - UserService - INFO - Creating new user: test3
+2025-10-23 12:39:47 - UserRepository - INFO - Created user: test3 (ID: 5)
+2025-10-23 12:39:47 - UserService - INFO - User created successfully: test3 (ID: 5)
+2025-10-23 12:39:47 - UserService - INFO - Creating wallet for new user: test3
+2025-10-23 12:39:47 - WalletService - INFO - Creating wallet with bonus for user ID: 5
+2025-10-23 12:39:47 - WalletRepository - INFO - Created wallet for user_id: 5 (ID: 5)
+2025-10-23 12:39:47 - TransactionRepository - INFO - Created transaction: topup (ID: 12)
+2025-10-23 12:39:47 - WalletService - INFO - Wallet created with initial balance of 200.0000 for user ID: 5
+2025-10-23 12:39:47 - UserService - INFO - Wallet created with initial balance of 200.0000 for user: test3
+2025-10-23 12:39:47 - utils - INFO - Creating access token for user: test3
+2025-10-23 12:39:47 - utils - INFO - Access token created successfully for user: test3
+2025-10-23 12:39:47 - auth_router - INFO - Registration completed successfully for: test3
+2025-10-23 12:39:47 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/auth/register - 0.137s
+2025-10-23 12:39:47 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:39:47 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:39:47 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:39:47 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:39:47 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:39:47 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:39:47 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:39:47 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:39:47 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:39:47 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:39:50 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:39:50 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:39:50 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:39:50 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:39:50 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:39:50 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:39:50 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:39:50 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:39:50 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions
+2025-10-23 12:39:50 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions - 0.000s
+2025-10-23 12:39:50 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions
+2025-10-23 12:39:50 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:39:50 - sessions_router - INFO - Starting new session for user: test3, category: TherapyBro
+2025-10-23 12:39:50 - SessionService - INFO - Creating new session for user_id: 5, category: TherapyBro
+2025-10-23 12:39:50 - SessionRepository - INFO - Created session: 386437e1613b49a5b566196b45187577 (ID: 6)
+2025-10-23 12:39:50 - MessageRepository - INFO - Created message: system (ID: 32)
+2025-10-23 12:39:50 - SessionService - INFO - Session created successfully: 386437e1613b49a5b566196b45187577
+2025-10-23 12:39:50 - sessions_router - INFO - Session created successfully: 386437e1613b49a5b566196b45187577 for user: test3
+2025-10-23 12:39:50 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions - 0.041s
+2025-10-23 12:39:50 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:39:50 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:39:50 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:39:50 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:39:50 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:39:50 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:39:50 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:39:50 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.004s
+2025-10-23 12:39:50 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:39:50 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:39:50 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:40:03 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:03 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:03 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/auth/me
+2025-10-23 12:40:03 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/auth/me - 0.000s
+2025-10-23 12:40:03 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/auth/me
+2025-10-23 12:40:03 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/auth/me - 0.000s
+2025-10-23 12:40:03 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:03 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:03 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.006s
+2025-10-23 12:40:03 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:40:03 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:03 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:40:03 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:03 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:03 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:03 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.009s
+2025-10-23 12:40:03 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:03 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.008s
+2025-10-23 12:40:03 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:03 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.009s
+2025-10-23 12:40:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:05 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:40:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:05 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:05 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:05 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:40:05 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:05 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:40:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:05 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:05 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:40:05 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:40:05 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:40:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.003s
+2025-10-23 12:40:21 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:21 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:21 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:40:21 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:21 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:21 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:21 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:21 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:40:21 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:21 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:40:21 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:21 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:21 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:40:21 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:40:21 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:40:21 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.003s
+2025-10-23 12:40:32 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:32 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:32 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:40:32 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:32 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:32 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:32 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:32 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:40:32 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:32 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:40:32 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:32 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:32 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:40:32 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:40:32 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:40:32 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.004s
+2025-10-23 12:40:40 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:40 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:40 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:40:40 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:40 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:40 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.005s
+2025-10-23 12:40:41 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:41 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:41 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:40:41 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:41 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:41 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:41 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:41 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:40:41 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:41 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:40:41 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:41 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:41 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:40:41 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:40:41 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:40:41 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.003s
+2025-10-23 12:40:48 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:48 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:48 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:48 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:48 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:40:48 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:48 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:48 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:48 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:48 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:40:49 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:49 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:49 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:40:49 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:49 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:49 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:49 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:49 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:40:49 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:49 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:40:49 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:49 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:49 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:40:49 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:40:49 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:40:49 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.003s
+2025-10-23 12:40:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:51 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:40:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:51 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:40:53 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:53 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:53 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:40:53 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:53 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:53 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:53 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.007s
+2025-10-23 12:40:53 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.005s
+2025-10-23 12:40:53 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:53 - app.logging_config - INFO - Request: GET http://localhost:8000/auth/me
+2025-10-23 12:40:53 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:53 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:53 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:53 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/auth/me - 0.005s
+2025-10-23 12:40:53 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:53 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.007s
+2025-10-23 12:40:54 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:40:54 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:54 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:40:54 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:40:54 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:54 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:40:54 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:40:54 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.005s
+2025-10-23 12:40:54 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:54 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:40:54 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:40:54 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:40:54 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:40:54 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:40:54 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:40:54 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.004s
+2025-10-23 12:41:59 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:41:59 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:41:59 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:41:59 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:41:59 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:41:59 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:42:00 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:42:00 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:00 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:42:00 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:42:00 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:00 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:42:00 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:42:00 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:42:00 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:42:00 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:42:00 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:42:00 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:00 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:42:00 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:42:00 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:42:00 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.004s
+2025-10-23 12:42:23 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/auth/login
+2025-10-23 12:42:23 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/auth/login - 0.000s
+2025-10-23 12:42:23 - app.logging_config - INFO - Request: POST http://localhost:8000/auth/login
+2025-10-23 12:42:23 - auth_router - INFO - Login attempt for login_id: test3
+2025-10-23 12:42:23 - UserService - INFO - Authenticating user: test3
+2025-10-23 12:42:23 - UserService - INFO - Authentication successful for: test3
+2025-10-23 12:42:23 - utils - INFO - Creating access token for user: test3
+2025-10-23 12:42:23 - utils - INFO - Access token created successfully for user: test3
+2025-10-23 12:42:23 - auth_router - INFO - Login successful for: test3
+2025-10-23 12:42:23 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/auth/login - 0.065s
+2025-10-23 12:42:23 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:42:23 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:23 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:42:23 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:42:23 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:42:23 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:42:23 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:23 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:42:23 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:42:23 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:42:25 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:42:25 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:25 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:42:25 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:42:25 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:25 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:42:25 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:42:25 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:42:25 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:42:25 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:42:25 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:42:25 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:25 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:42:25 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:42:25 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:42:25 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.003s
+2025-10-23 12:42:49 - app.logging_config - INFO - Request: POST http://localhost:8000/auth/login
+2025-10-23 12:42:49 - auth_router - INFO - Login attempt for login_id: test3
+2025-10-23 12:42:49 - UserService - INFO - Authenticating user: test3
+2025-10-23 12:42:49 - UserService - INFO - Authentication successful for: test3
+2025-10-23 12:42:49 - utils - INFO - Creating access token for user: test3
+2025-10-23 12:42:49 - utils - INFO - Access token created successfully for user: test3
+2025-10-23 12:42:49 - auth_router - INFO - Login successful for: test3
+2025-10-23 12:42:49 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/auth/login - 0.068s
+2025-10-23 12:42:49 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:42:49 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:49 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:42:49 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:42:49 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:42:49 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:42:49 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:49 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:42:49 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:42:49 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:42:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:42:51 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:42:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:42:51 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:51 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:42:51 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:42:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:42:51 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:42:51 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:42:51 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:42:51 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:42:51 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:42:51 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:42:51 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:42:51 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.003s
+2025-10-23 12:43:04 - app.logging_config - INFO - Request: POST http://localhost:8000/auth/login
+2025-10-23 12:43:04 - auth_router - INFO - Login attempt for login_id: test3
+2025-10-23 12:43:04 - UserService - INFO - Authenticating user: test3
+2025-10-23 12:43:04 - UserService - INFO - Authentication successful for: test3
+2025-10-23 12:43:04 - utils - INFO - Creating access token for user: test3
+2025-10-23 12:43:04 - utils - INFO - Access token created successfully for user: test3
+2025-10-23 12:43:04 - auth_router - INFO - Login successful for: test3
+2025-10-23 12:43:04 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/auth/login - 0.063s
+2025-10-23 12:43:04 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:43:04 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:04 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:43:04 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:43:04 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:43:04 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:43:04 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:04 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:43:04 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:43:04 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:43:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:43:05 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
+2025-10-23 12:43:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:43:05 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:05 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:43:05 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:43:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:43:05 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:43:05 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:43:05 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:43:05 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:05 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:43:05 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:43:05 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:43:05 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.003s
+2025-10-23 12:43:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:43:08 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:08 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:43:08 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:43:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:43:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:43:08 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:08 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:43:08 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:43:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:43:15 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:43:15 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:15 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:43:15 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:43:15 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:15 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:43:15 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:43:15 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:43:15 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:43:15 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:43:15 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:43:15 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:43:15 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:43:15 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:43:15 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:43:15 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.005s
+2025-10-23 12:44:00 - app.logging_config - INFO - Request: POST http://localhost:8000/auth/login
+2025-10-23 12:44:00 - auth_router - INFO - Login attempt for login_id: test3
+2025-10-23 12:44:00 - UserService - INFO - Authenticating user: test3
+2025-10-23 12:44:00 - UserService - INFO - Authentication successful for: test3
+2025-10-23 12:44:00 - utils - INFO - Creating access token for user: test3
+2025-10-23 12:44:00 - utils - INFO - Access token created successfully for user: test3
+2025-10-23 12:44:00 - auth_router - INFO - Login successful for: test3
+2025-10-23 12:44:00 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/auth/login - 0.065s
+2025-10-23 12:44:00 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:44:00 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:44:00 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:44:00 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:44:00 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:44:00 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:44:00 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:44:00 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:44:00 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:44:00 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.005s
+2025-10-23 12:44:16 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/wallet
+2025-10-23 12:44:16 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/wallet - 0.000s
+2025-10-23 12:44:16 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:44:16 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:44:16 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:44:16 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:44:16 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.003s
+2025-10-23 12:44:16 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:44:16 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:44:16 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:44:16 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:44:16 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:44:21 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/chats
+2025-10-23 12:44:21 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/chats - 0.000s
+2025-10-23 12:44:21 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:44:21 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:44:21 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:44:21 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:44:21 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:44:21 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:45:26 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 12:45:26 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:45:26 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.004s
+2025-10-23 12:45:26 - app.logging_config - INFO - Request: GET http://localhost:8000/api/wallet
+2025-10-23 12:45:26 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:45:26 - wallet_router - INFO - Getting wallet for user: test3
+2025-10-23 12:45:26 - wallet_router - INFO - Wallet retrieved for user: test3, balance: 200.0000
+2025-10-23 12:45:26 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/wallet - 0.004s
+2025-10-23 12:45:26 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:45:26 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.000s
+2025-10-23 12:45:26 - app.logging_config - INFO - Request: GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577
+2025-10-23 12:45:26 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 12:45:26 - sessions_router - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 12:45:26 - SessionService - INFO - Retrieving history for session: 386437e1613b49a5b566196b45187577, user_id: 5
+2025-10-23 12:45:26 - SessionService - INFO - Retrieved 1 messages for session: 386437e1613b49a5b566196b45187577
+2025-10-23 12:45:26 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577 - 0.004s
+2025-10-23 16:59:50 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577/extend
+2025-10-23 16:59:50 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577/extend - 0.012s
+2025-10-23 16:59:50 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577/extend
+2025-10-23 16:59:50 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 16:59:50 - SessionService - INFO - Extending session 386437e1613b49a5b566196b45187577 for user 5 by 300s
+2025-10-23 16:59:50 - WalletRepository - INFO - Updated wallet: 5 for user_id: 5
+2025-10-23 16:59:50 - TransactionRepository - INFO - Created transaction: charge (ID: 13)
+2025-10-23 16:59:50 - SessionRepository - INFO - Updated session: 386437e1613b49a5b566196b45187577 (ID: 6)
+2025-10-23 16:59:50 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577/extend - 0.149s
+2025-10-23 16:59:50 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/chats
+2025-10-23 16:59:50 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/chats - 0.000s
+2025-10-23 16:59:50 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 16:59:50 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 16:59:50 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.005s
+2025-10-23 17:01:05 - app.logging_config - INFO - Request: OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577/messages
+2025-10-23 17:01:05 - app.logging_config - INFO - Response: 200 - OPTIONS http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577/messages - 0.011s
+2025-10-23 17:01:05 - app.logging_config - INFO - Request: POST http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577/messages
+2025-10-23 17:01:05 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 17:01:05 - sessions_router - INFO - Processing message for session: 386437e1613b49a5b566196b45187577, user: test3
+2025-10-23 17:01:05 - MessageService - INFO - Processing message stream for session: 386437e1613b49a5b566196b45187577, user: 5
+2025-10-23 17:01:05 - MessageRepository - INFO - Created message: user (ID: 33)
+2025-10-23 17:01:05 - SessionRepository - INFO - Updated session: 386437e1613b49a5b566196b45187577 (ID: 6)
+2025-10-23 17:01:05 - llm.factory - INFO - Creating LLM streamer for provider: together
+2025-10-23 17:01:05 - llm.together - INFO - Together AI client initialized with model: Qwen/Qwen3-235B-A22B-Instruct-2507-tput
+2025-10-23 17:01:05 - llm.factory - INFO - LLM streamer created successfully: together, model: Qwen/Qwen3-235B-A22B-Instruct-2507-tput
+2025-10-23 17:01:05 - MessageService - INFO - Using LLM provider: together, model: Qwen/Qwen3-235B-A22B-Instruct-2507-tput
+2025-10-23 17:01:05 - app.logging_config - INFO - Response: 200 - POST http://localhost:8000/api/sessions/386437e1613b49a5b566196b45187577/messages - 0.074s
+2025-10-23 17:01:05 - MessageService - INFO - Starting LLM stream for session: 386437e1613b49a5b566196b45187577
+2025-10-23 17:01:05 - llm.together - INFO - Starting Together AI chat stream with 2 messages
+2025-10-23 17:01:08 - llm.together - INFO - Together AI stream completed successfully, yielded 99 tokens
+2025-10-23 17:01:08 - MessageService - INFO - LLM response completed for session 386437e1613b49a5b566196b45187577, length: 403 characters
+2025-10-23 17:01:08 - MessageRepository - INFO - Created message: assistant (ID: 34)
+2025-10-23 17:01:08 - app.logging_config - INFO - Request: GET http://localhost:8000/api/chats
+2025-10-23 17:01:08 - auth - INFO - User authenticated successfully: test3 (ID: 5)
+2025-10-23 17:01:08 - app.logging_config - INFO - Response: 200 - GET http://localhost:8000/api/chats - 0.003s
