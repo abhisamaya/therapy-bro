@@ -122,5 +122,8 @@ See `backend/app/env.example` for all available configuration options including:
 - Frontend origin settings
 - Database configuration
 
+### Backend Architecture & Docs
+See `backend/app/README.md` for detailed backend architecture, directory layout, database pooling configuration, and development guidelines.
+
 ### Custom Models
 With Together AI, you can use any model from their catalog. Check their [model list](https://docs.together.ai/docs/inference-models) for the latest available models.

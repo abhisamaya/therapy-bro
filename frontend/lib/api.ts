@@ -1,7 +1,32 @@
-const API = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
+// Automatically determine API URL based on environment
+const getApiUrl = () => {
+  // Auto-detect based on hostname FIRST (client-side)
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname
+    // Development: localhost or 127.0.0.1
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:8000'
+    }
+    // Production: any other domain, use env var or default
+    return process.env.NEXT_PUBLIC_API_BASE_URL || 'https://textraja.com'
+  }
+  
+  // Server-side: use env var or NODE_ENV
+  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL
+  }
+  
+  return process.env.NODE_ENV === 'production' 
+    ? 'https://textraja.com' 
+    : 'http://localhost:8000'
+}
 
-// Log API base URL for debugging (remove in production)
+const API = getApiUrl()
+
+// Log API base URL for debugging
 if (typeof window !== 'undefined') {
+  console.log('Environment:', process.env.NODE_ENV)
+  console.log('Hostname:', window.location.hostname)
   console.log('API Base URL:', API)
 }
 
@@ -17,7 +42,7 @@ export async function register(login_id: string, password: string, name?: string
     credentials: 'include',
     body: JSON.stringify({ login_id, password, name })
   })
-  if (!res.ok) throw new Error('register failed')
+  if (!res.ok) throw new Error('User Already Exists!')
   const j = await res.json(); localStorage.setItem('token', j.access_token); return j
 }
 
@@ -204,5 +229,20 @@ export async function getWallet() {
     credentials: 'include'
   })
   if (!res.ok) throw new Error('Failed to fetch wallet')
+  return res.json()
+}
+
+// Session extension
+export async function extendSessionAPI(sessionId: string, durationSeconds: number, requestId?: string) {
+  const res = await fetch(`${API}/api/sessions/${sessionId}/extend`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    credentials: 'include',
+    body: JSON.stringify({ duration_seconds: durationSeconds, request_id: requestId })
+  })
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}))
+    throw new Error(errorData.error?.message || `Extend session failed: ${res.status}`)
+  }
   return res.json()
 }
