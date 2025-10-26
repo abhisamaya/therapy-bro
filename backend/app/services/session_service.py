@@ -74,14 +74,19 @@ class SessionService(BaseService):
         session_id = uuid.uuid4().hex
         
         try:
-            # Create chat session
-            # Initialize server-enforced timer for default 5 minutes
+            # Determine eligibility for one-time free session using durable marker
             start_time = now_utc()
-            # Check if this is the user's first session
-            existing = self.session_repository.find_by_user_id(user_id)
-            is_first_session = len(existing) == 0
+            wallet_repo = WalletRepository(self.db)
+            tx_repo = TransactionRepository(self.db)
+            wallet = wallet_repo.find_by_user_id(user_id)
+            if not wallet:
+                from app.models import Wallet
+                wallet = Wallet(user_id=user_id, balance=Decimal("0.0000"), reserved=Decimal("0.0000"), currency=get_settings().wallet_currency)
+                wallet_repo.create(wallet)
 
-            if is_first_session:
+            has_used_free = tx_repo.user_has_transaction_of_type(user_id, "free_session")
+
+            if not has_used_free:
                 default_duration = 300
                 end_time = start_time + timedelta(seconds=default_duration)
                 status = "active"
@@ -116,18 +121,27 @@ class SessionService(BaseService):
             
             self.logger.info(f"Session created successfully: {session_id}")
             
-            # Get wallet info for the user
-            wallet_repo = WalletRepository(self.db)
-            wallet = wallet_repo.find_by_user_id(user_id)
+            # If this was the user's first (free) session, record a marker transaction
+            if not has_used_free:
+                tx = WalletTransaction(
+                    wallet_id=wallet.id,
+                    user_id=user_id,
+                    type="free_session",
+                    amount=Decimal("0.0000"),
+                    balance_after=wallet.balance,
+                    reference_id=f"free:{session_id}",
+                    meta={"session_id": session_id, "duration_seconds": default_duration},
+                )
+                tx_repo.create(tx)
             
             return StartSessionOut(
                 session_id=session_id,
                 session_start_time=start_time,
                 session_end_time=end_time,
                 duration_seconds=default_duration,
-                status=SessionStatus.active,  # Add this
-                remaining_seconds=max(0, int((end_time - now_utc()).total_seconds())),  # Calculate remaining seconds
-                cost_charged=None,  # No cost for initial session
+                status=SessionStatus.active if status == "active" else SessionStatus.ended,
+                remaining_seconds=max(0, int((end_time - now_utc()).total_seconds())),
+                cost_charged=None,
                 wallet_balance=str(wallet.balance) if wallet else "0.00",
                 wallet_reserved=str(wallet.reserved) if wallet else "0.00"
             )
