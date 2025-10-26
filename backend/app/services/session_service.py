@@ -241,6 +241,25 @@ class SessionService(BaseService):
             meta={"duration_seconds": int(duration_seconds), "unit_price": str(unit_price), "request_id": request_id} if request_id else {"duration_seconds": int(duration_seconds), "unit_price": str(unit_price)},
         )
         tx_repo.create(tx)
+        
+        # Store memory chunks if session was previously ended/expired
+        # (we want to preserve the conversation before extending)
+        settings = get_settings()
+        memory_enabled = settings.memory_enabled
+        if memory_enabled and chat_session.status == "ended":
+            try:
+                from app.services.memory_chunker import MemoryChunkerService
+                
+                chunker = MemoryChunkerService(self.db)
+                messages = self.message_repository.find_by_session_id(session_id)
+                
+                # Only chunk if there are meaningful messages (more than just system prompt)
+                if len(messages) > 1:
+                    chunker.chunk_and_store_session(session_id, user_id, messages)
+                    self.logger.info(f"Stored memory chunks for session {session_id} before extension")
+            except Exception as e:
+                self.logger.warning(f"Failed to store memory chunks for session {session_id}: {str(e)}")
+                # Don't fail the extension if memory storage fails
 
         # Update session timing
         now = now_utc()

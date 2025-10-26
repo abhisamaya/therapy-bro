@@ -15,3 +15,11 @@ argon2-cffi==25.1.0
 pydantic==2.11.9
 pydantic-settings==2.11.0
 sqlalchemy==2.0.43
+
+# Memory & LangGraph dependencies
+langgraph>=0.6.11
+langchain>=0.3.27
+langchain-core>=0.3.79
+langchain-openai>=0.3.35
+chromadb>=1.2.1
+tiktoken>=0.12.0

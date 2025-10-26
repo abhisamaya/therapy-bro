@@ -126,3 +126,21 @@ class Payment(SQLModel, table=True):
     meta: Optional[Dict[str, Any]] = Field(sa_column=Column(JSON), default=None)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+# ---------- memory models ----------
+
+class MemoryChunk(SQLModel, table=True):
+    """
+    Stores metadata about vectorized memory chunks.
+    The actual vector embeddings are stored in ChromaDB.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    chunk_id: str = Field(index=True, unique=True)  # UUID for ChromaDB reference
+    user_id: int = Field(index=True)
+    session_id: str = Field(index=True)
+    chunk_text: str  # The actual text stored in vector DB
+    message_ids: str  # JSON array of message IDs in this chunk
+    chunk_type: str  # "conversation" | "session_summary"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    meta: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON))

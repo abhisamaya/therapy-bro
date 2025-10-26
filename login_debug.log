@@ -170,3 +170,13 @@
 2025-10-17T19:09:06.702Z - 📋 FastAPI Response Headers: {"content-length":"33","content-type":"application/json","date":"Fri, 17 Oct 2025 19:09:06 GMT","server":"uvicorn"}
 2025-10-17T19:09:06.703Z - 📦 FastAPI Response Data: has_access_token=false, token_length=undefined
 2025-10-17T19:09:06.704Z - ❌ FastAPI returned error: {"detail":"Invalid Google token"}
+2025-10-26T16:08:18.006Z - 
+=== NEXT.JS API ROUTE: /api/auth/google ===
+2025-10-26T16:08:18.006Z - 🔵 Timestamp: 2025-10-26T16:08:18.006Z
+2025-10-26T16:08:18.006Z - 📍 FastAPI URL: http://127.0.0.1:8000
+2025-10-26T16:08:18.008Z - 📦 Received body from frontend: has_id_token=true, length=1192
+2025-10-26T16:08:18.008Z - 🌐 Forwarding request to FastAPI backend: http://127.0.0.1:8000/auth/google
+2025-10-26T16:08:18.113Z - 📡 FastAPI Response Status: 400 Bad Request
+2025-10-26T16:08:18.113Z - 📋 FastAPI Response Headers: {"content-length":"167","content-type":"application/json","date":"Sun, 26 Oct 2025 16:08:17 GMT","server":"uvicorn"}
+2025-10-26T16:08:18.114Z - 📦 FastAPI Response Data: has_access_token=false, token_length=undefined
+2025-10-26T16:08:18.114Z - ❌ FastAPI returned error: {"error":{"code":"HTTP_400","message":"Invalid Google token","details":{},"request":{"method":"POST","url":"http://127.0.0.1:8000/auth/google","path":"/auth/google"}}}

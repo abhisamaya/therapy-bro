@@ -1,6 +1,7 @@
 """Message service for handling LLM interactions and streaming."""
 import json
 import logging
+import os
 from typing import List, Dict, Iterable, Generator
 from fastapi.responses import StreamingResponse
 from app.services.base_service import BaseService
@@ -9,6 +10,7 @@ from app.services.session_service import SessionService
 from datetime import timezone
 from app.utils import now_utc
 from app.repositories.session_repository import SessionRepository
+from app.config.settings import get_settings
 
 
 class MessageService(BaseService):
@@ -55,15 +57,58 @@ class MessageService(BaseService):
             # Block if session not active or time elapsed
             if getattr(chat_session, "status", "ended") != "active" or (end is not None and end <= now):
                 self.logger.info(f"Blocking send: session expired for {session_id}")
+                # Finalize-on-expiry: chunk and store session memory once when expired
+                try:
+                    settings = get_settings()
+                    if settings.memory_enabled:
+                        from app.services.memory_chunker import MemoryChunkerService
+                        from app.repositories.memory_repository import MemoryRepository
+                        # Only chunk if there are meaningful messages
+                        messages = self.session_service.message_repository.find_by_session_id(session_id)
+                        if len(messages) > 1:
+                            # Avoid duplicate chunking for same session
+                            mem_repo = MemoryRepository(self.db)
+                            if mem_repo.count_by_session_id(session_id) == 0:
+                                chunker = MemoryChunkerService(self.db)
+                                chunker.chunk_and_store_session(session_id, user_id, messages)
+                                self.logger.info(f"Finalized memory for expired session {session_id}")
+                except Exception as e:
+                    self.logger.warning(f"Finalize-on-expiry memory store failed for {session_id}: {str(e)}")
                 raise RuntimeError("SESSION_EXPIRED")
 
             # Add user message to session
             self.session_service.add_user_message(session_id, content, user_id)
             self.logger.debug(f"User message persisted for session: {session_id}")
 
-            # Build conversation history for LLM
-            wire = self.session_service.get_conversation_history(session_id)
-            self.logger.debug(f"Built conversation history with {len(wire)} messages")
+            # Build conversation history for LLM with memory enrichment
+            base_history = self.session_service.get_conversation_history(session_id)
+            self.logger.debug(f"Built base conversation history with {len(base_history)} messages")
+            
+            # Check if memory system is enabled
+            settings = get_settings()
+            memory_enabled = settings.memory_enabled
+            
+            if memory_enabled:
+                try:
+                    # Use memory agent to enrich with past context
+                    from app.services.memory_agent import MemoryAgent
+                    
+                    memory_agent = MemoryAgent(self.db)
+                    wire = memory_agent.process(
+                        user_id=user_id,
+                        session_id=session_id,
+                        message=content,
+                        history=base_history
+                    )
+                    self.logger.info(f"Memory agent enriched context for session: {session_id}")
+                except Exception as e:
+                    self.logger.warning(f"Memory agent failed, using base history: {str(e)}")
+                    wire = base_history
+            else:
+                self.logger.debug("Memory system disabled, using base history")
+                wire = base_history
+            
+            self.logger.debug(f"Final conversation context has {len(wire)} messages")
             
         except ValueError as e:
             self.logger.warning(f"Session not found: {session_id} for user: {user_id}")
