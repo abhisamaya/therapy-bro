@@ -1,10 +1,12 @@
 from __future__ import annotations
 from typing import Optional, Dict, Any
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from decimal import Decimal
 
-from sqlmodel import SQLModel, Field, Column
+from sqlmodel import SQLModel, Field, Column, Relationship
 from sqlalchemy import Numeric, String, JSON
+
+import secrets
 
 # ---------- existing models (small updates) ----------
 
@@ -144,3 +146,25 @@ class MemoryChunk(SQLModel, table=True):
     chunk_type: str  # "conversation" | "session_summary"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     meta: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON))
+
+
+class PasswordResetToken(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    otp: str
+    expires_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc) + timedelta(minutes=10))
+    verified: bool = Field(default=False)
+
+
+class PhoneVerification(SQLModel, table=True):
+    """
+    Phone verification table - stores verified phone numbers linked to email addresses.
+    One phone number per email address.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    email: str = Field(index=True, unique=True)  # Primary key - one entry per email
+    phone_number: str = Field(index=True, unique=True)  # One phone per email, unique across table
+    verified: bool = Field(default=False)
+    verified_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

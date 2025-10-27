@@ -9,7 +9,8 @@ from fastapi import Response as FastAPIResponse
 from dotenv import load_dotenv
 
 from app.db import init_db
-from app.routers import auth_router, sessions_router, wallet_router
+from app.routers import auth_router, sessions_router, wallet_router, phone_verification_router
+from app.password_reset import router as password_reset_router
 from app.logging_config import configure_logging, get_logger
 from app.middleware import register_error_handlers
 
@@ -77,6 +78,8 @@ configure_cors()
 app.include_router(auth_router)
 app.include_router(sessions_router)
 app.include_router(wallet_router)
+app.include_router(password_reset_router)
+app.include_router(phone_verification_router)
 
 
 # Add request/response logging middleware
@@ -107,6 +110,35 @@ def health():
 
 
 @app.options("/{full_path:path}")
-async def options_handler(full_path: str):
+async def options_handler(full_path: str, request: Request):
     """Handle OPTIONS requests for CORS preflight."""
-    return FastAPIResponse(status_code=200)
+    origin = request.headers.get("origin", "")
+
+    # Get allowed origins from CORS configuration
+    allowed_origins = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000").split(",")
+    if "http://localhost:3000" not in allowed_origins:
+        allowed_origins.append("http://localhost:3000")
+
+    # Add both www and non-www versions
+    production_origins_to_add = []
+    for orig in list(allowed_origins):
+        if orig.startswith("https://"):
+            if "://www." in orig:
+                production_origins_to_add.append(orig.replace("://www.", "://"))
+            else:
+                domain = orig.replace("https://", "")
+                production_origins_to_add.append(f"https://www.{domain}")
+    allowed_origins.extend(production_origins_to_add)
+
+    # Check if origin is allowed
+    allow_origin = origin if origin in allowed_origins else allowed_origins[0] if allowed_origins else "*"
+
+    headers = {
+        "Access-Control-Allow-Origin": allow_origin,
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age": "3600",
+    }
+
+    return FastAPIResponse(status_code=200, headers=headers)

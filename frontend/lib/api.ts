@@ -246,3 +246,174 @@ export async function extendSessionAPI(sessionId: string, durationSeconds: numbe
   }
   return res.json()
 }
+
+// Password Reset APIs
+export async function requestOTP(email: string) {
+  console.log('='.repeat(80))
+  console.log('🔵 Frontend: requestOTP called')
+  console.log('📧 Email:', email)
+  console.log('🌐 API Base URL:', API)
+  console.log('🔗 Full URL:', `${API}/api/password-reset/request-otp`)
+
+  try {
+    const res = await fetch(`${API}/api/password-reset/request-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email })
+    })
+
+    console.log('📡 Response received')
+    console.log('   Status:', res.status)
+    console.log('   OK:', res.ok)
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      console.error('❌ Error response:', errorData)
+      // Backend returns errors in format: { error: { message: "..." } } or FastAPI format: { detail: "..." }
+      const errorMessage = errorData.error?.message || errorData.detail || 'Failed to send OTP'
+      throw new Error(errorMessage)
+    }
+
+    const data = await res.json()
+    console.log('✅ Success response:', data)
+    console.log('='.repeat(80))
+    return data
+  } catch (error) {
+    console.error('❌ Fetch error:', error)
+    console.log('='.repeat(80))
+    throw error
+  }
+}
+
+export async function verifyOTP(email: string, otp: string) {
+  const res = await fetch(`${API}/api/password-reset/verify-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ email, otp })
+  })
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}))
+    const errorMessage = errorData.error?.message || errorData.detail || 'Invalid or expired OTP'
+    throw new Error(errorMessage)
+  }
+  return res.json()
+}
+
+export async function resetPassword(email: string, otp: string, newPassword: string) {
+  const res = await fetch(`${API}/api/password-reset/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ email, otp, new_password: newPassword })
+  })
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}))
+    const errorMessage = errorData.error?.message || errorData.detail || 'Failed to reset password'
+    throw new Error(errorMessage)
+  }
+  return res.json()
+}
+
+// Phone Verification APIs
+export async function sendPhoneOTP(phoneNumber: string) {
+  console.log('🔵 sendPhoneOTP called')
+  console.log('📱 Phone Number:', phoneNumber)
+  console.log('🌐 API Base URL:', API)
+  console.log('🔗 Full URL:', `${API}/api/phone-verification/send-otp`)
+
+  try {
+    const res = await fetch(`${API}/api/phone-verification/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      credentials: 'include',
+      body: JSON.stringify({ phone_number: phoneNumber })
+    })
+
+    console.log('📡 Response received')
+    console.log('   Status:', res.status)
+    console.log('   OK:', res.ok)
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      console.error('❌ Error response:', errorData)
+      const errorMessage = errorData.detail || errorData.message || 'Failed to send OTP'
+      throw new Error(errorMessage)
+    }
+
+    const data = await res.json()
+    console.log('✅ Success response:', data)
+    return data
+  } catch (error) {
+    console.error('❌ Fetch error in sendPhoneOTP:', error)
+    // If it's a network error (failed to fetch), provide a more helpful message
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server. Please check your connection and try again.')
+    }
+    throw error
+  }
+}
+
+export async function verifyPhoneOTP(otpCode: string) {
+  try {
+    const res = await fetch(`${API}/api/phone-verification/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      credentials: 'include',
+      body: JSON.stringify({ otp_code: otpCode })
+    })
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      const errorMessage = errorData.detail || errorData.message || 'Failed to verify OTP'
+      throw new Error(errorMessage)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server.')
+    }
+    throw error
+  }
+}
+
+export async function getPhoneVerificationStatus() {
+  try {
+    const res = await fetch(`${API}/api/phone-verification/status`, {
+      headers: { ...authHeaders() },
+      credentials: 'include'
+    })
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      const errorMessage = errorData.detail || errorData.message || 'Failed to get verification status'
+      throw new Error(errorMessage)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server.')
+    }
+    throw error
+  }
+}
+
+export async function resendPhoneOTP() {
+  try {
+    const res = await fetch(`${API}/api/phone-verification/resend-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      credentials: 'include'
+    })
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      const errorMessage = errorData.detail || errorData.message || 'Failed to resend OTP'
+      throw new Error(errorMessage)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server.')
+    }
+    throw error
+  }
+}

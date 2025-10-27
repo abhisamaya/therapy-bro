@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { login, register } from '@/lib/api'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 // Google Sign-In types
 declare global {
@@ -211,9 +212,19 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-text mb-2">
-              Password
-            </label>
+            <div className="flex justify-between items-center mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-text">
+                Password
+              </label>
+              {mode === 'login' && (
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-accent hover:text-accent-light transition-colors font-medium"
+                >
+                  Forgot Password?
+                </Link>
+              )}
+            </div>
             <input
               id="password"
               name="password"
