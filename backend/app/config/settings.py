@@ -1,7 +1,7 @@
 """Centralized configuration for TherapyBro backend."""
 import os
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, Dict
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -52,7 +52,8 @@ class Settings(BaseSettings):
     wallet_currency: str = Field(default="INR")
     # Pricing Configuration (server-side enforced minutes pricing)
     inr_per_minute: Decimal = Field(default=Decimal("4.00"), alias="INR_PER_MINUTE")
-    
+    category_inr_per_minute: Dict[str, Decimal] = Field(default_factory=dict, alias="CATEGORY_INR_PER_MINUTE")
+
     # Logging Configuration
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
     log_file: str = Field(default="app.log", alias="LOG_FILE")

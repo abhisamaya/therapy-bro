@@ -364,12 +364,12 @@ class PromptContext:
          setattr(self, key, value)
 
 
-def build_system_prompt(category: str = "therapybro", context: Optional[PromptContext] = None) -> str:
+def build_system_prompt(category: str = "TherapyBro", context: Optional[PromptContext] = None) -> str:
    """
    Build a complete system prompt with optional context injection.
    
    Args:
-      category: Category of chat (currently only "therapybro")
+      category: Category of chat (currently only "TherapyBro")
       context: Optional context object with user-specific information
       
    Returns:
@@ -386,19 +386,19 @@ def build_system_prompt(category: str = "therapybro", context: Optional[PromptCo
       prompt_parts.append(f"They are {context.user_age} years old.\n")
    
    # Core personality
-   if category == "therapybro":
+   if category == "TherapyBro":
       prompt_parts.append(THERAPYBRO_CORE)
-   elif category == "rahul":
+   elif category == "Rahul":
       prompt_parts.append(RAHUL_CORE)
-   elif category == "priya":
+   elif category == "Priya":
       prompt_parts.append(PRIYA_CORE)
-   elif category == "arjun":
+   elif category == "Arjun":
       prompt_parts.append(ARJUN_CORE)
-   elif category == "ananya":
+   elif category == "Ananya":
       prompt_parts.append(ANANYA_CORE)
-   elif category == "vikram":
+   elif category == "Vikram":
       prompt_parts.append(VIKRAM_CORE)
-   elif category == "sneha":
+   elif category == "Sneha":
       prompt_parts.append(SNEHA_CORE)
    else:
       raise ValueError(f"Invalid category: {category}")
@@ -428,11 +428,11 @@ def system_prompt_for(category: str) -> str:
 
 # For easy access to core prompt
 CATEGORY_PROMPTS = {
-    "therapybro": build_system_prompt("therapybro"),
-    "rahul": build_system_prompt("rahul"),
-    "priya": build_system_prompt("priya"),
-    "arjun": build_system_prompt("arjun"),
-    "ananya": build_system_prompt("ananya"),
-    "vikram": build_system_prompt("vikram"),
-    "sneha": build_system_prompt("sneha")
+    "TherapyBro": build_system_prompt("TherapyBro"),
+    "Rahul": build_system_prompt("Rahul"),
+    "Priya": build_system_prompt("Priya"),
+    "Arjun": build_system_prompt("Arjun"),
+    "Ananya": build_system_prompt("Ananya"),
+    "Vikram": build_system_prompt("Vikram"),
+    "Sneha": build_system_prompt("Sneha")
 }

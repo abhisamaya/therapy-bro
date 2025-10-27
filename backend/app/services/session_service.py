@@ -209,15 +209,16 @@ class SessionService(BaseService):
         if duration_seconds <= 0 or duration_seconds % 60 != 0:
             raise ValueError("Invalid duration_seconds")
 
-        settings = get_settings()
-        unit_price: Decimal = settings.inr_per_minute
-        minutes = Decimal(duration_seconds) / Decimal(60)
-        amount = (unit_price * minutes).quantize(Decimal("0.01"))
-
         # Load session and ensure it belongs to user
         chat_session = self.session_repository.find_by_session_and_user(session_id, user_id)
         if not chat_session:
             raise ValueError("Session not found")
+
+        # Compute price using category-specific config if available
+        settings = get_settings()
+        unit_price: Decimal = settings.category_inr_per_minute.get(chat_session.category, settings.inr_per_minute)
+        minutes = Decimal(duration_seconds) / Decimal(60)
+        amount = (unit_price * minutes).quantize(Decimal("0.01"))
 
         # Enforce: only allow extending sessions that started today (UTC)
         start_time = chat_session.session_start_time
@@ -252,7 +253,7 @@ class SessionService(BaseService):
             amount=-amount,
             balance_after=new_balance,
             reference_id=f"extend:{session_id}",
-            meta={"duration_seconds": int(duration_seconds), "unit_price": str(unit_price), "request_id": request_id} if request_id else {"duration_seconds": int(duration_seconds), "unit_price": str(unit_price)},
+            meta={"duration_seconds": int(duration_seconds), "unit_price": str(unit_price), "request_id": request_id} if request_id else {"duration_seconds": int(duration_seconds), "unit_price": str(unit_price),"category": chat_session.category},
         )
         tx_repo.create(tx)
         

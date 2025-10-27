@@ -24,7 +24,7 @@ const peers: Peer[] = [
     specialty: "Anxiety & Stress",
     experience: "3 years",
     bio: "Specializes in helping students and young professionals manage anxiety and work-related stress through practical mindfulness techniques.",
-    availability: "Mon-Fri, 6-9 PM",
+    availability: "Mon-Fri, 9 AM - 12 PM",
     rating: 4.8
   },
   {
@@ -182,10 +182,10 @@ export default function PeersPage() {
 
                   {/* Action Button */}
                   <Link
-                    href={`/calendar?peer_id=${peer.id}&peer_name=${encodeURIComponent(peer.name)}`}
+                    href={`/chat?new=${encodeURIComponent(peer.name.split(' ')[0])}`}
                     className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-xl font-medium hover:shadow-lg transition-all"
                   >
-                    <span>Schedule Session</span>
+                    <span>Start Session</span>
                     <span className="material-symbols-outlined">arrow_forward</span>
                   </Link>
                 </div>

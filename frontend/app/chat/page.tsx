@@ -54,7 +54,7 @@ function ChatPageInner() {
   const [expiredModalOpen, setExpiredModalOpen] = useState(false);
 
   // categories shown in left UI and modal
-  const categories = ["TherapyBro"];
+  const categories = Object.keys(LISTENER_META);
 
   // hover state for tooltip
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
@@ -78,6 +78,20 @@ function ChatPageInner() {
     setMessages((prev) => [...prev, { role: "system", content: text }]);
   }, []);
 
+  // get unit price for a category
+  const getUnitPrice = (cat: string | null) => {
+    const fallback = Number(process.env.NEXT_PUBLIC_INR_PER_MINUTE || 4);
+    try {
+      const raw = process.env.NEXT_PUBLIC_CATEGORY_INR_PER_MINUTE || '{}';
+      const map = JSON.parse(raw) as Record<string, number | string>;
+      if (!cat) return fallback;
+      const v = map[cat];
+      const n = typeof v === 'string' ? Number(v) : v;
+      return Number.isFinite(n) ? Number(n) : fallback;
+    } catch {
+      return fallback;
+    }
+  };
   // Load wallet balance
   const loadWalletBalance = useCallback(async () => {
     try {
@@ -194,7 +208,7 @@ function ChatPageInner() {
   const activeWelcome = activeCategory
     ? (LISTENER_META[activeCategory]?.welcome ?? LISTENER_META.TherapyBro.welcome)
     : LISTENER_META.TherapyBro.welcome;
-
+  const activeUnitPrice = getUnitPrice(activeCategory);
   // Single effect to handle everything
   useEffect(() => {
     (async () => {
@@ -247,11 +261,13 @@ function ChatPageInner() {
         // Handle new session request from URL
         if (newSessionParam) {
           const today = new Date().toISOString().split('T')[0];
-          const todaySession = list.find((c: Conv) => c.updated_at.startsWith(today));
+          const todayCategorySession = list.find(
+            (c: Conv) => c.category === newSessionParam && c.updated_at.startsWith(today)
+          );
           
-          if (todaySession) {
+          if (todayCategorySession) {
             // If there's already a session for today, continue it
-            await select(todaySession.session_id);
+            await select(todayCategorySession.session_id);
             isProcessing.current = false;
             return;
           } else {
@@ -330,6 +346,12 @@ function ChatPageInner() {
   // select an existing conversation and sync timer with server state
   const select = async (id: string) => {
     setActive(id);
+    // stop any prior countdown from a different session
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setRunning(false);
     const h = await load(id);
 
     // Compute UTC "today" using session_start_time from history (source of truth)
@@ -381,12 +403,7 @@ function ChatPageInner() {
     appendSystem(meta.welcome);
   };
 
-  // keep remaining in sync whenever duration changes and timer not running
-  useEffect(() => {
-    if (!running) {
-      setRemaining(totalSeconds);
-    }
-  }, [totalSeconds, running]);
+  
 
   // cleanup on unmount
   useEffect(() => {
@@ -798,9 +815,9 @@ function ChatPageInner() {
              px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring
              disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <option value={300}>5 minutes - ₹20</option>
-                <option value={600}>10 minutes - ₹40</option>
-                <option value={900}>15 minutes - ₹60</option>
+                <option value={300}>5 minutes - ₹{(activeUnitPrice * 5).toFixed(2)}</option>
+                <option value={600}>10 minutes - ₹{(activeUnitPrice * 10).toFixed(2)}</option>
+                <option value={900}>15 minutes - ₹{(activeUnitPrice * 15).toFixed(2)}</option>
               </select>
             </div>
 
