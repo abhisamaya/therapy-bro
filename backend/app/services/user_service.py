@@ -50,8 +50,12 @@ class UserService(BaseService):
             raise DuplicateResourceError("User", "login_id", user_data.login_id)
         
         # Create user
+        # If login_id is an email, also populate the email field
+        email = user_data.login_id if '@' in user_data.login_id else None
+
         user = User(
             login_id=user_data.login_id,
+            email=email,
             password_hash=hash_password(user_data.password),
             name=user_data.name,
             phone=user_data.phone,

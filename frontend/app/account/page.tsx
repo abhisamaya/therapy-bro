@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { me, updateProfile, getWallet } from '@/lib/api'
-import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X } from 'lucide-react'
+import { me, updateProfile, getWallet, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP } from '@/lib/api'
+import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X, CheckCircle, AlertCircle } from 'lucide-react'
 import TopNav from '@/components/TopNav'
 
 type UserData = {
@@ -43,6 +43,16 @@ export default function AccountPage() {
   const [saving, setSaving] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<{ phone?: string; age?: string }>({})
 
+  // Phone verification states
+  const [showVerifyModal, setShowVerifyModal] = useState(false)
+  const [verificationPhone, setVerificationPhone] = useState('')
+  const [otpCode, setOtpCode] = useState('')
+  const [verificationStatus, setVerificationStatus] = useState<any>(null)
+  const [verifyError, setVerifyError] = useState('')
+  const [verifySuccess, setVerifySuccess] = useState('')
+  const [sendingOTP, setSendingOTP] = useState(false)
+  const [verifying, setVerifying] = useState(false)
+
   const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/
 
   const validateProfile = (fd: { phone: string; age: string }) => {
@@ -72,8 +82,9 @@ export default function AccountPage() {
 
     Promise.all([
       me().catch(() => null),
-      getWallet().catch(() => null)
-    ]).then(([userData, walletData]) => {
+      getWallet().catch(() => null),
+      getPhoneVerificationStatus().catch(() => null)
+    ]).then(([userData, walletData, verifyStatus]) => {
       if (userData) {
         setUser(userData)
         setFormData({
@@ -84,6 +95,9 @@ export default function AccountPage() {
       }
       if (walletData) {
         setWallet(walletData)
+      }
+      if (verifyStatus) {
+        setVerificationStatus(verifyStatus)
       }
       setLoading(false)
     })
@@ -167,6 +181,107 @@ export default function AccountPage() {
       age: user?.age?.toString() || ''
     })
     setEditMode(false)
+  }
+
+  const handleVerifyPhone = () => {
+    setVerificationPhone(formData.phone || '')
+    setShowVerifyModal(true)
+    setVerifyError('')
+    setVerifySuccess('')
+    setOtpCode('')
+  }
+
+  const handleSendOTP = async () => {
+    // Clean the phone number
+    const cleanedPhone = verificationPhone.trim()
+
+    if (!cleanedPhone) {
+      setVerifyError('Please enter a phone number')
+      return
+    }
+
+    // Extract only digits for validation
+    const digitsOnly = cleanedPhone.replace(/\D/g, '')
+
+    if (digitsOnly.length < 10) {
+      setVerifyError(`Phone number must have at least 10 digits. You entered ${digitsOnly.length} digits.`)
+      return
+    }
+
+    if (digitsOnly.length > 15) {
+      setVerifyError(`Phone number cannot exceed 15 digits. You entered ${digitsOnly.length} digits.`)
+      return
+    }
+
+    setSendingOTP(true)
+    setVerifyError('')
+    setVerifySuccess('')
+
+    try {
+      console.log('📱 Sending OTP for phone:', cleanedPhone)
+      await sendPhoneOTP(cleanedPhone)
+      setVerifySuccess('OTP sent successfully! Check your phone.')
+
+      // Refresh verification status
+      const status = await getPhoneVerificationStatus()
+      setVerificationStatus(status)
+    } catch (err) {
+      console.error('❌ Error sending OTP:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send OTP'
+      setVerifyError(errorMessage)
+    } finally {
+      setSendingOTP(false)
+    }
+  }
+
+  const handleVerifyOTP = async () => {
+    if (!otpCode || otpCode.length < 4) {
+      setVerifyError('Please enter the OTP code')
+      return
+    }
+
+    setVerifying(true)
+    setVerifyError('')
+
+    try {
+      const result = await verifyPhoneOTP(otpCode)
+
+      if (result.success) {
+        setVerifySuccess('Phone number verified successfully!')
+
+        // Refresh verification status
+        const status = await getPhoneVerificationStatus()
+        setVerificationStatus(status)
+
+        // Close modal after 2 seconds
+        setTimeout(() => {
+          setShowVerifyModal(false)
+          setOtpCode('')
+          setVerifySuccess('')
+        }, 2000)
+      } else {
+        setVerifyError(result.message || 'Invalid OTP code')
+      }
+    } catch (err) {
+      setVerifyError(err instanceof Error ? err.message : 'Failed to verify OTP')
+    } finally {
+      setVerifying(false)
+    }
+  }
+
+  const handleResendOTP = async () => {
+    setSendingOTP(true)
+    setVerifyError('')
+    setVerifySuccess('')
+
+    try {
+      await resendPhoneOTP()
+      setVerifySuccess('OTP resent successfully!')
+    } catch (err) {
+      setVerifyError(err instanceof Error ? err.message : 'Failed to resend OTP')
+    } finally {
+      setSendingOTP(false)
+    }
   }
 
   if (loading) {
@@ -383,6 +498,67 @@ export default function AccountPage() {
                 </div>
               )}
             </div>
+
+            {/* Phone Verification Card */}
+            <div className="glass-card rounded-2xl p-8">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <h3 className="text-xl font-semibold text-text mb-2">Phone Verification</h3>
+                  <p className="text-text-muted text-sm">
+                    Verify your phone number for enhanced account security
+                  </p>
+                </div>
+                {verificationStatus?.is_verified && (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <span className="text-green-700 font-medium text-sm">Verified</span>
+                  </div>
+                )}
+              </div>
+
+              {verificationStatus?.is_verified ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl">
+                    <Phone className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="text-sm text-text-muted">Verified Phone Number</p>
+                      <p className="text-text font-medium">{verificationStatus.phone_number}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-text-muted">
+                    Verified on: {verificationStatus.verified_at ? new Date(verificationStatus.verified_at).toLocaleDateString() : 'N/A'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+                    <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-yellow-800 mb-1">Phone Not Verified</p>
+                      <p className="text-xs text-yellow-700">
+                        Please verify your phone number to enhance your account security and enable all features.
+                      </p>
+                    </div>
+                  </div>
+
+                  {formData.phone ? (
+                    <button
+                      onClick={handleVerifyPhone}
+                      className="flex items-center gap-2 px-6 py-3 bg-gradient-accent text-white rounded-xl hover:shadow-glow transition-all font-medium"
+                    >
+                      <Shield className="w-5 h-5" />
+                      Verify Phone Number
+                    </button>
+                  ) : (
+                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                      <p className="text-sm text-blue-800">
+                        Please add a phone number to your profile first, then click "Save Changes" before verifying.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -472,6 +648,124 @@ export default function AccountPage() {
           </div>
         )}
       </div>
+
+      {/* Phone Verification Modal */}
+      {showVerifyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="glass-card rounded-2xl p-8 max-w-md w-full">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h3 className="text-2xl font-bold text-text mb-2">Verify Phone Number</h3>
+                <p className="text-text-muted text-sm">
+                  We'll send you an OTP to verify your phone number
+                </p>
+              </div>
+              <button
+                onClick={() => setShowVerifyModal(false)}
+                className="text-text-muted hover:text-text transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {verifyError && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-2">
+                <X className="w-5 h-5 flex-shrink-0" />
+                {verifyError}
+              </div>
+            )}
+
+            {verifySuccess && (
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-2">
+                <Check className="w-5 h-5 flex-shrink-0" />
+                {verifySuccess}
+              </div>
+            )}
+
+            <div className="space-y-6">
+              {/* Phone Number Display */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
+                  <Phone className="w-4 h-4" />
+                  Phone Number
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="tel"
+                    value={verificationPhone}
+                    onChange={(e) => setVerificationPhone(e.target.value)}
+                    className="flex-1 px-4 py-3 border border-border rounded-xl bg-white text-text focus:ring-2 focus:ring-accent focus:border-accent"
+                    placeholder="+919876543210"
+                  />
+                  <button
+                    onClick={handleSendOTP}
+                    disabled={sendingOTP || verificationStatus?.has_active_session}
+                    className="px-6 py-3 bg-gradient-accent text-white rounded-xl hover:shadow-glow transition-all font-medium disabled:opacity-50"
+                  >
+                    {sendingOTP ? 'Sending...' : 'Send OTP'}
+                  </button>
+                </div>
+                <p className="text-xs text-text-muted">
+                  Enter phone number with country code (e.g., +919876543210)
+                </p>
+              </div>
+
+              {/* OTP Session Info */}
+              {verificationStatus?.has_active_session && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                  <p className="text-sm text-blue-800 mb-2">
+                    OTP sent! Check your phone and enter the code below.
+                  </p>
+                  <p className="text-xs text-blue-700">
+                    Attempts remaining: {verificationStatus.attempts_remaining}
+                  </p>
+                </div>
+              )}
+
+              {/* OTP Input */}
+              {verificationStatus?.has_active_session && (
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
+                    <Shield className="w-4 h-4" />
+                    Enter OTP Code
+                  </label>
+                  <input
+                    type="text"
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                    maxLength={6}
+                    className="w-full px-4 py-3 border border-border rounded-xl bg-white text-text focus:ring-2 focus:ring-accent focus:border-accent text-center text-2xl tracking-widest font-mono"
+                    placeholder="000000"
+                  />
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                {verificationStatus?.has_active_session && (
+                  <>
+                    <button
+                      onClick={handleVerifyOTP}
+                      disabled={verifying || otpCode.length < 4}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-accent text-white rounded-xl hover:shadow-glow transition-all font-medium disabled:opacity-50"
+                    >
+                      <Check className="w-5 h-5" />
+                      {verifying ? 'Verifying...' : 'Verify OTP'}
+                    </button>
+                    <button
+                      onClick={handleResendOTP}
+                      disabled={sendingOTP}
+                      className="px-6 py-3 border-2 border-border text-text-muted rounded-xl hover:bg-card-hover transition-all font-medium disabled:opacity-50"
+                    >
+                      Resend
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
