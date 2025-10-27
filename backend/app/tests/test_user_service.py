@@ -3,6 +3,7 @@ import pytest
 from app.services.user_service import UserService
 from app.models import User
 from app.schemas import RegisterIn, UpdateProfileIn, UserOut
+from datetime import date, datetime
 from app.exceptions import DuplicateResourceError, AuthenticationError, UserNotFoundError
 
 
@@ -19,7 +20,7 @@ class TestUserService:
             password="test_password",
             name="Test User",
             phone="1234567890",
-            age=25
+            date_of_birth=date.today().replace(year=date.today().year - 25)
         )
         
         # Create user
@@ -30,7 +31,11 @@ class TestUserService:
         assert user.login_id == "test_user_123"
         assert user.name == "Test User"
         assert user.phone == "1234567890"
-        assert user.age == 25
+        expected_dob = date.today().replace(year=date.today().year - 25)
+        if isinstance(user.date_of_birth, datetime):
+            assert user.date_of_birth.date() == expected_dob
+        else:
+            assert user.date_of_birth == expected_dob
         assert user.password_hash is not None
         assert user.password_hash != "test_password"  # Should be hashed
         
@@ -49,7 +54,7 @@ class TestUserService:
             password="password1",
             name="User 1",
             phone="1111111111",
-            age=25
+            date_of_birth=date.today().replace(year=date.today().year - 25)
         )
         user_service.create_user(user_data)
         
@@ -59,7 +64,7 @@ class TestUserService:
             password="password2",
             name="User 2",
             phone="2222222222",
-            age=30
+            date_of_birth=date.today().replace(year=date.today().year - 30)
         )
         
         with pytest.raises(DuplicateResourceError, match="User with login_id 'duplicate_user' already exists"):
@@ -75,7 +80,7 @@ class TestUserService:
             password="correct_password",
             name="Auth User",
             phone="3333333333",
-            age=28
+            date_of_birth=date.today().replace(year=date.today().year - 28)
         )
         user_service.create_user(user_data)
         
@@ -97,7 +102,7 @@ class TestUserService:
             password="correct_password",
             name="Wrong Pass User",
             phone="4444444444",
-            age=30
+            date_of_birth=date.today().replace(year=date.today().year - 30)
         )
         user_service.create_user(user_data)
         
@@ -118,10 +123,11 @@ class TestUserService:
         user_service = UserService(db_session)
         
         # Update profile data
+        new_dob = date.today().replace(year=date.today().year - 35)
         profile_data = UpdateProfileIn(
             name="Updated Name",
             phone="9999999999",
-            age=35
+            date_of_birth=new_dob
         )
         
         # Update profile
@@ -130,7 +136,10 @@ class TestUserService:
         # Verify updates
         assert updated_user.name == "Updated Name"
         assert updated_user.phone == "9999999999"
-        assert updated_user.age == 35
+        if isinstance(updated_user.date_of_birth, datetime):
+            assert updated_user.date_of_birth.date() == new_dob
+        else:
+            assert updated_user.date_of_birth == new_dob
         assert updated_user.login_id == test_user.login_id  # Should not change
     
     def test_update_user_profile_partial(self, db_session, test_user):
@@ -141,7 +150,7 @@ class TestUserService:
         profile_data = UpdateProfileIn(
             name="Partial Update",
             phone=None,  # Not provided
-            age=None    # Not provided
+            date_of_birth=None    # Not provided
         )
         
         # Update profile
@@ -150,7 +159,7 @@ class TestUserService:
         # Verify only name was updated
         assert updated_user.name == "Partial Update"
         assert updated_user.phone == test_user.phone  # Should remain unchanged
-        assert updated_user.age == test_user.age      # Should remain unchanged
+        assert updated_user.date_of_birth == test_user.date_of_birth      # Should remain unchanged
     
     def test_update_user_profile_not_found(self, db_session):
         """Test updating profile for non-existent user."""
@@ -159,7 +168,7 @@ class TestUserService:
         profile_data = UpdateProfileIn(
             name="Updated Name",
             phone="9999999999",
-            age=35
+            date_of_birth=date.today().replace(year=date.today().year - 35)
         )
         
         with pytest.raises(ValueError, match="User not found"):
@@ -295,4 +304,9 @@ class TestUserService:
         assert profile.avatar_url == test_user.avatar_url
         assert profile.auth_provider == test_user.auth_provider
         assert profile.phone == test_user.phone
-        assert profile.age == test_user.age
+        if isinstance(profile.date_of_birth, datetime) and isinstance(test_user.date_of_birth, datetime):
+            assert profile.date_of_birth.date() == test_user.date_of_birth.date()
+        elif isinstance(profile.date_of_birth, date) and isinstance(test_user.date_of_birth, datetime):
+            assert profile.date_of_birth == test_user.date_of_birth.date()
+        else:
+            assert profile.date_of_birth == test_user.date_of_birth

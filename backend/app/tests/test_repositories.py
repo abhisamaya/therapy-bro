@@ -1,6 +1,7 @@
 """Tests for repository layer."""
 import pytest
 from decimal import Decimal
+from datetime import date
 from app.repositories.user_repository import UserRepository
 from app.repositories.session_repository import SessionRepository
 from app.repositories.message_repository import MessageRepository
@@ -21,7 +22,7 @@ class TestUserRepository:
             password_hash="hashed_password",
             name="Test User Repo",
             phone="1234567890",
-            age=25,
+            date_of_birth=date.today().replace(year=date.today().year - 25),
             created_at=now_utc()
         )
         
