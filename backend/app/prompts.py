@@ -118,6 +118,7 @@ TherapyBro: "I'm not really a coding assistant - that's not my thing. "
 class PromptContext:
    """Holds optional context to inject into system prompt."""
    user_name: Optional[str] = None
+   user_age: Optional[int] = None
    recent_sessions: Optional[str] = None
    retrieved_memories: Optional[str] = None
    user_preferences: Optional[Dict] = None
@@ -143,6 +144,10 @@ def build_system_prompt(category: str = "therapybro", context: Optional[PromptCo
    # User name at the very beginning (high priority)
    if context and context.user_name:
       prompt_parts.append(f"\nYou are speaking with {context.user_name}.\n")
+   
+   # User age (if available)
+   if context and context.user_age:
+      prompt_parts.append(f"They are {context.user_age} years old.\n")
    
    # Core personality
    prompt_parts.append(THERAPYBRO_CORE)

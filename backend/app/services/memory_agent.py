@@ -13,6 +13,7 @@ from app.services.session_service import SessionService
 from app.repositories.user_repository import UserRepository
 from app.prompts import PromptContext, build_system_prompt
 from app.config.settings import get_settings
+from app.services.user_service import calculate_age
 
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,7 @@ class AgentState(TypedDict):
     """State passed through the LangGraph workflow."""
     user_id: int
     user_name: Optional[str]
+    user_age: Optional[int]
     session_id: str
     current_message: str
     conversation_history: List[Dict]
@@ -211,6 +213,10 @@ class MemoryAgent:
             # Add user name context if available
             if state.get("user_name"):
                 context_additions.append(f"\n<user_info>\nThe user's name is {state.get('user_name')}.\n</user_info>")
+
+            # Add user age context if available
+            if state.get("user_age"):
+                context_additions.append(f"\n<user_info>\nThe user's age is {state.get('user_age')}.\n</user_info>")
             
             # Add conversation history context (important for first-time users)
             if not recent_context_text and not memories_text:
@@ -233,6 +239,7 @@ class MemoryAgent:
                 # No existing prompt, build fresh with PromptContext
                 prompt_context = PromptContext(
                     user_name=state.get("user_name"),
+                    user_age=state.get("user_age"),
                     recent_sessions=recent_context_text,
                     retrieved_memories=memories_text
                 )
@@ -247,6 +254,7 @@ class MemoryAgent:
             self.logger.info(
                 f"Built context with {len(final_context)} messages "
                 f"(user_name: {state.get('user_name')}, "
+                f"user_age: {state.get('user_age')}, "
                 f"memories: {len(state.get('retrieved_memories', []))}, "
                 f"recent_context: {'yes' if recent_context_text else 'no'})"
             )
@@ -326,12 +334,14 @@ class MemoryAgent:
         # Get user name from database
         user = self.user_repository.find_by_id(user_id)
         user_name = user.name if user and user.name else None
+        user_age = calculate_age(user.date_of_birth) if user and user.date_of_birth else None
         self.logger.info(f"User name retrieved: {user_name} (user_id: {user_id})")
         
         # Initialize state
         state = {
             "user_id": user_id,
             "user_name": user_name,
+            "user_age": user_age,
             "session_id": session_id,
             "current_message": message,
             "conversation_history": history,
