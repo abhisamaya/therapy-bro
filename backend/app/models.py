@@ -14,7 +14,7 @@ class User(SQLModel, table=True):
     password_hash: Optional[str] = Field(default=None)
     name: Optional[str] = None
     phone: Optional[str] = None
-    age: Optional[int] = None
+    date_of_birth: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Google OAuth

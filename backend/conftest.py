@@ -55,13 +55,15 @@ def test_user(db_session):
     import uuid
     from app.utils import hash_password
     
+    from datetime import date
+    
     unique_id = str(uuid.uuid4())[:8]
     user = User(
         login_id=f"test_user_{unique_id}",
         password_hash=hash_password("testpassword123"),
         name="Test User",
         phone="1234567890",
-        age=25,
+        date_of_birth=date.today().replace(year=date.today().year - 25),
         auth_provider="local"
     )
     db_session.add(user)
