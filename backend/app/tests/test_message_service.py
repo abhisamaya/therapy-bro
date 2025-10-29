@@ -1,6 +1,7 @@
 """Tests for message service."""
 import pytest
 import json
+from datetime import date
 from unittest.mock import Mock, patch, MagicMock
 from fastapi.responses import StreamingResponse
 from app.services.message_service import MessageService
@@ -185,7 +186,7 @@ class TestMessageService:
             password_hash="hashed_password",
             name="Other User",
             phone="9876543210",
-            age=30,
+            date_of_birth=date.today().replace(year=date.today().year - 30),
             auth_provider="local"
         )
         db_session.add(other_user)

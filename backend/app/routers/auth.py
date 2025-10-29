@@ -57,7 +57,7 @@ def me(user: User = Depends(get_current_user), user_service: UserService = Depen
 def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_user), user_service: UserService = Depends(get_user_service)):
     """Update user profile."""
     auth_router_logger.info(f"Profile update request for user: {user.login_id}")
-    auth_router_logger.debug(f"Payload: name={payload.name}, phone={payload.phone}, age={payload.age}")
+    auth_router_logger.debug(f"Payload: name={payload.name}, phone={payload.phone}, date_of_birth={payload.date_of_birth}")
 
     try:
         updated_user = user_service.update_user_profile(user.id, payload)
@@ -71,7 +71,7 @@ def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_us
                 "avatar_url": updated_user.avatar_url,
                 "auth_provider": updated_user.auth_provider,
                 "phone": updated_user.phone,
-                "age": updated_user.age
+                "date_of_birth": updated_user.date_of_birth.isoformat() if updated_user.date_of_birth else None
             }
         }
     except DuplicateResourceError as e:

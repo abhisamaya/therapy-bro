@@ -54,12 +54,13 @@ def db_session(test_session_factory):
 @pytest.fixture
 def test_user(db_session):
     """Create a test user."""
+    from datetime import date
     user = User(
         login_id="test_user",
         password_hash="hashed_password",
         name="Test User",
         phone="1234567890",
-        age=25,
+        date_of_birth=date.today().replace(year=date.today().year - 25),
         auth_provider="local"
     )
     db_session.add(user)
@@ -124,12 +125,13 @@ def test_messages(db_session, test_chat_session):
 @pytest.fixture
 def sample_register_data():
     """Sample registration data for testing."""
+    from datetime import date
     return {
         "login_id": "test_register_user",
         "password": "test_password_123",
         "name": "Test Register User",
         "phone": "9876543210",
-        "age": 30
+        "date_of_birth": date.today().replace(year=date.today().year - 30).isoformat()
     }
 
 

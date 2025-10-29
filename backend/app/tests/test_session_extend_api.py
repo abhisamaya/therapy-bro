@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from decimal import Decimal
 from app.main import app
 from app.db import get_session
-from app.models import ChatSession, Wallet
+from app.models import ChatSession, Wallet, Message
 from app.utils import now_utc
 from datetime import timedelta
 from app.utils import create_access_token
@@ -62,7 +62,7 @@ def test_extend_session_insufficient_balance(monkeypatch, db_session, test_user)
     assert body["error"]["message"] == "Insufficient wallet balance"
 
 
-def test_extend_session_success(db_session, test_user):
+def test_extend_session_success(db_session, test_user, monkeypatch):
     # Create session for user
     s = ChatSession(
         session_id="sess-extend-2",
@@ -106,6 +106,58 @@ def test_extend_session_success(db_session, test_user):
     assert data["remaining_seconds"] >= 299
     assert "wallet_balance" in data
     assert data["cost_charged"] in ("20.00", "20.0", "20.0000")
+
+
+def test_extend_session_chunks_when_previous_status_ended(db_session, test_user, monkeypatch):
+    # Create an ended session with some messages
+    s = ChatSession(
+        session_id="sess-ended-1",
+        user_id=test_user.id,
+        category="TherapyBro",
+        created_at=now_utc(),
+        updated_at=now_utc(),
+        session_start_time=now_utc(),
+        session_end_time=now_utc(),
+        duration_seconds=300,
+        status="ended",
+    )
+    db = db_session
+    db.add(s)
+    db.add(Message(session_id=s.session_id, role="system", content="sys", created_at=now_utc()))
+    db.add(Message(session_id=s.session_id, role="user", content="hi", created_at=now_utc()))
+    db.commit()
+
+    # Sufficient wallet balance
+    w = Wallet(user_id=test_user.id, balance=Decimal("100.00"), reserved=Decimal("0.00"), currency="INR")
+    db.add(w)
+    db.commit()
+
+    token = create_access_token(test_user.login_id)
+
+    # Observe chunking call via monkeypatching the service method
+    from app.services import memory_chunker as mc
+    called = {"chunked": False}
+    def _fake_chunk(self, session_id, user_id, messages):
+        called["chunked"] = True
+    monkeypatch.setattr(mc.MemoryChunkerService, "chunk_and_store_session", _fake_chunk)
+
+    # Override auth and DB for test app
+    app.dependency_overrides[get_current_user] = lambda: test_user
+    def _override_db():
+        yield db_session
+    app.dependency_overrides[get_db_session] = _override_db
+    try:
+        res = client.post(
+            f"/api/sessions/{s.session_id}/extend",
+            json={"duration_seconds": 300},
+            headers=auth_headers(token),
+        )
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
+        app.dependency_overrides.pop(get_db_session, None)
+
+    assert res.status_code == 200
+    assert called["chunked"] is True
 
 
 def test_extend_session_fails_when_not_today_utc(db_session, test_user):

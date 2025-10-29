@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { me, updateProfile, getWallet, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP, checkPhone } from '@/lib/api'
-import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X, CheckCircle, AlertCircle, Clock } from 'lucide-react'
+import { me, updateProfile, getWallet, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP, checkPhone, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP, checkPhone } from '@/lib/api'
+import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X, CheckCircle, AlertCircle, Clock, CheckCircle, AlertCircle, Clock } from 'lucide-react'
 import TopNav from '@/components/TopNav'
 
 type UserData = {
@@ -11,7 +11,7 @@ type UserData = {
   name?: string
   email?: string
   phone?: string
-  age?: number
+  date_of_birth?: string  // ISO date string
   avatar_url?: string
   auth_provider: string
 }
@@ -38,10 +38,10 @@ export default function AccountPage() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    age: ''
+    date_of_birth: ''
   })
   const [saving, setSaving] = useState(false)
-  const [fieldErrors, setFieldErrors] = useState<{ phone?: string; age?: string }>({})
+  const [fieldErrors, setFieldErrors] = useState<{ phone?: string; date_of_birth?: string }>({})
   const [phoneStatus, setPhoneStatus] = useState<{ exists?: boolean; message?: string; is_own?: boolean }>({})
   const [isCheckingPhone, setIsCheckingPhone] = useState(false)
 
@@ -57,18 +57,26 @@ export default function AccountPage() {
 
   const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/
 
-  const validateProfile = (fd: { phone: string; age: string }) => {
-    const errs: { phone?: string; age?: string } = {}
+  const validateProfile = (fd: { phone: string; date_of_birth: string }) => {
+    const errs: { phone?: string; date_of_birth?: string } = {}
 
     const trimmedPhone = fd.phone?.trim() || ''
     if (trimmedPhone && !phoneRegex.test(trimmedPhone)) {
       errs.phone = 'Invalid phone number format'
     }
 
-    if (fd.age !== '') {
-      const ageNum = parseInt(fd.age, 10)
-      if (Number.isNaN(ageNum) || ageNum < 13 || ageNum > 120) {
-        errs.age = 'Age must be between 13 and 120'
+    if (fd.date_of_birth !== '') {
+      // Calculate age from date of birth
+      const dob = new Date(fd.date_of_birth)
+      const today = new Date()
+      let age = today.getFullYear() - dob.getFullYear()
+      const monthDiff = today.getMonth() - dob.getMonth()
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--
+      }
+      
+      if (age < 13 || age > 120) {
+        errs.date_of_birth = 'Must be 13-120 years old'
       }
     }
 
@@ -92,7 +100,7 @@ export default function AccountPage() {
         setFormData({
           name: userData.name || '',
           phone: userData.phone || '',
-          age: userData.age?.toString() || ''
+          date_of_birth: userData.date_of_birth || ''
         })
       }
       if (walletData) {
@@ -118,7 +126,7 @@ export default function AccountPage() {
     try {
       const errs = validateProfile(formData)
       setFieldErrors(errs)
-      if (errs.phone || errs.age) {
+      if (errs.phone || errs.date_of_birth) {
         setError(Object.values(errs).join(' • '))
         setSaving(false)
         return
@@ -131,11 +139,8 @@ export default function AccountPage() {
       if (formData.phone && formData.phone.trim() !== '') {
         updateData.phone = formData.phone.trim()
       }
-      if (formData.age && formData.age !== '') {
-        const ageNum = parseInt(formData.age, 10)
-        if (!Number.isNaN(ageNum)) {
-          updateData.age = ageNum
-        }
+      if (formData.date_of_birth && formData.date_of_birth !== '') {
+        updateData.date_of_birth = formData.date_of_birth
       }
 
       console.log('4. Data to send:', updateData)
@@ -153,7 +158,7 @@ export default function AccountPage() {
       setFormData({
         name: userData.name || '',
         phone: userData.phone || '',
-        age: userData.age?.toString() || ''
+        date_of_birth: userData.date_of_birth || ''
       })
       setSuccess('Profile updated successfully!')
       setEditMode(false)
@@ -180,7 +185,7 @@ export default function AccountPage() {
     setFormData({
       name: user?.name || '',
       phone: user?.phone || '',
-      age: user?.age?.toString() || ''
+      date_of_birth: user?.date_of_birth || ''
     })
     setEditMode(false)
   }
@@ -457,23 +462,21 @@ export default function AccountPage() {
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
                     <CalendarIcon className="w-4 h-4" />
-                    Age
+                    Date of Birth
                   </label>
                   <input
-                    type="number"
-                    min={13}
-                    max={120}
-                    value={formData.age}
-                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                    type="date"
+                    value={formData.date_of_birth}
+                    onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
                     disabled={!editMode}
                     className={`w-full px-4 py-3 border border-border rounded-xl transition-all text-text ${
                       editMode ? 'bg-white focus:ring-2 focus:ring-accent focus:border-accent' : 'bg-bg-muted cursor-not-allowed'
                     }`}
-                    placeholder="Enter your age"
-                    aria-invalid={!!fieldErrors.age}
+                    placeholder="Select your date of birth"
+                    aria-invalid={!!fieldErrors.date_of_birth}
                   />
-                  {fieldErrors.age && (
-                    <p className="text-sm text-red-600">{fieldErrors.age}</p>
+                  {fieldErrors.date_of_birth && (
+                    <p className="text-sm text-red-600">{fieldErrors.date_of_birth}</p>
                   )}
                 </div>
               </div>

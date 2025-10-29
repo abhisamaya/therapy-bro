@@ -74,14 +74,19 @@ class SessionService(BaseService):
         session_id = uuid.uuid4().hex
         
         try:
-            # Create chat session
-            # Initialize server-enforced timer for default 5 minutes
+            # Determine eligibility for one-time free session using durable marker
             start_time = now_utc()
-            # Check if this is the user's first session
-            existing = self.session_repository.find_by_user_id(user_id)
-            is_first_session = len(existing) == 0
+            wallet_repo = WalletRepository(self.db)
+            tx_repo = TransactionRepository(self.db)
+            wallet = wallet_repo.find_by_user_id(user_id)
+            if not wallet:
+                from app.models import Wallet
+                wallet = Wallet(user_id=user_id, balance=Decimal("0.0000"), reserved=Decimal("0.0000"), currency=get_settings().wallet_currency)
+                wallet_repo.create(wallet)
 
-            if is_first_session:
+            has_used_free = tx_repo.user_has_transaction_of_type(user_id, "free_session")
+
+            if not has_used_free:
                 default_duration = 300
                 end_time = start_time + timedelta(seconds=default_duration)
                 status = "active"
@@ -116,18 +121,27 @@ class SessionService(BaseService):
             
             self.logger.info(f"Session created successfully: {session_id}")
             
-            # Get wallet info for the user
-            wallet_repo = WalletRepository(self.db)
-            wallet = wallet_repo.find_by_user_id(user_id)
+            # If this was the user's first (free) session, record a marker transaction
+            if not has_used_free:
+                tx = WalletTransaction(
+                    wallet_id=wallet.id,
+                    user_id=user_id,
+                    type="free_session",
+                    amount=Decimal("0.0000"),
+                    balance_after=wallet.balance,
+                    reference_id=f"free:{session_id}",
+                    meta={"session_id": session_id, "duration_seconds": default_duration},
+                )
+                tx_repo.create(tx)
             
             return StartSessionOut(
                 session_id=session_id,
                 session_start_time=start_time,
                 session_end_time=end_time,
                 duration_seconds=default_duration,
-                status=SessionStatus.active,  # Add this
-                remaining_seconds=max(0, int((end_time - now_utc()).total_seconds())),  # Calculate remaining seconds
-                cost_charged=None,  # No cost for initial session
+                status=SessionStatus.active if status == "active" else SessionStatus.ended,
+                remaining_seconds=max(0, int((end_time - now_utc()).total_seconds())),
+                cost_charged=None,
                 wallet_balance=str(wallet.balance) if wallet else "0.00",
                 wallet_reserved=str(wallet.reserved) if wallet else "0.00"
             )
@@ -195,15 +209,16 @@ class SessionService(BaseService):
         if duration_seconds <= 0 or duration_seconds % 60 != 0:
             raise ValueError("Invalid duration_seconds")
 
-        settings = get_settings()
-        unit_price: Decimal = settings.inr_per_minute
-        minutes = Decimal(duration_seconds) / Decimal(60)
-        amount = (unit_price * minutes).quantize(Decimal("0.01"))
-
         # Load session and ensure it belongs to user
         chat_session = self.session_repository.find_by_session_and_user(session_id, user_id)
         if not chat_session:
             raise ValueError("Session not found")
+
+        # Compute price using category-specific config if available
+        settings = get_settings()
+        unit_price: Decimal = settings.category_inr_per_minute.get(chat_session.category, settings.inr_per_minute)
+        minutes = Decimal(duration_seconds) / Decimal(60)
+        amount = (unit_price * minutes).quantize(Decimal("0.01"))
 
         # Enforce: only allow extending sessions that started today (UTC)
         start_time = chat_session.session_start_time
@@ -238,9 +253,28 @@ class SessionService(BaseService):
             amount=-amount,
             balance_after=new_balance,
             reference_id=f"extend:{session_id}",
-            meta={"duration_seconds": int(duration_seconds), "unit_price": str(unit_price), "request_id": request_id} if request_id else {"duration_seconds": int(duration_seconds), "unit_price": str(unit_price)},
+            meta={"duration_seconds": int(duration_seconds), "unit_price": str(unit_price), "request_id": request_id} if request_id else {"duration_seconds": int(duration_seconds), "unit_price": str(unit_price),"category": chat_session.category},
         )
         tx_repo.create(tx)
+        
+        # Store memory chunks if session was previously ended/expired
+        # (we want to preserve the conversation before extending)
+        settings = get_settings()
+        memory_enabled = settings.memory_enabled
+        if memory_enabled and chat_session.status == "ended":
+            try:
+                from app.services.memory_chunker import MemoryChunkerService
+                
+                chunker = MemoryChunkerService(self.db)
+                messages = self.message_repository.find_by_session_id(session_id)
+                
+                # Only chunk if there are meaningful messages (more than just system prompt)
+                if len(messages) > 1:
+                    chunker.chunk_and_store_session(session_id, user_id, messages)
+                    self.logger.info(f"Stored memory chunks for session {session_id} before extension")
+            except Exception as e:
+                self.logger.warning(f"Failed to store memory chunks for session {session_id}: {str(e)}")
+                # Don't fail the extension if memory storage fails
 
         # Update session timing
         now = now_utc()

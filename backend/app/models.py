@@ -15,8 +15,8 @@ class User(SQLModel, table=True):
     login_id: str = Field(index=True, unique=True)
     password_hash: Optional[str] = Field(default=None)
     name: Optional[str] = None
-    phone: Optional[str] = Field(default=None, unique=True)  # Unique phone number
-    age: Optional[int] = None
+    phone: Optional[str] = Field(default=Field(default=None, unique=True)  # Unique phone number, unique=True)  # Unique phone number
+    date_of_birth: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Google OAuth
@@ -126,6 +126,46 @@ class Payment(SQLModel, table=True):
     status: str = Field(default="created")  # created | pending | succeeded | failed | refunded
     idempotency_key: Optional[str] = None
     meta: Optional[Dict[str, Any]] = Field(sa_column=Column(JSON), default=None)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+# ---------- memory models ----------
+
+class MemoryChunk(SQLModel, table=True):
+    """
+    Stores metadata about vectorized memory chunks.
+    The actual vector embeddings are stored in ChromaDB.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    chunk_id: str = Field(index=True, unique=True)  # UUID for ChromaDB reference
+    user_id: int = Field(index=True)
+    session_id: str = Field(index=True)
+    chunk_text: str  # The actual text stored in vector DB
+    message_ids: str  # JSON array of message IDs in this chunk
+    chunk_type: str  # "conversation" | "session_summary"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    meta: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON))
+
+
+class PasswordResetToken(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    otp: str
+    expires_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc) + timedelta(minutes=10))
+    verified: bool = Field(default=False)
+
+
+class PhoneVerification(SQLModel, table=True):
+    """
+    Phone verification table - stores verified phone numbers linked to email addresses.
+    One phone number per email address.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    email: str = Field(index=True, unique=True)  # Primary key - one entry per email
+    phone_number: str = Field(index=True, unique=True)  # One phone per email, unique across table
+    verified: bool = Field(default=False)
+    verified_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

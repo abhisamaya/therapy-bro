@@ -10,3 +10,7 @@ node_modules/
 .next/
 .DS_Store
 .env
+
+# ChromaDB vector store
+backend/chroma_db/
+chroma_db/

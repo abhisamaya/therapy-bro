@@ -1,5 +1,6 @@
 """Tests for session service."""
 import pytest
+from datetime import date
 from app.services.session_service import SessionService
 from app.models import ChatSession, Message, User
 from app.schemas import StartSessionIn, MessageIn, NotesIn
@@ -289,7 +290,7 @@ class TestSessionService:
             password_hash="hashed_password",
             name="Other User",
             phone="9876543210",
-            age=30,
+            date_of_birth=date.today().replace(year=date.today().year - 30),
             auth_provider="local"
         )
         db_session.add(other_user)

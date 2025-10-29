@@ -3,6 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
 from sqlalchemy.exc import IntegrityError
+from datetime import date
 
 from app.main import app
 from app.exceptions import (
@@ -231,7 +232,7 @@ class TestUserServiceValidation:
             password="password123",
             name="Valid User",
             phone="+1234567890",
-            age=25
+            date_of_birth=date.today().replace(year=date.today().year - 25)
         )
         
         # Should not raise any exception
@@ -293,23 +294,28 @@ class TestUserServiceValidation:
         assert "phone" in exc_info.value.details["field"]
     
     def test_validate_user_data_invalid_age(self, db_session):
-        """Test validation fails for invalid age."""
+        """Test validation fails for invalid date_of_birth."""
         user_service = UserService(db_session)
         
         from app.schemas import RegisterIn
+        from datetime import date
+        
+        # Invalid: date too young (less than 13 years old)
+        today = date.today()
+        invalid_dob = date(today.year - 5, today.month, today.day)  # 5 years old
         
         invalid_data = RegisterIn(
             login_id="testuser",
             password="password123",
             name="Test User",
-            age=5  # Too young
+            date_of_birth=invalid_dob
         )
         
         with pytest.raises(ValidationError) as exc_info:
             user_service._validate_user_data(invalid_data)
         
         assert exc_info.value.error_code == "VALIDATION_ERROR"
-        assert "age" in exc_info.value.details["field"]
+        assert "date_of_birth" in exc_info.value.details["field"]
     
     def test_authenticate_user_not_found(self, db_session):
         """Test authenticate_user raises UserNotFoundError."""

@@ -180,7 +180,7 @@ export async function googleAuth(idToken: string) {
 }
 
 // Profile update
-export async function updateProfile(data: { name?: string; phone?: string; age?: number }) {
+export async function updateProfile(data: { name?: string; phone?: string; date_of_birth?: string }) {
   console.log('===== API: updateProfile =====')
   console.log('API Base URL:', API)
   console.log('Full URL:', `${API}/auth/profile`)

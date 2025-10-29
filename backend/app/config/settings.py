@@ -1,7 +1,7 @@
 """Centralized configuration for TherapyBro backend."""
 import os
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, Dict
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     
     # OpenAI Configuration
     openai_api_key: Optional[str] = Field(default=None, alias="OPENAI_API_KEY")
-    openai_model: str = Field(default="gpt-4o-mini", alias="OPENAI_MODEL")
+    openai_model: str = Field(default="gpt-5-nano", alias="OPENAI_MODEL")
     
     # Anthropic Configuration
     anthropic_api_key: Optional[str] = Field(default=None, alias="ANTHROPIC_API_KEY")
@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     
     # Together AI Configuration
     together_api_key: Optional[str] = Field(default=None, alias="TOGETHER_API_KEY")
-    together_model: str = Field(default="meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo", alias="TOGETHER_MODEL")
+    together_model: str = Field(default="openai/gpt-oss-20b", alias="TOGETHER_MODEL")
     
     # Frontend Configuration
     frontend_origin: str = Field(default="http://localhost:3000", alias="FRONTEND_ORIGIN")
@@ -52,7 +52,8 @@ class Settings(BaseSettings):
     wallet_currency: str = Field(default="INR")
     # Pricing Configuration (server-side enforced minutes pricing)
     inr_per_minute: Decimal = Field(default=Decimal("4.00"), alias="INR_PER_MINUTE")
-    
+    category_inr_per_minute: Dict[str, Decimal] = Field(default_factory=dict, alias="CATEGORY_INR_PER_MINUTE")
+
     # Logging Configuration
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
     log_file: str = Field(default="app.log", alias="LOG_FILE")
@@ -61,6 +62,13 @@ class Settings(BaseSettings):
     app_title: str = Field(default="TherapyBro API")
     app_version: str = Field(default="1.0.0")
     debug: bool = Field(default=False, alias="DEBUG")
+    
+    # Memory & Vector Store Configuration
+    memory_enabled: bool = Field(default=True, alias="MEMORY_ENABLED")
+    embedding_model: str = Field(default="text-embedding-3-small", alias="EMBEDDING_MODEL")
+    memory_retrieval_limit: int = Field(default=3, alias="MEMORY_RETRIEVAL_LIMIT")
+    chroma_persist_directory: str = Field(default="./chroma_db", alias="CHROMA_PERSIST_DIRECTORY")
+    memory_min_similarity: float = Field(default=0.7, alias="MEMORY_MIN_SIMILARITY")
 
 
 class SettingsFactory:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 
 # --- small helpful types ---
@@ -20,7 +20,7 @@ class SessionStatus(str, Enum):
 class ProfileInfo(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
-    age: Optional[int] = None
+    date_of_birth: Optional[date] = None
 
 class UserBase(ProfileInfo):
     login_id: str
@@ -52,7 +52,7 @@ class GoogleAuthIn(BaseModel):
 class UpdateProfileIn(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
-    age: Optional[int] = None
+    date_of_birth: Optional[date] = None
 
 # --- wallet/money ---
 class WalletSummary(BaseModel):

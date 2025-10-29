@@ -1,5 +1,6 @@
 """User service for managing user operations."""
 from typing import Optional, Union
+from datetime import datetime, date
 from sqlalchemy.orm import Session
 from app.models import User
 from app.schemas import RegisterIn, UpdateProfileIn, UserOut
@@ -11,6 +12,16 @@ from app.exceptions import (
     UserNotFoundError, AuthenticationError, DuplicateResourceError, 
     ValidationError, AuthorizationError
 )
+
+
+def calculate_age(date_of_birth: Optional[Union[datetime, date]]) -> Optional[int]:
+    """Calculate age from date of birth."""
+    if not date_of_birth:
+        return None
+    
+    today = now_utc().date()
+    dob = date_of_birth.date() if isinstance(date_of_birth, datetime) else date_of_birth
+    return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 
 
 class UserService(BaseService):
@@ -72,7 +83,7 @@ class UserService(BaseService):
             password_hash=hash_password(user_data.password),
             name=user_data.name,
             phone=user_data.phone,
-            age=user_data.age,
+            date_of_birth=user_data.date_of_birth,
             created_at=now_utc(),
         )
 
@@ -130,17 +141,28 @@ class UserService(BaseService):
             DuplicateResourceError: If phone number already exists
         """
         self.logger.info(f"Updating profile for user ID: {user_id}")
-        self.logger.debug(f"Payload: name={profile_data.name}, phone={profile_data.phone}, age={profile_data.age}")
+        self.logger.debug(f"Payload: name={profile_data.name}, phone={profile_data.phone}, date_of_birth={profile_data.date_of_birth}")
 
         user = self.user_repository.find_by_id(user_id)
         if not user:
             self.logger.warning(f"User not found with ID: {user_id}")
             raise ValueError("User not found")
 
+
         self.logger.debug(f"Found user: {user.login_id}")
+
 
         # Validate the profile data before updating
         self._validate_user_data(profile_data)
+
+        # Check phone uniqueness if being updated
+        if profile_data.phone is not None and profile_data.phone.strip() != "":
+            if profile_data.phone != user.phone:
+                existing_phone_user = self.user_repository.find_by_phone(profile_data.phone)
+                if existing_phone_user and existing_phone_user.id != user_id:
+                    self.logger.warning(f"Update failed - phone number already exists: {profile_data.phone}")
+                    raise DuplicateResourceError("User", "phone", profile_data.phone)
+
 
         # Check phone uniqueness if being updated
         if profile_data.phone is not None and profile_data.phone.strip() != "":
@@ -157,9 +179,9 @@ class UserService(BaseService):
         if profile_data.phone is not None and profile_data.phone != "":
             self.logger.debug(f"Updating phone: {user.phone} -> {profile_data.phone}")
             user.phone = profile_data.phone
-        if profile_data.age is not None:
-            self.logger.debug(f"Updating age: {user.age} -> {profile_data.age}")
-            user.age = profile_data.age
+        if profile_data.date_of_birth is not None:
+            self.logger.debug(f"Updating date_of_birth: {user.date_of_birth} -> {profile_data.date_of_birth}")
+            user.date_of_birth = profile_data.date_of_birth
 
         updated_user = self.user_repository.update(user)
         self.logger.info(f"Profile updated successfully for user: {updated_user.login_id}")
@@ -273,7 +295,7 @@ class UserService(BaseService):
             avatar_url=user.avatar_url,
             auth_provider=user.auth_provider,
             phone=user.phone,
-            age=user.age
+            date_of_birth=user.date_of_birth
         )
     
     def _validate_user_data(self, user_data: Union[RegisterIn, UpdateProfileIn, User]) -> None:
@@ -309,9 +331,9 @@ class UserService(BaseService):
             if user_data.name and len(user_data.name.strip()) < 2:
                 raise ValidationError("Name must be at least 2 characters long", "name", user_data.name)
         
-        # Common validation for phone and age
+        # Common validation for phone and date_of_birth
         phone_value = getattr(user_data, 'phone', None)
-        age_value = getattr(user_data, 'age', None)
+        dob_value = getattr(user_data, 'date_of_birth', None)
         
         # Validate phone format if provided
         if phone_value and phone_value.strip() != "":
@@ -319,7 +341,8 @@ class UserService(BaseService):
             if not re.match(phone_pattern, phone_value):
                 raise ValidationError("Invalid phone number format", "phone", phone_value)
         
-        # Validate age if provided
-        if age_value is not None:
-            if age_value < 13 or age_value > 120:
-                raise ValidationError("Age must be between 13 and 120", "age", age_value)
+        # Validate date_of_birth if provided - ensure user is at least 13 years old
+        if dob_value is not None:
+            computed_age = calculate_age(dob_value)
+            if computed_age is None or computed_age < 13 or computed_age > 120:
+                raise ValidationError("Date of birth must result in age between 13 and 120 years", "date_of_birth", dob_value)

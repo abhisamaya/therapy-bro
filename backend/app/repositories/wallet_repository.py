@@ -191,6 +191,25 @@ class TransactionRepository:
         self.logger.debug(f"{'Found' if transaction else 'Not found'} transaction with reference_id: {reference_id}")
         return transaction
     
+    def user_has_transaction_of_type(self, user_id: int, tx_type: str) -> bool:
+        """Check if a user already has at least one transaction of a given type.
+        
+        Args:
+            user_id: User ID to check for
+            tx_type: Transaction type string
+        Returns:
+            True if at least one transaction exists, else False
+        """
+        self.logger.debug(f"Checking if user_id={user_id} has transaction type='{tx_type}'")
+        query = select(WalletTransaction).where(
+            WalletTransaction.user_id == user_id,
+            WalletTransaction.type == tx_type,
+        ).limit(1)
+        tx = self.db.execute(query).scalar_one_or_none()
+        has_tx = tx is not None
+        self.logger.debug(f"user_id={user_id} has type '{tx_type}': {has_tx}")
+        return has_tx
+    
     def update(self, transaction: WalletTransaction) -> WalletTransaction:
         """Update an existing transaction.
         
