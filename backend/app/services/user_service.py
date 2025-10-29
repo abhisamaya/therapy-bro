@@ -38,31 +38,44 @@ class UserService(BaseService):
     
     def create_user(self, user_data: RegisterIn) -> User:
         """Create a new user with wallet.
-        
+
         Args:
             user_data: Registration data
-            
+
         Returns:
             The created user
-            
+
         Raises:
-            DuplicateResourceError: If login_id already exists
+            DuplicateResourceError: If login_id, email, or phone already exists
             ValidationError: If validation fails
         """
         self.logger.info(f"Creating new user: {user_data.login_id}")
-        
+
         # Validate input data
         self._validate_user_data(user_data)
-        
-        # Check if user already exists
+
+        # Check if user already exists by login_id
         existing_user = self.user_repository.find_by_login_id(user_data.login_id)
         if existing_user:
             self.logger.warning(f"Registration failed - login_id already exists: {user_data.login_id}")
             raise DuplicateResourceError("User", "login_id", user_data.login_id)
-        
-        # Create user
+
         # If login_id is an email, also populate the email field
         email = user_data.login_id if '@' in user_data.login_id else None
+
+        # Check if email already exists (if email is provided)
+        if email:
+            existing_email_user = self.user_repository.find_by_email(email)
+            if existing_email_user:
+                self.logger.warning(f"Registration failed - email already exists: {email}")
+                raise DuplicateResourceError("User", "email", email)
+
+        # Check if phone already exists (if phone is provided)
+        if user_data.phone and user_data.phone.strip():
+            existing_phone_user = self.user_repository.find_by_phone(user_data.phone)
+            if existing_phone_user:
+                self.logger.warning(f"Registration failed - phone number already exists: {user_data.phone}")
+                raise DuplicateResourceError("User", "phone", user_data.phone)
 
         user = User(
             login_id=user_data.login_id,
@@ -73,16 +86,16 @@ class UserService(BaseService):
             date_of_birth=user_data.date_of_birth,
             created_at=now_utc(),
         )
-        
+
         created_user = self.user_repository.create(user)
         self.logger.info(f"User created successfully: {created_user.login_id} (ID: {created_user.id})")
-        
+
         # Create wallet with initial balance
         self.logger.info(f"Creating wallet for new user: {created_user.login_id}")
         wallet_service = WalletService(self.db)
         wallet = wallet_service.create_wallet_with_bonus(created_user.id)
         self.logger.info(f"Wallet created with initial balance of {wallet.balance} for user: {created_user.login_id}")
-        
+
         return created_user
     
     def authenticate_user(self, login_id: str, password: str) -> User:
@@ -115,30 +128,39 @@ class UserService(BaseService):
     
     def update_user_profile(self, user_id: int, profile_data: UpdateProfileIn) -> User:
         """Update user profile information.
-        
+
         Args:
             user_id: User ID to update
             profile_data: Profile update data
-            
+
         Returns:
             Updated user
-            
+
         Raises:
             ValueError: If user not found
+            DuplicateResourceError: If phone number already exists
         """
         self.logger.info(f"Updating profile for user ID: {user_id}")
         self.logger.debug(f"Payload: name={profile_data.name}, phone={profile_data.phone}, date_of_birth={profile_data.date_of_birth}")
-        
+
         user = self.user_repository.find_by_id(user_id)
         if not user:
             self.logger.warning(f"User not found with ID: {user_id}")
             raise ValueError("User not found")
-        
+
         self.logger.debug(f"Found user: {user.login_id}")
-        
+
         # Validate the profile data before updating
         self._validate_user_data(profile_data)
-        
+
+        # Check phone uniqueness if being updated
+        if profile_data.phone is not None and profile_data.phone.strip() != "":
+            if profile_data.phone != user.phone:
+                existing_phone_user = self.user_repository.find_by_phone(profile_data.phone)
+                if existing_phone_user and existing_phone_user.id != user_id:
+                    self.logger.warning(f"Update failed - phone number already exists: {profile_data.phone}")
+                    raise DuplicateResourceError("User", "phone", profile_data.phone)
+
         # Update only provided fields (email/login_id cannot be changed)
         if profile_data.name is not None and profile_data.name != "":
             self.logger.debug(f"Updating name: {user.name} -> {profile_data.name}")
@@ -152,7 +174,7 @@ class UserService(BaseService):
         
         updated_user = self.user_repository.update(user)
         self.logger.info(f"Profile updated successfully for user: {updated_user.login_id}")
-        
+
         return updated_user
     
     def find_by_login_id(self, login_id: str) -> Optional[User]:

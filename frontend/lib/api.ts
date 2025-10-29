@@ -417,3 +417,47 @@ export async function resendPhoneOTP() {
     throw error
   }
 }
+
+// Email validation
+export async function checkEmail(email: string) {
+  try {
+    const res = await fetch(`${API}/auth/check-email/${encodeURIComponent(email)}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    })
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      const errorMessage = errorData.detail || errorData.message || 'Failed to check email'
+      throw new Error(errorMessage)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server.')
+    }
+    throw error
+  }
+}
+
+// Phone number validation
+export async function checkPhone(phone: string) {
+  try {
+    const res = await fetch(`${API}/auth/check-phone/${encodeURIComponent(phone)}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      credentials: 'include'
+    })
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      const errorMessage = errorData.detail || errorData.message || 'Failed to check phone number'
+      throw new Error(errorMessage)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server.')
+    }
+    throw error
+  }
+}

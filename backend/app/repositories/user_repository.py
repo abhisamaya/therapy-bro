@@ -80,10 +80,10 @@ class UserRepository:
     
     def find_by_email(self, email: str) -> Optional[User]:
         """Find user by email.
-        
+
         Args:
             email: User's email address
-            
+
         Returns:
             User if found, None otherwise
         """
@@ -92,7 +92,22 @@ class UserRepository:
         user = self.db.execute(query).scalar_one_or_none()
         self.logger.debug(f"{'Found' if user else 'Not found'} user with email: {email}")
         return user
-    
+
+    def find_by_phone(self, phone: str) -> Optional[User]:
+        """Find user by phone number.
+
+        Args:
+            phone: User's phone number
+
+        Returns:
+            User if found, None otherwise
+        """
+        self.logger.debug(f"Finding user by phone: {phone}")
+        query = select(User).where(User.phone == phone)
+        user = self.db.execute(query).scalar_one_or_none()
+        self.logger.debug(f"{'Found' if user else 'Not found'} user with phone: {phone}")
+        return user
+
     def update(self, user: User) -> User:
         """Update an existing user.
         

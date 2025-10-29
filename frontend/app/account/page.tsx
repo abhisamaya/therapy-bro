@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { me, updateProfile, getWallet, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP } from '@/lib/api'
-import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { me, updateProfile, getWallet, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP, checkPhone } from '@/lib/api'
+import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X, CheckCircle, AlertCircle, Clock } from 'lucide-react'
 import TopNav from '@/components/TopNav'
 
 type UserData = {
@@ -42,6 +42,8 @@ export default function AccountPage() {
   })
   const [saving, setSaving] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<{ phone?: string; date_of_birth?: string }>({})
+  const [phoneStatus, setPhoneStatus] = useState<{ exists?: boolean; message?: string; is_own?: boolean }>({})
+  const [isCheckingPhone, setIsCheckingPhone] = useState(false)
 
   // Phone verification states
   const [showVerifyModal, setShowVerifyModal] = useState(false)
@@ -240,8 +242,8 @@ export default function AccountPage() {
   }
 
   const handleVerifyOTP = async () => {
-    if (!otpCode || otpCode.length < 4) {
-      setVerifyError('Please enter the OTP code')
+    if (!otpCode || otpCode.length !== 4) {
+      setVerifyError('Please enter the 4-digit OTP code')
       return
     }
 
@@ -659,12 +661,19 @@ export default function AccountPage() {
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h3 className="text-2xl font-bold text-text mb-2">Verify Phone Number</h3>
-                <p className="text-text-muted text-sm">
-                  We'll send you an OTP to verify your phone number
+                <p className="text-text-muted text-sm mb-1">
+                  We'll send a 4-digit OTP to verify your phone number
+                </p>
+                <p className="text-xs text-text-muted/80">
+                  Note: Each phone number can only be verified once
                 </p>
               </div>
               <button
-                onClick={() => setShowVerifyModal(false)}
+                onClick={() => {
+                  setShowVerifyModal(false)
+                  setVerifyError('')
+                  setVerifySuccess('')
+                }}
                 className="text-text-muted hover:text-text transition-colors"
               >
                 <X className="w-6 h-6" />
@@ -672,16 +681,32 @@ export default function AccountPage() {
             </div>
 
             {verifyError && (
-              <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-2">
-                <X className="w-5 h-5 flex-shrink-0" />
-                {verifyError}
+              <div className="mb-4 p-4 bg-red-50 border-2 border-red-300 text-red-800 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-600" />
+                  <div className="flex-1">
+                    <p className="font-semibold mb-1">Verification Error</p>
+                    <p className="text-sm">{verifyError}</p>
+                  </div>
+                  <button
+                    onClick={() => setVerifyError('')}
+                    className="text-red-400 hover:text-red-600 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             )}
 
             {verifySuccess && (
-              <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-2">
-                <Check className="w-5 h-5 flex-shrink-0" />
-                {verifySuccess}
+              <div className="mb-4 p-4 bg-green-50 border-2 border-green-300 text-green-800 rounded-xl">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-green-600" />
+                  <div className="flex-1">
+                    <p className="font-semibold mb-1">Success</p>
+                    <p className="text-sm">{verifySuccess}</p>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -696,8 +721,8 @@ export default function AccountPage() {
                   <input
                     type="tel"
                     value={verificationPhone}
-                    onChange={(e) => setVerificationPhone(e.target.value)}
-                    className="flex-1 px-4 py-3 border border-border rounded-xl bg-white text-text focus:ring-2 focus:ring-accent focus:border-accent"
+                    disabled
+                    className="flex-1 px-4 py-3 border border-border rounded-xl bg-bg-muted text-text cursor-not-allowed"
                     placeholder="+919876543210"
                   />
                   <button
@@ -709,19 +734,28 @@ export default function AccountPage() {
                   </button>
                 </div>
                 <p className="text-xs text-text-muted">
-                  Enter phone number with country code (e.g., +919876543210)
+                  This phone number is from your profile and cannot be edited here
                 </p>
               </div>
 
               {/* OTP Session Info */}
               {verificationStatus?.has_active_session && (
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                  <p className="text-sm text-blue-800 mb-2">
-                    OTP sent! Check your phone and enter the code below.
-                  </p>
-                  <p className="text-xs text-blue-700">
-                    Attempts remaining: {verificationStatus.attempts_remaining}
-                  </p>
+                <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
+                  <div className="flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-blue-900 mb-1">
+                        OTP Sent Successfully!
+                      </p>
+                      <p className="text-sm text-blue-800 mb-2">
+                        Check your phone and enter the 4-digit verification code below.
+                      </p>
+                      <div className="flex items-center gap-2 text-xs text-blue-700">
+                        <Clock className="w-3 h-3" />
+                        <span>Attempts remaining: {verificationStatus.attempts_remaining}/3</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -730,16 +764,21 @@ export default function AccountPage() {
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
                     <Shield className="w-4 h-4" />
-                    Enter OTP Code
+                    Enter 4-Digit OTP Code
                   </label>
                   <input
                     type="text"
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                    maxLength={6}
-                    className="w-full px-4 py-3 border border-border rounded-xl bg-white text-text focus:ring-2 focus:ring-accent focus:border-accent text-center text-2xl tracking-widest font-mono"
-                    placeholder="000000"
+                    maxLength={4}
+                    className="w-full px-4 py-4 border-2 border-accent/30 rounded-xl bg-white text-text focus:ring-2 focus:ring-accent focus:border-accent text-center text-3xl tracking-[0.5em] font-mono transition-all"
+                    placeholder="0000"
+                    autoComplete="off"
+                    autoFocus
                   />
+                  <p className="text-xs text-text-muted text-center">
+                    {otpCode.length}/4 digits entered
+                  </p>
                 </div>
               )}
 
@@ -749,7 +788,7 @@ export default function AccountPage() {
                   <>
                     <button
                       onClick={handleVerifyOTP}
-                      disabled={verifying || otpCode.length < 4}
+                      disabled={verifying || otpCode.length !== 4}
                       className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-accent text-white rounded-xl hover:shadow-glow transition-all font-medium disabled:opacity-50"
                     >
                       <Check className="w-5 h-5" />

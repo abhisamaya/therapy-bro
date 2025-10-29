@@ -4,6 +4,7 @@ import { listChats, startSession, getHistory, streamMessage, deleteSession, exte
 import ChatInput from "@/components/ChatInput";
 import ChatMessage from "@/components/ChatMessage";
 import TopNav from "@/components/TopNav";
+import PhoneVerificationBanner from "@/components/PhoneVerificationBanner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LISTENER_META } from "@/lib/listeners";
 import { Menu, X, Clock, MessageCircle, Brain, Calendar, Trash2 } from "lucide-react";
@@ -771,6 +772,7 @@ function ChatPageInner() {
   return (
     <div className="h-screen overflow-hidden bg-bg flex flex-col">
       <TopNav />
+      <PhoneVerificationBanner />
 
       {/* Backdrop for mobile drawer */}
       {sidebarOpen && (

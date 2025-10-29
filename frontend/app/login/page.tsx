@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { login, register } from '@/lib/api'
+import { login, register, checkEmail } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -21,10 +21,12 @@ declare global {
 }
 
 export default function LoginPage() {
-  const [loginId, setLoginId] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [error, setError] = useState('')
+  const [emailStatus, setEmailStatus] = useState<{ exists?: boolean; message?: string }>({})
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -143,16 +145,59 @@ export default function LoginPage() {
     document.head.appendChild(script)
   }, [initializeGoogleSignIn])
 
+  // Email validation
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // Check email existence
+  const handleEmailBlur = async () => {
+    if (!email || !validateEmail(email)) {
+      setEmailStatus({})
+      return
+    }
+
+    setIsCheckingEmail(true)
+    try {
+      const result = await checkEmail(email)
+      setEmailStatus({
+        exists: result.exists,
+        message: result.message
+      })
+    } catch (err) {
+      console.error('Error checking email:', err)
+      setEmailStatus({})
+    } finally {
+      setIsCheckingEmail(false)
+    }
+  }
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    // Validate email format
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address')
+      return
+    }
+
+    // For registration, check if email already exists
+    if (mode === 'register' && emailStatus.exists) {
+      setError('This email is already registered. Please login instead.')
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      if (mode === 'login') await login(loginId, password)
-      else await register(loginId, password, 'Demo User')
+      if (mode === 'login') await login(email, password)
+      else await register(email, password, 'Demo User')
       router.push('/dashboard')
-    } catch (e:any) { setError(String(e.message||e)) } finally {
+    } catch (e:any) {
+      setError(String(e.message||e))
+    } finally {
       setIsLoading(false)
     }
   }
@@ -198,18 +243,39 @@ export default function LoginPage() {
         {/* Email/Password Form */}
         <form onSubmit={submit} className="space-y-4">
           <div>
-            <label htmlFor="loginId" className="block text-sm font-medium text-text mb-2">
-              Email or Login ID
+            <label htmlFor="email" className="block text-sm font-medium text-text mb-2">
+              Email Address
             </label>
             <input
-              id="loginId"
-              name="loginId"
-              className="w-full rounded-xl bg-bg-muted border border-border p-3 text-text focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
-              value={loginId}
-              onChange={e => setLoginId(e.target.value)}
-              placeholder="Enter your email or login ID"
+              id="email"
+              name="email"
+              type="email"
+              className={`w-full rounded-xl bg-bg-muted border ${
+                emailStatus.exists && mode === 'register'
+                  ? 'border-red-400 focus:ring-red-400'
+                  : emailStatus.exists === false && mode === 'register'
+                  ? 'border-green-400 focus:ring-green-400'
+                  : 'border-border focus:ring-accent'
+              } p-3 text-text focus:outline-none focus:ring-2 focus:border-transparent transition-all`}
+              value={email}
+              onChange={e => {
+                setEmail(e.target.value)
+                setEmailStatus({})
+              }}
+              onBlur={mode === 'register' ? handleEmailBlur : undefined}
+              placeholder="Enter your email address"
               required
             />
+            {isCheckingEmail && (
+              <p className="text-xs text-text-muted mt-1">Checking email...</p>
+            )}
+            {!isCheckingEmail && emailStatus.message && mode === 'register' && (
+              <p className={`text-xs mt-1 ${
+                emailStatus.exists ? 'text-red-600' : 'text-green-600'
+              }`}>
+                {emailStatus.message}
+              </p>
+            )}
           </div>
           <div>
             <div className="flex justify-between items-center mb-2">
