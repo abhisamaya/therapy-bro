@@ -15,7 +15,7 @@ class User(SQLModel, table=True):
     login_id: str = Field(index=True, unique=True)
     password_hash: Optional[str] = Field(default=None)
     name: Optional[str] = None
-    phone: Optional[str] = Field(default=Field(default=None, unique=True)  # Unique phone number, unique=True)  # Unique phone number
+    phone: Optional[str] = Field(default=None, unique=True)     
     date_of_birth: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
