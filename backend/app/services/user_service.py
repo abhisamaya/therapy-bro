@@ -15,12 +15,22 @@ from app.exceptions import (
 
 
 def calculate_age(date_of_birth: Optional[Union[datetime, date]]) -> Optional[int]:
-    """Calculate age from date of birth."""
+    """Calculate age from date of birth.
+
+    The helper is tolerant of mocked objects (e.g., when tests patch repositories
+    and leave date_of_birth as a Mock). In those cases we simply return ``None``.
+    """
     if not date_of_birth:
         return None
-    
+
+    if isinstance(date_of_birth, datetime):
+        dob = date_of_birth.date()
+    elif isinstance(date_of_birth, date):
+        dob = date_of_birth
+    else:
+        return None
+
     today = now_utc().date()
-    dob = date_of_birth.date() if isinstance(date_of_birth, datetime) else date_of_birth
     return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 
 

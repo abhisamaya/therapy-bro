@@ -46,6 +46,11 @@ def db_session(test_session_factory):
     try:
         yield session
     finally:
+        # Clean up all tables so each test starts with a clean database
+        session.rollback()
+        for table in reversed(SQLModel.metadata.sorted_tables):
+            session.execute(table.delete())
+        session.commit()
         session.close()
 
 
@@ -58,11 +63,13 @@ def test_user(db_session):
     from datetime import date
     
     unique_id = str(uuid.uuid4())[:8]
+    unique_digits = ''.join(filter(str.isdigit, str(uuid.uuid4().int)))
+    phone = (unique_digits + "0000000000")[:10]
     user = User(
         login_id=f"test_user_{unique_id}",
         password_hash=hash_password("testpassword123"),
         name="Test User",
-        phone="1234567890",
+        phone=phone,
         date_of_birth=date.today().replace(year=date.today().year - 25),
         auth_provider="local"
     )
