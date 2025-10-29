@@ -15,13 +15,13 @@ class User(SQLModel, table=True):
     login_id: str = Field(index=True, unique=True)
     password_hash: Optional[str] = Field(default=None)
     name: Optional[str] = None
-    phone: Optional[str] = None
+    phone: Optional[str] = Field(default=None, unique=True)  # Unique phone number
     age: Optional[int] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Google OAuth
-    google_id: Optional[str] = Field(default=None, index=True)
-    email: Optional[str] = Field(default=None, index=True)
+    google_id: Optional[str] = Field(default=None, index=True, unique=True)
+    email: Optional[str] = Field(default=None, index=True, unique=True)  # Unique email
     avatar_url: Optional[str] = None
     auth_provider: str = Field(default="local")
 

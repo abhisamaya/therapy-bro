@@ -16,7 +16,7 @@ from app.google_auth import GoogleAuthServiceFactory
 from app.dependencies import get_user_service
 from app.services.user_service import UserService
 from app.logging_config import get_logger
-from app.exceptions import ValidationError
+from app.exceptions import ValidationError, DuplicateResourceError
 
 # Create logger for auth router
 auth_router_logger = get_logger('auth_router')
@@ -74,6 +74,9 @@ def update_profile(payload: UpdateProfileIn, user: User = Depends(get_current_us
                 "age": updated_user.age
             }
         }
+    except DuplicateResourceError as e:
+        auth_router_logger.warning(f"Duplicate resource error updating profile: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
     except ValidationError as e:
         auth_router_logger.warning(f"Validation error updating profile: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
@@ -189,3 +192,92 @@ def logout(response: Response):
     """Logout user by clearing the access token cookie."""
     response.delete_cookie("access_token")
     return {"message": "Logged out successfully"}
+
+
+@router.get("/check-email/{email}")
+def check_email(email: str, user_service: UserService = Depends(get_user_service)):
+    """Check if an email already exists in the database.
+
+    Args:
+        email: Email address to check
+
+    Returns:
+        JSON with exists flag and message
+    """
+    auth_router_logger.info(f"Email existence check for: {email}")
+
+    # Basic email validation
+    if not email or '@' not in email:
+        return {
+            "exists": False,
+            "valid": False,
+            "message": "Invalid email format"
+        }
+
+    # Check if email exists
+    user = user_service.find_by_email(email)
+
+    if user:
+        auth_router_logger.info(f"Email exists: {email}")
+        return {
+            "exists": True,
+            "valid": True,
+            "message": f"This email is already registered. Please login or use a different email."
+        }
+    else:
+        auth_router_logger.info(f"Email available: {email}")
+        return {
+            "exists": False,
+            "valid": True,
+            "message": "Email is available"
+        }
+
+
+@router.get("/check-phone/{phone}")
+def check_phone(phone: str, user_service: UserService = Depends(get_user_service), current_user: User = Depends(get_current_user)):
+    """Check if a phone number already exists in the database.
+
+    Args:
+        phone: Phone number to check
+        current_user: Current authenticated user (to exclude their own phone)
+
+    Returns:
+        JSON with exists flag and message
+    """
+    auth_router_logger.info(f"Phone existence check for: {phone} by user: {current_user.login_id}")
+
+    # Basic validation
+    if not phone or len(phone.strip()) < 10:
+        return {
+            "exists": False,
+            "valid": False,
+            "message": "Invalid phone number format"
+        }
+
+    # Check if phone exists
+    existing_user = user_service.user_repository.find_by_phone(phone)
+
+    if existing_user:
+        # Check if it's the current user's own phone number
+        if existing_user.id == current_user.id:
+            auth_router_logger.info(f"Phone belongs to current user: {phone}")
+            return {
+                "exists": False,
+                "valid": True,
+                "is_own": True,
+                "message": "This is your current phone number"
+            }
+        else:
+            auth_router_logger.info(f"Phone exists for another user: {phone}")
+            return {
+                "exists": True,
+                "valid": True,
+                "message": "This phone number is already registered with another account"
+            }
+    else:
+        auth_router_logger.info(f"Phone available: {phone}")
+        return {
+            "exists": False,
+            "valid": True,
+            "message": "Phone number is available"
+        }

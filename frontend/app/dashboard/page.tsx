@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import TopNav from '@/components/TopNav'
+import PhoneVerificationBanner from '@/components/PhoneVerificationBanner'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getWallet } from '@/lib/api'
@@ -42,6 +43,7 @@ export default function DashboardPage() {
   return (
     <div className="bg-bg min-h-screen">
       <TopNav />
+      <PhoneVerificationBanner />
       <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
         {/* Header */}
         <div className="flex items-center bg-white p-4 pb-2 justify-between max-w-7xl mx-auto w-full">
