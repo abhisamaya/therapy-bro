@@ -64,7 +64,7 @@ export default function DashboardPage() {
               <div className="flex items-end gap-3 justify-between">
                 <p className="text-white/80 text-base">Get instant support from our AI Buddy</p>
                 <Link
-                  href="/chat?new=therapybro"
+                  href="/chat"
                   className="flex min-w-[84px] max-w-[480px] items-center justify-center overflow-hidden rounded-xl h-10 px-5 bg-white text-accent text-sm font-medium leading-normal hover:bg-gray-50 transition-colors"
                 >
                   <span className="truncate">Start Chat</span>

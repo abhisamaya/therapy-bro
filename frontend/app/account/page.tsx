@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { me, updateProfile, getWallet, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP, checkPhone, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP, checkPhone } from '@/lib/api'
-import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X, CheckCircle, AlertCircle, Clock, CheckCircle, AlertCircle, Clock } from 'lucide-react'
+import { me, updateProfile, getWallet, sendPhoneOTP, verifyPhoneOTP, getPhoneVerificationStatus, resendPhoneOTP, checkPhone } from '@/lib/api'
+import { User, Wallet, CreditCard, Mail, Phone, Calendar as CalendarIcon, Shield, Edit2, Check, X, CheckCircle, AlertCircle, Clock } from 'lucide-react'
 import TopNav from '@/components/TopNav'
 
 type UserData = {
