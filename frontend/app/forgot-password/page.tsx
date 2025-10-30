@@ -130,7 +130,7 @@ export default function ForgotPasswordPage() {
 
               <div className="text-center pt-2">
                 <Link
-                  href="/login"
+                  href="/"
                   className="text-sm text-accent hover:text-accent-light transition-colors font-medium"
                 >
                   Back to Sign In
@@ -287,7 +287,7 @@ export default function ForgotPasswordPage() {
               </div>
 
               <button
-                onClick={() => router.push('/login')}
+                onClick={() => router.push('/')}
                 className="w-full rounded-xl bg-gradient-accent px-6 py-3 text-white font-medium hover:opacity-90 transition-all shadow-glow"
               >
                 Go to Sign In

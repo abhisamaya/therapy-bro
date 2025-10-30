@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from app.db import init_db
 from app.routers import auth_router, sessions_router, wallet_router, phone_verification_router
+from app.routers.onboarding import router as onboarding_router
 from app.password_reset import router as password_reset_router
 from app.logging_config import configure_logging, get_logger
 from app.middleware import register_error_handlers
@@ -80,6 +81,7 @@ app.include_router(sessions_router)
 app.include_router(wallet_router)
 app.include_router(password_reset_router)
 app.include_router(phone_verification_router)
+app.include_router(onboarding_router)
 
 
 # Add request/response logging middleware

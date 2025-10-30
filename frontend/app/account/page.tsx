@@ -86,7 +86,7 @@ export default function AccountPage() {
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) {
-      router.push('/login')
+      router.push('/')
       return
     }
 
@@ -136,7 +136,8 @@ export default function AccountPage() {
       if (formData.name && formData.name.trim() !== '') {
         updateData.name = formData.name.trim()
       }
-      if (formData.phone && formData.phone.trim() !== '') {
+      // Don't include phone if it's already verified
+      if (formData.phone && formData.phone.trim() !== '' && !verificationStatus?.is_verified) {
         updateData.phone = formData.phone.trim()
       }
       if (formData.date_of_birth && formData.date_of_birth !== '') {
@@ -438,6 +439,12 @@ export default function AccountPage() {
                   <label className="flex items-center gap-2 text-sm font-medium text-text-muted">
                     <Phone className="w-4 h-4" />
                     Phone Number
+                    {verificationStatus?.is_verified && (
+                      <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
+                        <CheckCircle className="w-3 h-3" />
+                        Verified
+                      </span>
+                    )}
                   </label>
                   <input
                     type="tel"
@@ -446,13 +453,21 @@ export default function AccountPage() {
                     maxLength={12}
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    disabled={!editMode}
-                    className={`w-full px-4 py-3 border border-border rounded-xl transition-all text-text ${
-                      editMode ? 'bg-white focus:ring-2 focus:ring-accent focus:border-accent' : 'bg-bg-muted cursor-not-allowed'
+                    disabled={!editMode || verificationStatus?.is_verified}
+                    className={`w-full px-4 py-3 border border-border rounded-xl transition-all ${
+                      (!editMode || verificationStatus?.is_verified)
+                        ? 'bg-bg-muted text-text-muted cursor-not-allowed'
+                        : 'bg-white text-text focus:ring-2 focus:ring-accent focus:border-accent'
                     }`}
                     placeholder="Enter your phone number"
                     aria-invalid={!!fieldErrors.phone}
                   />
+                  {verificationStatus?.is_verified && (
+                    <p className="text-xs text-green-600 flex items-center gap-1">
+                      <Shield className="w-3 h-3" />
+                      This phone number is verified and cannot be changed
+                    </p>
+                  )}
                   {fieldErrors.phone && (
                     <p className="text-sm text-red-600">{fieldErrors.phone}</p>
                   )}

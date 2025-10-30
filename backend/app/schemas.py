@@ -43,6 +43,7 @@ class LoginIn(BaseModel):
 class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    needs_onboarding: bool = False
 
 # AUTH - Google OAuth
 class GoogleAuthIn(BaseModel):
@@ -132,3 +133,24 @@ class FinalizeSessionOut(BaseModel):
     cost_charged: MoneyStr
     refund_amount: MoneyStr
     wallet_balance: MoneyStr     # String representation of Decimal
+
+# --- Onboarding ---
+class OnboardingResponseIn(BaseModel):
+    name: Optional[str] = None
+    reasons: Optional[List[str]] = None
+    mental_state: Optional[str] = None
+    previous_therapy: Optional[str] = None
+    goals: Optional[List[str]] = None
+    referral_source: Optional[str] = None
+    preferred_time: Optional[str] = None
+
+class OnboardingResponseOut(BaseModel):
+    user_id: int
+    reasons: Optional[List[str]] = None
+    mental_state: Optional[str] = None
+    previous_therapy: Optional[str] = None
+    goals: Optional[List[str]] = None
+    referral_source: Optional[str] = None
+    preferred_time: Optional[str] = None
+    completed: bool
+    created_at: datetime

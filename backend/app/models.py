@@ -168,3 +168,34 @@ class PhoneVerification(SQLModel, table=True):
     verified_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class OnboardingResponse(SQLModel, table=True):
+    """
+    Stores user responses from the onboarding questionnaire.
+    One record per user with their complete onboarding data.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(index=True, unique=True, foreign_key="user.id")
+
+    # Question 1: What brings you here? (multiple select)
+    reasons: Optional[str] = Field(default=None, sa_column=Column(JSON))  # JSON array of selected reasons
+
+    # Question 2: How would you describe your current mental state?
+    mental_state: Optional[str] = None
+
+    # Question 3: Have you tried therapy or counseling before?
+    previous_therapy: Optional[str] = None
+
+    # Question 4: What are your goals for using TherapyBro?
+    goals: Optional[str] = Field(default=None, sa_column=Column(JSON))  # JSON array of goals
+
+    # Question 5: How did you hear about us?
+    referral_source: Optional[str] = None
+
+    # Question 6: Preferred time for sessions (optional)
+    preferred_time: Optional[str] = None
+
+    completed: bool = Field(default=False)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

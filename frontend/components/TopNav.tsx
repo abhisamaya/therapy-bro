@@ -21,7 +21,7 @@ export default function TopNav() {
   const handleLogout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('userName')
-    router.push('/login')
+    router.push('/')
   }
 
   const isActive = (path: string) => pathname === path

@@ -2,14 +2,15 @@
 from typing import Optional, Union
 from datetime import datetime, date
 from sqlalchemy.orm import Session
-from app.models import User
+from sqlmodel import select
+from app.models import User, PhoneVerification
 from app.schemas import RegisterIn, UpdateProfileIn, UserOut
 from app.services.base_service import BaseService
 from app.services.wallet_service import WalletService
 from app.repositories.user_repository import UserRepository
 from app.utils import hash_password, verify_password, now_utc
 from app.exceptions import (
-    UserNotFoundError, AuthenticationError, DuplicateResourceError, 
+    UserNotFoundError, AuthenticationError, DuplicateResourceError,
     ValidationError, AuthorizationError
 )
 
@@ -165,18 +166,24 @@ class UserService(BaseService):
         # Validate the profile data before updating
         self._validate_user_data(profile_data)
 
-        # Check phone uniqueness if being updated
+        # Check if current phone is verified - if so, prevent changes
         if profile_data.phone is not None and profile_data.phone.strip() != "":
             if profile_data.phone != user.phone:
-                existing_phone_user = self.user_repository.find_by_phone(profile_data.phone)
-                if existing_phone_user and existing_phone_user.id != user_id:
-                    self.logger.warning(f"Update failed - phone number already exists: {profile_data.phone}")
-                    raise DuplicateResourceError("User", "phone", profile_data.phone)
+                # Check if user's email has a verified phone number
+                if user.email:
+                    stmt = select(PhoneVerification).where(
+                        PhoneVerification.email == user.email,
+                        PhoneVerification.verified == True
+                    )
+                    verified_phone = self.db.exec(stmt).first()
+                    if verified_phone:
+                        self.logger.warning(f"Update failed - phone number is verified and cannot be changed: {verified_phone.phone_number}")
+                        raise ValidationError(
+                            "Cannot change phone number",
+                            "Your phone number has been verified and cannot be changed. Please contact support if you need assistance."
+                        )
 
-
-        # Check phone uniqueness if being updated
-        if profile_data.phone is not None and profile_data.phone.strip() != "":
-            if profile_data.phone != user.phone:
+                # Check phone uniqueness
                 existing_phone_user = self.user_repository.find_by_phone(profile_data.phone)
                 if existing_phone_user and existing_phone_user.id != user_id:
                     self.logger.warning(f"Update failed - phone number already exists: {profile_data.phone}")
@@ -324,11 +331,12 @@ class UserService(BaseService):
             # Registration validation
             if not user_data.login_id or len(user_data.login_id.strip()) < 3:
                 raise ValidationError("Login ID must be at least 3 characters long", "login_id", user_data.login_id)
-            
+
             if not user_data.password or len(user_data.password) < 6:
                 raise ValidationError("Password must be at least 6 characters long", "password")
-            
-            if not user_data.name or len(user_data.name.strip()) < 2:
+
+            # Name is optional during registration, but if provided, must be valid
+            if user_data.name and len(user_data.name.strip()) < 2:
                 raise ValidationError("Name must be at least 2 characters long", "name", user_data.name)
                 
         elif isinstance(user_data, UpdateProfileIn):

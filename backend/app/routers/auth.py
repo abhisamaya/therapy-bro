@@ -6,7 +6,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 
 from app.db import get_session
-from app.models import User
+from app.models import User, OnboardingResponse
 from app.schemas import (
     RegisterIn, LoginIn, TokenOut, UpdateProfileIn, GoogleAuthIn, UserOut
 )
@@ -29,22 +29,33 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 def register(payload: RegisterIn, user_service: UserService = Depends(get_user_service)):
     """Register a new user."""
     auth_router_logger.info(f"Registration attempt for login_id: {payload.login_id}")
-    
+
     user = user_service.create_user(payload)
     token = create_access_token(payload.login_id)
     auth_router_logger.info(f"Registration completed successfully for: {payload.login_id}")
-    return TokenOut(access_token=token)
+    # New users always need onboarding
+    return TokenOut(access_token=token, needs_onboarding=True)
 
 
 @router.post("/login", response_model=TokenOut)
 def login(payload: LoginIn, user_service: UserService = Depends(get_user_service)):
     """Login with email/password."""
     auth_router_logger.info(f"Login attempt for login_id: {payload.login_id}")
-    
+
     user = user_service.authenticate_user(payload.login_id, payload.password)
     token = create_access_token(payload.login_id)
-    auth_router_logger.info(f"Login successful for: {payload.login_id}")
-    return TokenOut(access_token=token)
+
+    # Check if user needs onboarding
+    with get_session() as session:
+        stmt = select(OnboardingResponse).where(
+            OnboardingResponse.user_id == user.id,
+            OnboardingResponse.completed == True
+        )
+        onboarding = session.exec(stmt).first()
+        needs_onboarding = onboarding is None
+
+    auth_router_logger.info(f"Login successful for: {payload.login_id} (needs_onboarding: {needs_onboarding})")
+    return TokenOut(access_token=token, needs_onboarding=needs_onboarding)
 
 
 @router.get("/me", response_model=UserOut)
@@ -181,10 +192,21 @@ def google_auth(payload: GoogleAuthIn, response: Response, user_service: UserSer
     login_logger.info(f"Auth Provider: {user.auth_provider}")
     login_logger.info(f"Created At: {user.created_at}")
 
+    # Check if user needs onboarding
+    login_logger.info("--- CHECKING ONBOARDING STATUS ---")
+    with get_session() as session:
+        stmt = select(OnboardingResponse).where(
+            OnboardingResponse.user_id == user.id,
+            OnboardingResponse.completed == True
+        )
+        onboarding = session.exec(stmt).first()
+        needs_onboarding = onboarding is None
+        login_logger.info(f"Onboarding completed: {not needs_onboarding}")
+
     login_logger.info("✅ GOOGLE AUTH COMPLETED SUCCESSFULLY")
     login_logger.info("="*60)
 
-    return TokenOut(access_token=token)
+    return TokenOut(access_token=token, needs_onboarding=needs_onboarding)
 
 
 @router.post("/logout")

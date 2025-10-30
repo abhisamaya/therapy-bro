@@ -25,9 +25,11 @@ const API = getApiUrl()
 
 // Log API base URL for debugging
 if (typeof window !== 'undefined') {
-  console.log('Environment:', process.env.NODE_ENV)
-  console.log('Hostname:', window.location.hostname)
-  console.log('API Base URL:', API)
+  console.log('🔧 API Configuration:')
+  console.log('   - Environment:', process.env.NODE_ENV)
+  console.log('   - Hostname:', window.location.hostname)
+  console.log('   - NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
+  console.log('   - Computed API Base URL:', API)
 }
 
 function authHeaders(): HeadersInit {
@@ -35,12 +37,12 @@ function authHeaders(): HeadersInit {
   return t ? { Authorization: `Bearer ${t}` } : {}
 }
 
-export async function register(login_id: string, password: string, name?: string) {
+export async function register(login_id: string, password: string, name?: string, phone?: string, date_of_birth?: string) {
   const res = await fetch(`${API}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({ login_id, password, name })
+    body: JSON.stringify({ login_id, password, name, phone, date_of_birth })
   })
   if (!res.ok) throw new Error('User Already Exists!')
   const j = await res.json(); localStorage.setItem('token', j.access_token); return j
@@ -173,8 +175,8 @@ export async function googleAuth(idToken: string) {
 
   const data = await response.json()
 
-  // Store the token
-  localStorage.setItem('access_token', data.access_token)
+  // Store the token (must match the key used in authHeaders())
+  localStorage.setItem('token', data.access_token)
 
   return data
 }
@@ -451,6 +453,103 @@ export async function checkPhone(phone: string) {
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}))
       const errorMessage = errorData.detail || errorData.message || 'Failed to check phone number'
+      throw new Error(errorMessage)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server.')
+    }
+    throw error
+  }
+}
+
+// Onboarding APIs
+export async function submitOnboarding(data: {
+  name?: string
+  reasons?: string[]
+  mental_state?: string
+  previous_therapy?: string
+  goals?: string[]
+  referral_source?: string
+  preferred_time?: string
+}) {
+  console.log('━'.repeat(80))
+  console.log('🔵 API FUNCTION: submitOnboarding() called')
+  console.log('━'.repeat(80))
+
+  // Log request details
+  console.log('📋 Request Data:', JSON.stringify(data, null, 2))
+  console.log('🌐 API Base URL:', API)
+  console.log('🔗 Full URL:', `${API}/api/onboarding/submit`)
+
+  // Check token before making request
+  const token = (typeof window !== 'undefined') ? localStorage.getItem('token') : null
+  console.log('🔑 Token check:')
+  console.log('   - Token exists:', !!token)
+  console.log('   - Token length:', token ? token.length : 0)
+  console.log('   - Token preview:', token ? token.substring(0, 30) + '...' : 'NULL')
+
+  const headers = { 'Content-Type': 'application/json', ...authHeaders() }
+  console.log('📤 Request Headers:', JSON.stringify(headers, null, 2))
+
+  try {
+    console.log('\n🌐 Making fetch request...')
+    const requestBody = JSON.stringify(data)
+    console.log('📦 Request body:', requestBody)
+
+    const res = await fetch(`${API}/api/onboarding/submit`, {
+      method: 'POST',
+      headers: headers,
+      credentials: 'include',
+      body: requestBody
+    })
+
+    console.log('\n📡 Response received!')
+    console.log('   - Status:', res.status)
+    console.log('   - Status Text:', res.statusText)
+    console.log('   - OK:', res.ok)
+    console.log('   - Headers:', JSON.stringify(Object.fromEntries(res.headers.entries()), null, 2))
+
+    if (!res.ok) {
+      console.error('❌ Response not OK')
+      const errorData = await res.json().catch(() => ({}))
+      console.error('   - Error data:', errorData)
+      const errorMessage = errorData.detail || errorData.message || 'Failed to submit onboarding'
+      throw new Error(errorMessage)
+    }
+
+    const responseData = await res.json()
+    console.log('✅ Success response:', JSON.stringify(responseData, null, 2))
+    console.log('━'.repeat(80))
+    return responseData
+  } catch (error) {
+    console.error('━'.repeat(80))
+    console.error('❌ FETCH ERROR in submitOnboarding')
+    console.error('━'.repeat(80))
+    console.error('Error type:', typeof error)
+    console.error('Error constructor:', error?.constructor?.name)
+    console.error('Error message:', (error as Error)?.message)
+    console.error('Is TypeError:', error instanceof TypeError)
+    console.error('Full error object:', error)
+    console.error('━'.repeat(80))
+
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server. Please check your connection and try again.')
+    }
+    throw error
+  }
+}
+
+export async function getOnboardingStatus() {
+  try {
+    const res = await fetch(`${API}/api/onboarding/status`, {
+      headers: { ...authHeaders() },
+      credentials: 'include'
+    })
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      const errorMessage = errorData.detail || errorData.message || 'Failed to get onboarding status'
       throw new Error(errorMessage)
     }
     return res.json()
