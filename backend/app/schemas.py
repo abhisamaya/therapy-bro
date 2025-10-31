@@ -154,3 +154,19 @@ class OnboardingResponseOut(BaseModel):
     preferred_time: Optional[str] = None
     completed: bool
     created_at: datetime
+
+# --- Feedback ---
+class FeedbackIn(BaseModel):
+    session_id: str
+    rating: int  # 1-5 stars
+    tags: Optional[List[str]] = None
+    comment: Optional[str] = None
+
+class FeedbackOut(BaseModel):
+    id: int
+    user_id: int
+    session_id: str
+    rating: int
+    tags: Optional[List[str]] = None
+    comment: Optional[str] = None
+    created_at: datetime

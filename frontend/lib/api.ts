@@ -1,24 +1,21 @@
 // Automatically determine API URL based on environment
 const getApiUrl = () => {
-  // Auto-detect based on hostname FIRST (client-side)
+  // Development mode: always use localhost backend
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:8000'
+  }
+
+  // Production mode: use environment variable or default
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname
-    // Development: localhost or 127.0.0.1
+    // If running on localhost in production build, use localhost backend
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return 'http://localhost:8000'
     }
-    // Production: any other domain, use env var or default
-    return process.env.NEXT_PUBLIC_API_BASE_URL || 'https://textraja.com'
   }
-  
-  // Server-side: use env var or NODE_ENV
-  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
-    return process.env.NEXT_PUBLIC_API_BASE_URL
-  }
-  
-  return process.env.NODE_ENV === 'production' 
-    ? 'https://textraja.com' 
-    : 'http://localhost:8000'
+
+  // Production: use env var or empty string (for relative URLs via nginx proxy)
+  return process.env.NEXT_PUBLIC_API_BASE_URL || ''
 }
 
 const API = getApiUrl()
@@ -550,6 +547,34 @@ export async function getOnboardingStatus() {
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}))
       const errorMessage = errorData.detail || errorData.message || 'Failed to get onboarding status'
+      throw new Error(errorMessage)
+    }
+    return res.json()
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server.')
+    }
+    throw error
+  }
+}
+
+// Feedback APIs
+export async function submitFeedback(data: {
+  session_id: string
+  rating: number
+  tags?: string[]
+  comment?: string
+}) {
+  try {
+    const res = await fetch(`${API}/api/feedback/submit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    })
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      const errorMessage = errorData.detail || errorData.message || 'Failed to submit feedback'
       throw new Error(errorMessage)
     }
     return res.json()

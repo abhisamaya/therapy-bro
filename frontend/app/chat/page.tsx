@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useRef, useState, useCallback, Suspense } from "react";
-import { listChats, startSession, getHistory, streamMessage, deleteSession, extendSessionAPI, getWallet } from "@/lib/api";
+import { listChats, startSession, getHistory, streamMessage, deleteSession, extendSessionAPI, getWallet, submitFeedback } from "@/lib/api";
 import ChatInput from "@/components/ChatInput";
 import ChatMessage from "@/components/ChatMessage";
 import TopNav from "@/components/TopNav";
 import PhoneVerificationBanner from "@/components/PhoneVerificationBanner";
+import FeedbackModal from "@/components/FeedbackModal";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LISTENER_META } from "@/lib/listeners";
 import { Menu, X, Clock, MessageCircle, Brain, Calendar, Trash2 } from "lucide-react";
@@ -50,6 +51,10 @@ function ChatPageInner() {
   // Wallet state
   const [walletBalance, setWalletBalance] = useState<string>("0.00");
   const [walletLoading, setWalletLoading] = useState(false);
+
+  // Feedback modal
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
 
   // Expiry modal
   const [expiredModalOpen, setExpiredModalOpen] = useState(false);
@@ -138,7 +143,7 @@ function ChatPageInner() {
               timerRef.current = null;
             }
             setRunning(false);
-            setExpiredModalOpen(true);
+            setFeedbackModalOpen(true);
             appendSystem("Time's up — session ended.");
             return 0;
           }
@@ -187,7 +192,7 @@ function ChatPageInner() {
               timerRef.current = null;
             }
             setRunning(false);
-            setExpiredModalOpen(true);
+            setFeedbackModalOpen(true);
             appendSystem("Time's up — session ended.");
             return 0;
           }
@@ -445,7 +450,7 @@ function ChatPageInner() {
               timerRef.current = null;
             }
             setRunning(false);
-            setExpiredModalOpen(true);
+            setFeedbackModalOpen(true);
             appendSystem("Time's up — session ended.");
             return 0;
           }
@@ -563,6 +568,35 @@ function ChatPageInner() {
 
   const cancelDelete = () => {
     setDeleteConfirm({ show: false, sessionId: null });
+  };
+
+  // Feedback handlers
+  const handleFeedbackSubmit = async (data: { rating: number; tags: string[]; comment: string }) => {
+    if (!active) return;
+
+    try {
+      setFeedbackSubmitting(true);
+      await submitFeedback({
+        session_id: active,
+        rating: data.rating,
+        tags: data.tags,
+        comment: data.comment,
+      });
+
+      // Close feedback modal and show expiry modal
+      setFeedbackModalOpen(false);
+      setExpiredModalOpen(true);
+    } catch (error) {
+      console.error('Failed to submit feedback:', error);
+      alert(`Failed to submit feedback: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setFeedbackSubmitting(false);
+    }
+  };
+
+  const handleFeedbackSkip = () => {
+    setFeedbackModalOpen(false);
+    setExpiredModalOpen(true);
   };
 
   // -------------------------
@@ -789,6 +823,15 @@ function ChatPageInner() {
           {main}
         </div>
       </div>
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        isOpen={feedbackModalOpen}
+        onClose={() => setFeedbackModalOpen(false)}
+        onSkip={handleFeedbackSkip}
+        onSubmit={handleFeedbackSubmit}
+        isSubmitting={feedbackSubmitting}
+      />
 
       {/* Expired modal */}
       {expiredModalOpen && (

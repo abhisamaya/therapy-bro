@@ -11,7 +11,8 @@ declare global {
         id: {
           initialize: (config: any) => void
           renderButton: (element: HTMLElement, config: any) => void
-          prompt: () => void
+          prompt: (callback?: any) => void
+          cancel: () => void
         }
       }
     }

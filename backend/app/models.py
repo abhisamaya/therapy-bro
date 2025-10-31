@@ -199,3 +199,17 @@ class OnboardingResponse(SQLModel, table=True):
     completed: bool = Field(default=False)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class Feedback(SQLModel, table=True):
+    """
+    Stores user feedback for chat sessions.
+    One user can provide multiple feedbacks, and one session can have multiple feedbacks.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(index=True, foreign_key="user.id")
+    session_id: str = Field(index=True)
+    rating: int = Field(ge=1, le=5)  # 1-5 star rating
+    tags: Optional[str] = Field(default=None, sa_column=Column(JSON))  # JSON array of selected tags
+    comment: Optional[str] = None  # Optional text feedback
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
