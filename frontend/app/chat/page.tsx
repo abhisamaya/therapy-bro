@@ -266,7 +266,7 @@ function ChatPageInner() {
         
         // Handle new session request from URL
         if (newSessionParam) {
-          const today = new Date().toISOString().split('T')[0];
+          const today = new Date().toISOString().slice(0, 10); // UTC date YYYY-MM-DD
           const todayCategorySession = list.find(
             (c: Conv) => c.category === newSessionParam && c.updated_at.startsWith(today)
           );
@@ -286,13 +286,36 @@ function ChatPageInner() {
         
         // Default behavior when no specific params
         if (list.length) {
-          const today = new Date().toISOString().split('T')[0];
+          const today = new Date().toISOString().slice(0, 10); // UTC date YYYY-MM-DD
           const todaySession = list.find((c: Conv) => c.updated_at.startsWith(today));
           
           if (todaySession) {
             await select(todaySession.session_id);
           } else {
-            await select(list[0].session_id);
+            // No today's session exists - create a new one instead of selecting old session
+            console.log('📝 [SESSION] No today\'s session found, creating new default session...');
+            const s = await startSession("TherapyBro");
+            console.log('📝 [SESSION] Session created, raw response:', s);
+            console.log('📝 [SESSION] Session ID:', s?.session_id);
+            console.log('📝 [SESSION] Has status:', 'status' in (s || {}));
+            console.log('📝 [SESSION] Has remaining_seconds:', 'remaining_seconds' in (s || {}));
+            setActive(s.session_id);
+            await load(s.session_id);
+            
+            // Start timer from session response
+            console.log('📝 [SESSION] Calling startTimerFromSessionResponse...');
+            startTimerFromSessionResponse(s);
+
+            // If session is ended (e.g., non-free session), open modal to extend/pay
+            if (s?.status === "ended") {
+              setExpiredModalOpen(true);
+            }
+            
+            // Update conversations list
+            const updatedList = await listChats();
+            setConvs(updatedList);
+            
+            appendSystem(LISTENER_META.TherapyBro.welcome);
           }
         } else {
           // create a default session and start it
@@ -317,7 +340,6 @@ function ChatPageInner() {
           // Update conversations list
           const updatedList = await listChats();
           setConvs(updatedList);
-          
           appendSystem(LISTENER_META.TherapyBro.welcome);
         }
         
